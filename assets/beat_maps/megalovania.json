@@ -1,0 +1,446 @@
+{
+  "name": "Megalovania",
+  "artist": "Toby Fox",
+  "bpm": 120,
+  "beats": [
+
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+
+    {"notes": [
+        {"timing": 0.0,
+          "column": 0},
+        {"timing": 0.25,
+          "column": 0},
+        {"timing": 0.5,
+          "column": 2}
+    ]},
+    {"notes": [
+        {"timing": 0.0,
+          "column": 1},
+        {"timing": 0.75,
+          "column": 2}
+    ]},
+    {"notes": [
+        {"timing": 0.25,
+          "column": 1},
+        {"timing": 0.75,
+          "column": 0}
+    ]},
+    {"notes": [
+        {"timing": 0.25,
+          "column": 0},
+        {"timing": 0.5,
+          "column": 1},
+        {"timing": 0.75,
+          "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]},
+
+
+    {"notes": [
+      {"timing": 0.0,
+        "column": 1},
+      {"timing": 0.5,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 1}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 1}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 0},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": []},
+    {"notes": [
+      {"timing": 0.0,
+        "column": 0},
+      {"timing": 0.5,
+        "column": 0},
+      {"timing": 0.75,
+        "column": 0}
+    ]},
+    {"notes": [
+      {"timing": 0.25,
+        "column": 1},
+      {"timing": 0.75,
+        "column": 2}
+    ]}
+  ]
+}
