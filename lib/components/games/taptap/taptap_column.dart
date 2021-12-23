@@ -12,17 +12,18 @@ import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class TapTapColumn extends PositionComponent with Tappable, KnowsGameSize {
   /// Represents the Y placement of the hit circle out of the game size's full Y axis.
-  static const hitCircleYPlacementModifier = 0.85;
+  static const double hitCircleYPlacementModifier = 0.85;
 
   /// Represents how much of the game size's full Y axis should be allowed above
   /// or below a hit circle to consider a note hit successful.
-  static const hitCircleAllowanceModifier = 0.04;
+  static const double hitCircleAllowanceModifier = 0.04;
 
-  /// Represents the location that the note should continue moving to
-  /// past the [hitCircleYPlacementModifier].
-  /// The full range of movement would then be:
-  ///   0 to ([hitCircleYPlacementModifier] + [noteEndPlacementModifier])
-  static const noteEndPlacementModifier = 0.25;
+  /// Represents the maximum percentage of the Y-axis that the note should travel before removal.
+  static const double noteMaxBoundaryModifier = 1.0;
+
+  /// The number of beat intervals it should take a note to reach the hit circle.
+  /// TODO 2 = hard, 3 = medium, 4 = easy
+  static const int intervalTimingMultiplier = 2;
 
   /// Column placement in board (from the left).
   final int columnIndex;
@@ -50,7 +51,7 @@ class TapTapColumn extends PositionComponent with Tappable, KnowsGameSize {
       radius: gameSize.x / 6,
       position: Vector2(0, gameSize.y * hitCircleYPlacementModifier),
       anchor: Anchor.centerLeft,
-      paint: Paint()..color = Colors.white.withOpacity(0.5),
+      paint: Paint()..color = Colors.white.withOpacity(0.6),
     );
     add(columnBoundaries);
     add(hitCircle);
@@ -71,13 +72,12 @@ class TapTapColumn extends PositionComponent with Tappable, KnowsGameSize {
       noteQueue.addFirst(noteComponent);
       add(noteComponent);
       // Sets the movement in such a way that the note will cross the hit circle exactly on beat.
-      // double fullNoteTravelDistance =
-      //     gameSize.y * (hitCircleYPlacementModifier + noteEndPlacementModifier);
-      double timeNoteIsVisible = (interval * 2) / hitCircleYPlacementModifier;
-      double timeNoteIsInQueue = (interval * 2) +
-          ((interval * 2 * hitCircleAllowanceModifier) /
-              hitCircleYPlacementModifier);
-      noteComponent.add(MoveEffect.to(Vector2(0, gameSize.y),
+      double fullNoteTravelDistance = gameSize.y * (noteMaxBoundaryModifier);
+      double timeNoteIsVisible =
+          timeForNoteToTravel(noteMaxBoundaryModifier, interval);
+      double timeNoteIsInQueue = timeForNoteToTravel(
+          hitCircleYPlacementModifier + hitCircleAllowanceModifier, interval);
+      noteComponent.add(MoveEffect.to(Vector2(0, fullNoteTravelDistance),
           LinearEffectController(microsecondsToSeconds(timeNoteIsVisible))));
       // Set a timer for when the note was definitely missed, and should be removed from hittable notes queue.
       Async.Timer(Duration(microseconds: timeNoteIsInQueue.round()), () {
@@ -88,6 +88,15 @@ class TapTapColumn extends PositionComponent with Tappable, KnowsGameSize {
         noteComponent.missed();
       });
     });
+  }
+
+  /// Calculates the time it should take for a note to travel [yPercentageTarget] percent of the Y-Axis.
+  ///
+  /// [yPercentageTarget] : percentage of the Y-axis size that the note will have travelled.
+  /// [beatInterval] : time it takes for a single beat to complete, in microseconds.
+  double timeForNoteToTravel(double yPercentageTarget, int beatInterval) {
+    return ((yPercentageTarget) * beatInterval * intervalTimingMultiplier) /
+        hitCircleYPlacementModifier;
   }
 
   @override

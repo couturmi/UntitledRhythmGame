@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'dart:async' as Async;
 import 'package:untitled_rhythm_game/components/backdrops/megalovania/megalovania_background_component.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_board.dart';
+import 'package:untitled_rhythm_game/components/games/taptap/taptap_column.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 
 class MyGame extends FlameGame with HasTappables {
@@ -43,7 +44,10 @@ class MyGame extends FlameGame with HasTappables {
   /// Play the song and set the timer that occurs every beat.
   void playSong() {
     // set delay for when music should start playing.
-    Async.Timer(Duration(microseconds: beatMap.beatInterval * 2), () {
+    Async.Timer(
+        Duration(
+            microseconds: beatMap.beatInterval *
+                TapTapColumn.intervalTimingMultiplier), () {
       FlameAudio.playLongAudio('music/megalovania.mp3');
     });
     // Wrap in a one-time delay to account for the music start-delay
@@ -51,22 +55,21 @@ class MyGame extends FlameGame with HasTappables {
       // load first beat sequence
       addNotesForBeat();
       beatCount++;
-      Async.Timer(Duration(microseconds: beatMap.beatInterval), () {
-        // load second beat sequence
+      Async.Timer.periodic(Duration(microseconds: beatMap.beatInterval),
+          (preSongBeatTimer) {
+        // load next beat sequences before song begins playing.
         addNotesForBeat();
-        beatCount++;
-        Async.Timer(Duration(microseconds: beatMap.beatInterval), () {
-          // load third beat sequence
-          addNotesForBeat();
-          beatCount++;
+        if (beatCount == TapTapColumn.intervalTimingMultiplier) {
+          preSongBeatTimer.cancel();
           Async.Timer.periodic(Duration(microseconds: beatMap.beatInterval),
-              (timer) {
+              (_) {
             backgroundComponent.beatUpdate();
             // load next beat sequence
             addNotesForBeat();
             beatCount++;
           });
-        });
+        }
+        beatCount++;
       });
     });
   }
