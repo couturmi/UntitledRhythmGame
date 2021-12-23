@@ -6,6 +6,7 @@ import 'dart:async' as Async;
 import 'package:untitled_rhythm_game/components/backdrops/megalovania/megalovania_background_component.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_board.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_column.dart';
+import 'package:untitled_rhythm_game/components/scoring/score_component.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 
 class MyGame extends FlameGame with HasTappables {
@@ -15,6 +16,7 @@ class MyGame extends FlameGame with HasTappables {
   late final BeatMap beatMap;
   late final MegalovaniaBackgroundComponent backgroundComponent;
   late final TapTapBoardComponent tapTapBoardComponent;
+  late final ScoreComponent scoreComponent;
 
   @override
   Future<void> onLoad() async {
@@ -35,10 +37,11 @@ class MyGame extends FlameGame with HasTappables {
     backgroundComponent =
         MegalovaniaBackgroundComponent(interval: beatMap.beatInterval);
     tapTapBoardComponent = TapTapBoardComponent();
+    scoreComponent = ScoreComponent();
     // Note: add order is very important here, hence the "await" for each.
     await add(backgroundComponent);
     await add(tapTapBoardComponent);
-    // TODO add overlay component
+    await add(scoreComponent);
   }
 
   /// Play the song and set the timer that occurs every beat.

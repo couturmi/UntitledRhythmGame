@@ -7,16 +7,18 @@ import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_note.dart';
-import 'package:untitled_rhythm_game/components/mixins/knows_game_size.dart';
+import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/main.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
-class TapTapColumn extends PositionComponent with Tappable, KnowsGameSize {
+class TapTapColumn extends PositionComponent
+    with Tappable, GameSizeAware, HasGameRef<MyGame> {
   /// Represents the Y placement of the hit circle out of the game size's full Y axis.
   static const double hitCircleYPlacementModifier = 0.85;
 
   /// Represents how much of the game size's full Y axis should be allowed above
   /// or below a hit circle to consider a note hit successful.
-  static const double hitCircleAllowanceModifier = 0.04;
+  static const double hitCircleAllowanceModifier = 0.1; // 0.04
 
   /// Represents the maximum percentage of the Y-axis that the note should travel before removal.
   static const double noteMaxBoundaryModifier = 1.0;
@@ -81,7 +83,11 @@ class TapTapColumn extends PositionComponent with Tappable, KnowsGameSize {
           LinearEffectController(microsecondsToSeconds(timeNoteIsVisible))));
       // Set a timer for when the note was definitely missed, and should be removed from hittable notes queue.
       Async.Timer(Duration(microseconds: timeNoteIsInQueue.round()), () {
-        noteQueue.remove(noteComponent);
+        if (noteQueue.contains(noteComponent)) {
+          noteQueue.remove(noteComponent);
+          // Update score with miss.
+          gameRef.scoreComponent.resetStreak();
+        }
       });
       // Set a timer for when the note should be remove from the scene.
       Async.Timer(Duration(microseconds: timeNoteIsVisible.round()), () {
@@ -108,13 +114,19 @@ class TapTapColumn extends PositionComponent with Tappable, KnowsGameSize {
         gameSize.y * hitCircleAllowanceModifier;
     // If note was hit.
     if (successfulHit) {
+      // Update UI.
       noteQueue.remove(frontNoteComponent);
       frontNoteComponent.hit();
       performHighlight(Colors.lightBlueAccent);
+      // Update score with hit.
+      gameRef.scoreComponent.tapTapHit();
     }
     // If note was not hit.
     else {
+      // Update UI.
       performHighlight(Colors.red);
+      // Reset score streak;
+      gameRef.scoreComponent.resetStreak();
     }
     return true;
   }
