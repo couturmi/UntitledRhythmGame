@@ -19,11 +19,27 @@ class TapTapNote extends SpriteComponent {
   }
 
   /// Called if a note is tapped and cleared successfully.
-  void pop() {
+  void hit() {
+    // clearing children will stop all active effects.
+    children.clear();
+    // update with golden glow.
     paint
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 35)
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
       ..colorFilter = ColorFilter.mode(Colors.amberAccent, BlendMode.overlay);
+    // remove the note after a short time of displaying.
     Async.Timer(Duration(milliseconds: 100), () {
+      parent?.remove(this);
+    });
+  }
+
+  /// Called if a note is missed completely and the player has horribly failed.
+  void missed() {
+    // update with red glow.
+    paint
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50)
+      ..colorFilter = ColorFilter.mode(Colors.red, BlendMode.overlay);
+    // remove the note after a short time of displaying.
+    Async.Timer(Duration(milliseconds: 50), () {
       parent?.remove(this);
     });
   }

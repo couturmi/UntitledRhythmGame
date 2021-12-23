@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_column.dart';
 
-class TapTapGridComponent extends PositionComponent {
+class TapTapBoardComponent extends PositionComponent {
   List<TapTapColumn> columns = [
     TapTapColumn(columnIndex: 0),
     TapTapColumn(columnIndex: 1),

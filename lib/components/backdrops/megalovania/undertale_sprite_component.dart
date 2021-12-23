@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:async' as Async;
 
 import 'package:flame/components.dart';
@@ -6,38 +5,32 @@ import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
-class GooterComponent extends SpriteComponent {
+class UndertaleSpriteComponent extends SpriteComponent {
   bool visible = false;
   static const double defaultRadius = 128.0;
   double componentSize = defaultRadius;
-  static const List<Color> _colorList = [
-    Colors.red,
-    Colors.blue,
-    Colors.orange,
-    Colors.green
-  ];
-  int colorIndex = 0;
+  Sprite? mainSprite;
+  Sprite? secondarySprite;
 
   Vector2 positionOffset;
-  bool isMainGooter;
+  bool isMainSprite;
   double directionalModifier;
 
-  GooterComponent(this.positionOffset,
-      {this.isMainGooter = false, this.directionalModifier = 1})
+  UndertaleSpriteComponent(this.positionOffset,
+      {this.isMainSprite = false, this.directionalModifier = 1})
       : super(
             size: Vector2.all(
-                !isMainGooter ? defaultRadius : defaultRadius * 1.2));
+                !isMainSprite ? defaultRadius : defaultRadius * 1.2));
 
   Future<void> onLoad() async {
-    Random random = Random();
-    sprite =
-        await Sprite.load(random.nextBool() ? 'trevbot.jpg' : 'gooter.jpg');
+    mainSprite = await Sprite.load(isMainSprite ? 'sans.png' : 'dragon.png');
+    secondarySprite =
+        await Sprite.load(isMainSprite ? 'sans_eye.png' : 'dragon_eye.png');
+    sprite = mainSprite;
     anchor = Anchor.center;
 
-    colorIndex = random.nextInt(4);
-
     // set starting state.
-    if (isMainGooter) {
+    if (isMainSprite) {
       visible = true;
       componentSize = defaultRadius * 1.2;
     } else {
@@ -47,12 +40,16 @@ class GooterComponent extends SpriteComponent {
     await super.onLoad();
   }
 
-  void handleBeat(int interval, int beatCount) {
-    // When the drop hits.
+  void handleBeat(int interval, int beatCount) async {
+    // When the beat drop hits.
     if (beatCount >= 31) {
+      // switch sprites when beat drops.
+      if (beatCount == 31) {
+        sprite = secondarySprite;
+      }
       // When the cymbals triple crash
       if ((beatCount - 31) % 16 == 14) {
-        if (isMainGooter) {
+        if (isMainSprite) {
           visible = true;
           paint..colorFilter = null;
           transform.angle = 0;
@@ -74,15 +71,6 @@ class GooterComponent extends SpriteComponent {
         // do nothing.
       } else {
         flipHorizontally();
-        // change color
-        paint
-          ..colorFilter =
-              ColorFilter.mode(_colorList[colorIndex], BlendMode.overlay);
-        if (colorIndex == _colorList.length - 1) {
-          colorIndex = 0;
-        } else {
-          colorIndex++;
-        }
 
         // change size
         size = Vector2.all(componentSize) * 1.3;
@@ -98,7 +86,7 @@ class GooterComponent extends SpriteComponent {
     // When the beat starts picking up
     else if (beatCount >= 16) {
       flipHorizontally();
-    } else if (beatCount == 15 && !isMainGooter) {
+    } else if (beatCount == 15 && !isMainSprite) {
       show();
     }
   }
