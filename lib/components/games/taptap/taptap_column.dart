@@ -6,6 +6,7 @@ import 'package:flame/effects.dart';
 import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/main.dart';
@@ -120,6 +121,7 @@ class TapTapColumn extends PositionComponent
       performHighlight(Colors.lightBlueAccent);
       // Update score with hit.
       gameRef.scoreComponent.tapTapHit();
+      HapticFeedback.lightImpact();
     }
     // If note was not hit.
     else {
