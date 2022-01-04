@@ -3,6 +3,8 @@ import 'package:flame/extensions.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_column.dart';
 
 class TapTapBoardComponent extends PositionComponent {
+  TapTapBoardComponent() : super(priority: 1);
+
   List<TapTapColumn> columns = [
     TapTapColumn(columnIndex: 0),
     TapTapColumn(columnIndex: 1),
@@ -14,7 +16,10 @@ class TapTapBoardComponent extends PositionComponent {
     super.onLoad();
   }
 
-  void addNote({required int columnIndex, required int interval, required double beatDelay}) {
+  void addNote(
+      {required int columnIndex,
+      required int interval,
+      required double beatDelay}) {
     columns[columnIndex].addNote(interval: interval, beatDelay: beatDelay);
   }
 

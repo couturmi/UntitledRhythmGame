@@ -11,7 +11,7 @@ class MegalovaniaBackgroundComponent extends PositionComponent
   final int interval;
   int beatCount = 0;
 
-  MegalovaniaBackgroundComponent({required this.interval});
+  MegalovaniaBackgroundComponent({required this.interval}) : super(priority: 0);
 
   @override
   Future<void> onLoad() async {

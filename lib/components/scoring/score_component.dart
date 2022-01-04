@@ -23,7 +23,8 @@ class ScoreComponent extends PositionComponent
 
   ScoreComponent()
       : score = 0,
-        streak = 0;
+        streak = 0,
+        super(priority: 10);
 
   int get noteMultiplier =>
       min((streak / _streakMultiplierThreshold).floor() + 1, 4);
