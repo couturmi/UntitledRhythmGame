@@ -1,5 +1,4 @@
 import 'package:flame/components.dart';
-import 'package:flame/extensions.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_column.dart';
 
 class TapTapBoardComponent extends PositionComponent {
@@ -21,10 +20,5 @@ class TapTapBoardComponent extends PositionComponent {
       required int interval,
       required double beatDelay}) {
     columns[columnIndex].addNote(interval: interval, beatDelay: beatDelay);
-  }
-
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
   }
 }
