@@ -25,7 +25,7 @@ class MyGame extends FlameGame with HasTappables {
     // Preload song.
     await FlameAudio.audioCache.load('music/megalovania.mp3');
     // Set game components.
-    await setGameComponents();
+    setGameComponents();
     // Set delay for when game should start. TODO this will eventually be a button.
     Async.Timer(Duration(seconds: 1), () {
       playSong();
@@ -33,15 +33,14 @@ class MyGame extends FlameGame with HasTappables {
     await super.onLoad();
   }
 
-  Future<void> setGameComponents() async {
+  void setGameComponents() {
     backgroundComponent =
         MegalovaniaBackgroundComponent(interval: beatMap.beatInterval);
     tapTapBoardComponent = TapTapBoardComponent();
     scoreComponent = ScoreComponent();
-    // Note: add order is very important here, hence the "await" for each.
-    await add(backgroundComponent);
-    await add(tapTapBoardComponent);
-    await add(scoreComponent);
+    add(backgroundComponent);
+    add(tapTapBoardComponent);
+    add(scoreComponent);
   }
 
   /// Play the song and set the timer that occurs every beat.
