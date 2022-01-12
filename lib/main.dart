@@ -31,10 +31,11 @@ class MyGame extends FlameGame with HasTappables {
       if (!isCorrectGameSizeSet) {
         if (canvasSize.x > 0 && canvasSize.y > 0) {
           isCorrectGameSizeSet = true;
+          if (onLoadOccurred) {
+            componentsAdded = true;
+            addComponents();
+          }
         }
-      } else if (onLoadOccurred) {
-        componentsAdded = true;
-        addComponents();
       }
     }
   }
