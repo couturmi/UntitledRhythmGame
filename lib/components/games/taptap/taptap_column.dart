@@ -87,7 +87,7 @@ class TapTapColumn extends PositionComponent
         if (noteQueue.contains(noteComponent)) {
           noteQueue.remove(noteComponent);
           // Update score with miss.
-          gameRef.scoreComponent.resetStreak();
+          gameRef.currentLevel.scoreComponent.resetStreak();
         }
       });
       // Set a timer for when the note should be remove from the scene.
@@ -120,7 +120,7 @@ class TapTapColumn extends PositionComponent
       frontNoteComponent.hit();
       performHighlight(Colors.lightBlueAccent);
       // Update score with hit.
-      gameRef.scoreComponent.tapTapHit();
+      gameRef.currentLevel.scoreComponent.tapTapHit();
       HapticFeedback.lightImpact();
     }
     // If note was not hit.
@@ -128,7 +128,7 @@ class TapTapColumn extends PositionComponent
       // Update UI.
       performHighlight(Colors.red);
       // Reset score streak;
-      gameRef.scoreComponent.resetStreak();
+      gameRef.currentLevel.scoreComponent.resetStreak();
     }
     return true;
   }
@@ -145,13 +145,6 @@ class TapTapColumn extends PositionComponent
     Async.Timer(Duration(milliseconds: 100), () {
       remove(highlight);
     });
-  }
-
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-    // This creates a physical boundary that can be tapped.
-    canvas.drawRect(size.toRect(), Paint()..color = Colors.transparent);
   }
 
   @override
