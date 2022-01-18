@@ -1,8 +1,9 @@
-import 'package:flame/components.dart';
+import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_column.dart';
+import 'package:untitled_rhythm_game/model/beat_map.dart';
 
-class TapTapBoardComponent extends PositionComponent {
-  TapTapBoardComponent() : super(priority: 1);
+class TapTapBoardComponent extends MiniGameComponent {
+  TapTapBoardComponent(MiniGameModel model) : super(model: model);
 
   late List<TapTapColumn> columns;
 
@@ -17,10 +18,12 @@ class TapTapBoardComponent extends PositionComponent {
     super.onLoad();
   }
 
-  void addNote(
-      {required int columnIndex,
-      required int interval,
-      required double beatDelay}) {
-    columns[columnIndex].addNote(interval: interval, beatDelay: beatDelay);
+  @override
+  void handleNote({
+    required int interval,
+    required NoteModel noteModel,
+  }) {
+    columns[noteModel.column]
+        .addNote(interval: interval, beatDelay: noteModel.timing);
   }
 }

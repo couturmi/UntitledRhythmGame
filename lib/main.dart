@@ -1,6 +1,6 @@
 import 'package:flame/components.dart';
-import 'dart:async' as Async;
 import 'package:flame/game.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/menu/play_button.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
@@ -22,6 +22,11 @@ class MyGame extends FlameGame with HasTappables {
       componentsAdded = true;
       addComponents();
     }
+
+    // Preload all songs.
+    Level.values.forEach((level) {
+      FlameAudio.audioCache.load(getLevelMP3PathMap(level));
+    });
   }
 
   @override

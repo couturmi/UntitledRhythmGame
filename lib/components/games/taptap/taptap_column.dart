@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/main.dart';
+import 'package:untitled_rhythm_game/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class TapTapColumn extends PositionComponent
@@ -23,10 +24,6 @@ class TapTapColumn extends PositionComponent
 
   /// Represents the maximum percentage of the Y-axis that the note should travel before removal.
   static const double noteMaxBoundaryModifier = 1.0;
-
-  /// The number of beat intervals it should take a note to reach the hit circle.
-  /// TODO 2 = hard, 3 = medium, 4 = easy
-  static const int intervalTimingMultiplier = 2;
 
   /// Column placement in board (from the left).
   final int columnIndex;
@@ -102,7 +99,9 @@ class TapTapColumn extends PositionComponent
   /// [yPercentageTarget] : percentage of the Y-axis size that the note will have travelled.
   /// [beatInterval] : time it takes for a single beat to complete, in microseconds.
   double timeForNoteToTravel(double yPercentageTarget, int beatInterval) {
-    return ((yPercentageTarget) * beatInterval * intervalTimingMultiplier) /
+    return ((yPercentageTarget) *
+            beatInterval *
+            SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) /
         hitCircleYPlacementModifier;
   }
 

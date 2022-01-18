@@ -42,13 +42,13 @@ class UndertaleSpriteComponent extends SpriteComponent {
 
   void handleBeat(int interval, int beatCount) async {
     // When the beat drop hits.
-    if (beatCount >= 31) {
+    if (beatCount >= 33) {
       // switch sprites when beat drops.
-      if (beatCount == 31) {
+      if (beatCount == 33) {
         sprite = secondarySprite;
       }
       // When the cymbals triple crash
-      if ((beatCount - 31) % 16 == 14) {
+      if ((beatCount - 33) % 16 == 14) {
         if (isMainSprite) {
           visible = true;
           paint..colorFilter = null;
@@ -67,7 +67,7 @@ class UndertaleSpriteComponent extends SpriteComponent {
         } else {
           size = Vector2.all(0);
         }
-      } else if ((beatCount - 31) % 16 == 15) {
+      } else if ((beatCount - 33) % 16 == 15) {
         // do nothing.
       } else {
         flipHorizontally();
@@ -84,9 +84,9 @@ class UndertaleSpriteComponent extends SpriteComponent {
       }
     }
     // When the beat starts picking up
-    else if (beatCount >= 16) {
+    else if (beatCount >= 18) {
       flipHorizontally();
-    } else if (beatCount == 15 && !isMainSprite) {
+    } else if (beatCount == 16 && !isMainSprite) {
       show();
     }
   }

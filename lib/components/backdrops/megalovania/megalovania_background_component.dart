@@ -4,6 +4,7 @@ import 'package:flame/image_composition.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/backdrops/megalovania/undertale_sprite_component.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/song_level_component.dart';
 
 class MegalovaniaBackgroundComponent extends PositionComponent
     with GameSizeAware {
@@ -75,16 +76,18 @@ class MegalovaniaBackgroundComponent extends PositionComponent
 
   /// Updates the UI to reflect a new beat occurrence.
   void beatUpdate() {
-    sprites.forEach((sprite) {
-      sprite.handleBeat(interval, beatCount);
-    });
+    if (beatCount >= SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) {
+      sprites.forEach((sprite) {
+        sprite.handleBeat(interval, beatCount);
+      });
+    }
     beatCount++;
   }
 
   @override
   void render(Canvas canvas) {
     // Background color.
-    if (beatCount >= 32) {
+    if (beatCount >= 34) {
       canvas.drawColor(Colors.deepPurple, BlendMode.src);
     } else {
       canvas.drawColor(Colors.black, BlendMode.src);

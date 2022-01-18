@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class BeatMap {
@@ -13,16 +14,26 @@ class BeatMap {
   /// The number of microseconds between each beat. Calculated from the [bpm].
   final int beatInterval;
 
-  /// The list BeatModels representing each beat and all notes contained in each beat.
-  final List<BeatModel> beats;
+  /// The list of mini-games (in order) that should be played during this song.
+  final List<MiniGameModel> gameOrder;
+
+  /// The total number of beats in this song.
+  late final int beatTotal;
 
   BeatMap.fromJson(Map<String, dynamic> json)
       : songName = json["name"],
         artistName = json["artist"],
         beatInterval = bpmToMicroseconds(json["bpm"]),
-        beats = json["beats"]
-            .map<BeatModel>((beatJson) => BeatModel.fromJson(beatJson))
-            .toList();
+        gameOrder = json["gameOrder"]
+            .map<MiniGameModel>((gameJson) => MiniGameModel.fromJson(gameJson))
+            .toList() {
+    // Calculate beat total.
+    int beatCount = 0;
+    gameOrder.forEach((game) {
+      beatCount += game.beats.length;
+    });
+    beatTotal = beatCount;
+  }
 
   static Future<BeatMap> loadFromFile(String path) async {
     String jsonString = await rootBundle.loadString(path);
@@ -30,11 +41,25 @@ class BeatMap {
   }
 }
 
+class MiniGameModel {
+  /// The specific mini-game.
+  final MiniGameType gameType;
+
+  /// The list BeatModels representing each beat and all notes contained in each beat.
+  final List<BeatModel> beats;
+
+  MiniGameModel.fromJson(Map<String, dynamic> json)
+      : gameType = miniGameTypeFromString(json["game"]),
+        beats = json["beats"]
+            .map<BeatModel>((beatJson) => BeatModel.fromJson(beatJson))
+            .toList();
+}
+
 class BeatModel {
   final List<NoteModel> notes;
 
-  BeatModel.fromJson(Map<String, dynamic> json)
-      : notes = json["notes"]
+  BeatModel.fromJson(List<dynamic> jsonList)
+      : notes = jsonList
             .map<NoteModel>((noteJson) => NoteModel.fromJson(noteJson))
             .toList();
 }
@@ -44,6 +69,6 @@ class NoteModel {
   final int column;
 
   NoteModel.fromJson(Map<String, dynamic> json)
-      : timing = json["timing"],
-        column = json["column"];
+      : timing = json["timing"] ?? 0,
+        column = json["column"] ?? 0;
 }
