@@ -53,6 +53,18 @@ class MiniGameModel {
         beats = json["beats"]
             .map<BeatModel>((beatJson) => BeatModel.fromJson(beatJson))
             .toList();
+
+  MiniGameModel.gameStartTransition()
+      : gameType = MiniGameType.gameTransition,
+        beats = _generateEmptyBeats(8);
+
+  static List<BeatModel> _generateEmptyBeats(int count) {
+    final List<BeatModel> beats = [];
+    for (int i = 0; i < count; i++) {
+      beats.add(BeatModel.fromJson([Map<String, dynamic>()]));
+    }
+    return beats;
+  }
 }
 
 class BeatModel {

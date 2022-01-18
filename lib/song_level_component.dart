@@ -49,10 +49,8 @@ class SongLevelComponent extends PositionComponent {
     _beatMap = await BeatMap.loadFromFile(getLevelBeatMapPath(songLevel));
     // Set game components.
     setGameComponents();
-    // Start level. (The delay is added since there is some lag when the song starts otherwise. Not sure how to fix that.
-    Async.Timer(Duration(seconds: 2), () {
-      playSong();
-    });
+    // Start level.
+    startLevel();
   }
 
   void setGameComponents() {
@@ -61,24 +59,40 @@ class SongLevelComponent extends PositionComponent {
     scoreComponent = ScoreComponent();
     add(backgroundComponent);
     add(scoreComponent);
-    startNextMiniGame();
+    setStartingTransition();
+  }
+
+  /// Set the starting MiniGame transition that introduces the first MiniGame.
+  void setStartingTransition() {
+    String firstMiniGameName = getMiniGameName(_beatMap.gameOrder[0].gameType);
+    currentGameComponent = GameTransitionComponent(
+      MiniGameModel.gameStartTransition(),
+      nextMiniGameName: firstMiniGameName,
+      isStartingTransition: true,
+    );
+    add(currentGameComponent);
   }
 
   /// Queue up the next mini-game.
   void queueUpNextMiniGame() {
+    // Set a countdown to remove the current mini-game component.
     removePreviousMiniGameCountDown = INTERVAL_TIMING_MULTIPLIER;
     previousGameComponent = currentGameComponent;
-    startNextMiniGame();
-  }
 
-  void startNextMiniGame() {
+    // Set up the next mini-game as the current component.
+
     currentMiniGameIndex++;
     if (_beatMap.gameOrder.length > currentMiniGameIndex) {
       MiniGameModel nextMiniGameModel =
           _beatMap.gameOrder[currentMiniGameIndex];
       switch (nextMiniGameModel.gameType) {
         case MiniGameType.gameTransition:
-          currentGameComponent = GameTransitionComponent(nextMiniGameModel);
+          String nextMiniGameName = getMiniGameName(
+              _beatMap.gameOrder[currentMiniGameIndex + 1].gameType);
+          currentGameComponent = GameTransitionComponent(
+            nextMiniGameModel,
+            nextMiniGameName: nextMiniGameName,
+          );
           break;
         case MiniGameType.tapTap:
           currentGameComponent = TapTapBoardComponent(nextMiniGameModel);
@@ -95,6 +109,28 @@ class SongLevelComponent extends PositionComponent {
       remove(previousGameComponent);
     }
     removePreviousMiniGameCountDown--;
+  }
+
+  /// Start the level.
+  /// 1. Show the introduction.
+  /// 2. Play the song.
+  void startLevel() {
+    // Show the starting transition for the game type.
+    Async.Timer.periodic(Duration(microseconds: _beatMap.beatInterval),
+        (gameIntroTimer) {
+      currentGameComponent.thisBeat.notes.forEach((note) {
+        currentGameComponent.handleNote(
+            interval: _beatMap.beatInterval, noteModel: note);
+      });
+      if (currentGameComponent.isLastBeat) {
+        // Start the song.
+        queueUpNextMiniGame();
+        playSong();
+        gameIntroTimer.cancel();
+      } else {
+        currentGameComponent.miniGameBeatCount++;
+      }
+    });
   }
 
   /// Play the song and set the timer that occurs every beat.
@@ -122,6 +158,7 @@ class SongLevelComponent extends PositionComponent {
     });
   }
 
+  /// Execute a beat update for the game component.
   void handleBeat() {
     if (_currentBeatCount < _beatMap.beatTotal) {
       // Handle each note that occurs during this beat.

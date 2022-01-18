@@ -5,15 +5,26 @@ import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 
 class GameTransitionComponent extends MiniGameComponent {
+  static const String firstGameTitle = "F I R S T   U P";
+  static const String nextUpTitle = "N E X T   U P";
+
+  /// Name of the next mini-game after this transition.
+  final String nextMiniGameName;
+
+  /// True if this transition is for introducing the first game of the level.
+  final bool isStartingTransition;
+
   late final Component title;
   late final Component subTitle;
 
-  GameTransitionComponent(MiniGameModel model) : super(model: model);
+  GameTransitionComponent(MiniGameModel model,
+      {required this.nextMiniGameName, this.isStartingTransition = false})
+      : super(model: model);
 
   @override
   Future<void> onLoad() async {
     title = TextComponent(
-      text: "N E X T   U P",
+      text: isStartingTransition ? firstGameTitle : nextUpTitle,
       textRenderer: TextPaint(
           style: TextStyle(
               color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold)),
@@ -21,7 +32,7 @@ class GameTransitionComponent extends MiniGameComponent {
       anchor: Anchor.center,
     );
     subTitle = TextComponent(
-      text: "TAP TAP",
+      text: nextMiniGameName.toUpperCase(),
       textRenderer: TextPaint(
           style: TextStyle(
               color: Colors.white, fontSize: 72, fontWeight: FontWeight.bold)),
