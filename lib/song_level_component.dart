@@ -7,6 +7,7 @@ import 'dart:async' as Async;
 import 'package:untitled_rhythm_game/components/backdrops/megalovania/megalovania_background_component.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
+import 'package:untitled_rhythm_game/components/games/osu/osu_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_board.dart';
 import 'package:untitled_rhythm_game/components/games/transition/minigame_transition_component.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
@@ -98,6 +99,9 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
             nextMiniGameType:
                 _beatMap.gameOrder[currentMiniGameIndex + 1].gameType,
           );
+          break;
+        case MiniGameType.osu:
+          currentGameComponent = OsuGameComponent(nextMiniGameModel);
           break;
         case MiniGameType.tapTap:
           currentGameComponent = TapTapBoardComponent(nextMiniGameModel);
@@ -195,7 +199,7 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
       rotationAngle = 0.0;
       newGameSize = gameSize;
     }
-    // Rotate level.
+    // Rotate entire level component.
     angle = rotationAngle;
     // Resize/Rebuild any components that depend on the gameSize
     scoreComponent.onGameResize(newGameSize);

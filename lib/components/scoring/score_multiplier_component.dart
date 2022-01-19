@@ -31,7 +31,8 @@ class ScoreMultiplierComponent extends PositionComponent {
     ));
     textComponent = TextComponent(
       text: _getText(_multiplier),
-      textRenderer: TextPaint(style: _getTextStyle(multiplierColors[0])),
+      textRenderer:
+          TextPaint(style: _getTextStyle(multiplierColors[_multiplier - 1])),
       position: Vector2(-5, -5),
       scale: Vector2.all(4),
       angle: -(2 * pi) * 0.025,

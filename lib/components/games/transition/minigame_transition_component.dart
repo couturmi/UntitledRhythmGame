@@ -78,6 +78,11 @@ class GameTransitionComponent extends MiniGameComponent
           LinearEffectController(
             microsecondsToSeconds(interval * 2),
           )));
+      gameRef.currentLevel.backgroundComponent.add(RotateEffect.to(
+          rotationAngle,
+          LinearEffectController(
+            microsecondsToSeconds(interval * 2),
+          )));
     }
     // Hide component and rotate entire level if necessary
     else if (model.beats.length -
@@ -85,6 +90,7 @@ class GameTransitionComponent extends MiniGameComponent
         miniGameBeatCount - 1) {
       removeAll(children);
       if (newOrientation != gameRef.currentLevel.currentLevelOrientation) {
+        gameRef.currentLevel.backgroundComponent.angle = 0;
         gameRef.currentLevel.rotateLevel(newOrientation);
       }
     }

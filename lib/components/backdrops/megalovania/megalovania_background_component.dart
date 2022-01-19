@@ -22,42 +22,63 @@ class MegalovaniaBackgroundComponent extends PositionComponent
   }
 
   Future<void> loadSprites() async {
-    sprites.add(UndertaleSpriteComponent(Vector2(0, -300),
-        directionalModifier: -1)); //top
+    // First Row
+    sprites.add(
+        UndertaleSpriteComponent(Vector2(0, -300), directionalModifier: -1));
+    // Second Row
     sprites.add(
         UndertaleSpriteComponent(Vector2(-75, -225), directionalModifier: -1));
     sprites.add(
         UndertaleSpriteComponent(Vector2(75, -225), directionalModifier: 1));
+    // Third Row
     sprites.add(
         UndertaleSpriteComponent(Vector2(-150, -150), directionalModifier: -1));
     sprites.add(
         UndertaleSpriteComponent(Vector2(0, -150), directionalModifier: -1));
     sprites.add(
         UndertaleSpriteComponent(Vector2(150, -150), directionalModifier: 1));
+    // Fourth Row
+    sprites.add(
+        UndertaleSpriteComponent(Vector2(-225, -75), directionalModifier: 1));
     sprites.add(
         UndertaleSpriteComponent(Vector2(-75, -75), directionalModifier: -1));
     sprites.add(
         UndertaleSpriteComponent(Vector2(75, -75), directionalModifier: 1));
-    sprites.add(UndertaleSpriteComponent(Vector2(-150, 0),
-        directionalModifier: 1)); //far left
-    sprites.add(UndertaleSpriteComponent(Vector2(150, 0),
-        directionalModifier: -1)); // far right
+    sprites.add(
+        UndertaleSpriteComponent(Vector2(225, -75), directionalModifier: 1));
+    // Fifth Row
+    sprites.add(
+        UndertaleSpriteComponent(Vector2(-300, 0), directionalModifier: -1));
+    sprites.add(
+        UndertaleSpriteComponent(Vector2(-150, 0), directionalModifier: 1));
+    sprites.add(
+        UndertaleSpriteComponent(Vector2(150, 0), directionalModifier: -1));
+    sprites.add(
+        UndertaleSpriteComponent(Vector2(300, 0), directionalModifier: -1));
+    // Sixth Row
+    sprites.add(
+        UndertaleSpriteComponent(Vector2(-225, 75), directionalModifier: 1));
     sprites.add(
         UndertaleSpriteComponent(Vector2(-75, 75), directionalModifier: -1));
     sprites
         .add(UndertaleSpriteComponent(Vector2(75, 75), directionalModifier: 1));
+    sprites.add(
+        UndertaleSpriteComponent(Vector2(225, 75), directionalModifier: 1));
+    // Seventh Row
     sprites.add(
         UndertaleSpriteComponent(Vector2(-150, 150), directionalModifier: -1));
     sprites.add(
         UndertaleSpriteComponent(Vector2(0, 150), directionalModifier: -1));
     sprites.add(
         UndertaleSpriteComponent(Vector2(150, 150), directionalModifier: 1));
+    // Eighth Row
     sprites.add(
         UndertaleSpriteComponent(Vector2(-75, 225), directionalModifier: 1));
     sprites.add(
         UndertaleSpriteComponent(Vector2(75, 225), directionalModifier: -1));
-    sprites.add(UndertaleSpriteComponent(Vector2(0, 300),
-        directionalModifier: -1)); //bottom
+    // Bottom Row
+    sprites.add(
+        UndertaleSpriteComponent(Vector2(0, 300), directionalModifier: -1));
 
     sprites.add(UndertaleSpriteComponent(Vector2(0, 0), isMainSprite: true));
     for (var sprite in sprites) {
