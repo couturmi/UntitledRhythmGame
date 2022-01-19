@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+
 enum MiniGameType {
   gameTransition,
   tapTap,
@@ -16,6 +18,18 @@ String getMiniGameName(MiniGameType game) {
       throw ArgumentError(
           "This is a transition, and not a true mini-game, and "
           "therefore has no reason to have an associated name",
+          game.toString());
+  }
+}
+
+DeviceOrientation getOrientationForMiniGame(MiniGameType game) {
+  switch (game) {
+    case MiniGameType.tapTap:
+      return DeviceOrientation.portraitUp;
+    case MiniGameType.gameTransition:
+      throw ArgumentError(
+          "This is a transition, and not a true mini-game, and "
+          "therefore has no reason to have a static orientation",
           game.toString());
   }
 }

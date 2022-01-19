@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/menu/play_button.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
@@ -69,10 +70,18 @@ class MyGame extends FlameGame with HasTappables {
 }
 
 main() {
-  final myGame = MyGame();
-  runApp(
-    GameWidget(
-      game: myGame,
-    ),
-  );
+  // Force portrait orientation before starting app.
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    // Run game.
+    runApp(
+      Padding(
+        padding: const EdgeInsets.only(top: 16),
+        child: GameWidget(
+          game: MyGame(),
+        ),
+      ),
+    );
+  });
 }

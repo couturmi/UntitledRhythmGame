@@ -1,17 +1,21 @@
+import 'dart:math';
+
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter/services.dart';
 import 'dart:async' as Async;
 import 'package:untitled_rhythm_game/components/backdrops/megalovania/megalovania_background_component.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_board.dart';
 import 'package:untitled_rhythm_game/components/games/transition/minigame_transition_component.dart';
+import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_component.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-class SongLevelComponent extends PositionComponent {
+class SongLevelComponent extends PositionComponent with GameSizeAware {
   static const int AUDIO_DELAY_MICROSECONDS = 300000; // was 250000
 
   /// The number of beat intervals it should take a note from creation to reach the hit mark.
@@ -31,6 +35,9 @@ class SongLevelComponent extends PositionComponent {
   /// Note that this does NOT the represent the current beat playing in the audio, instead it is
   /// the current beat that is being loaded.
   int _currentBeatCount = 0;
+
+  /// Current orientation that the level is set to.
+  DeviceOrientation currentLevelOrientation = DeviceOrientation.portraitUp;
 
   late final BeatMap _beatMap;
   late AudioPlayer _audioPlayer;
@@ -64,10 +71,9 @@ class SongLevelComponent extends PositionComponent {
 
   /// Set the starting MiniGame transition that introduces the first MiniGame.
   void setStartingTransition() {
-    String firstMiniGameName = getMiniGameName(_beatMap.gameOrder[0].gameType);
     currentGameComponent = GameTransitionComponent(
       MiniGameModel.gameStartTransition(),
-      nextMiniGameName: firstMiniGameName,
+      nextMiniGameType: _beatMap.gameOrder[0].gameType,
       isStartingTransition: true,
     );
     add(currentGameComponent);
@@ -87,11 +93,10 @@ class SongLevelComponent extends PositionComponent {
           _beatMap.gameOrder[currentMiniGameIndex];
       switch (nextMiniGameModel.gameType) {
         case MiniGameType.gameTransition:
-          String nextMiniGameName = getMiniGameName(
-              _beatMap.gameOrder[currentMiniGameIndex + 1].gameType);
           currentGameComponent = GameTransitionComponent(
             nextMiniGameModel,
-            nextMiniGameName: nextMiniGameName,
+            nextMiniGameType:
+                _beatMap.gameOrder[currentMiniGameIndex + 1].gameType,
           );
           break;
         case MiniGameType.tapTap:
@@ -176,9 +181,38 @@ class SongLevelComponent extends PositionComponent {
     _currentBeatCount++;
   }
 
+  void rotateLevel(DeviceOrientation orientation) {
+    currentLevelOrientation = orientation;
+    late Vector2 newGameSize;
+    late double rotationAngle;
+    if (orientation == DeviceOrientation.landscapeLeft) {
+      rotationAngle = pi / 2;
+      newGameSize = Vector2(gameSize.y, gameSize.x);
+    } else if (orientation == DeviceOrientation.landscapeRight) {
+      rotationAngle = -pi / 2;
+      newGameSize = Vector2(gameSize.y, gameSize.x);
+    } else {
+      rotationAngle = 0.0;
+      newGameSize = gameSize;
+    }
+    // Rotate level.
+    angle = rotationAngle;
+    // Resize/Rebuild any components that depend on the gameSize
+    scoreComponent.onGameResize(newGameSize);
+  }
+
   @override
   void onRemove() {
     super.onRemove();
     _audioPlayer.stop();
+  }
+
+  @override
+  void onGameResize(Vector2 gameSize) {
+    this.onResize(gameSize);
+    anchor = Anchor.center;
+    size = gameSize;
+    position = gameSize / 2;
+    super.onGameResize(gameSize);
   }
 }

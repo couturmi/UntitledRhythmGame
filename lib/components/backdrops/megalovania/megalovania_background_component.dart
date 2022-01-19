@@ -67,6 +67,7 @@ class MegalovaniaBackgroundComponent extends PositionComponent
     // Paint dimming overlay.
     final dimOverlay = RectangleComponent.square(
       size: max(gameSize.x, gameSize.y),
+      scale: Vector2.all(1.5),
       position: Vector2(0, 0),
       anchor: Anchor.center,
       paint: Paint()..color = Colors.black.withOpacity(0.6),

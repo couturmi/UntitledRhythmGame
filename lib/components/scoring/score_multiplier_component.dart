@@ -14,10 +14,12 @@ class ScoreMultiplierComponent extends PositionComponent {
   late TextComponent textComponent;
   late TextComponent textComponentOutline;
 
-  int _multiplier = 1;
+  int _multiplier;
 
-  ScoreMultiplierComponent({required Vector2 position, required Anchor anchor})
-      : super(position: position, anchor: anchor);
+  ScoreMultiplierComponent(
+      {required Vector2 position, required Anchor anchor, int multiplier = 1})
+      : _multiplier = multiplier,
+        super(position: position, anchor: anchor);
 
   @override
   Future<void> onLoad() async {
@@ -28,7 +30,7 @@ class ScoreMultiplierComponent extends PositionComponent {
       paint: Paint()..color = Colors.indigo.withOpacity(0.8),
     ));
     textComponent = TextComponent(
-      text: _getText(1),
+      text: _getText(_multiplier),
       textRenderer: TextPaint(style: _getTextStyle(multiplierColors[0])),
       position: Vector2(-5, -5),
       scale: Vector2.all(4),
@@ -36,7 +38,7 @@ class ScoreMultiplierComponent extends PositionComponent {
       anchor: Anchor.topRight,
     );
     textComponentOutline = TextComponent(
-      text: _getText(1),
+      text: _getText(_multiplier),
       textRenderer: TextPaint(style: _getTextStyle(Colors.black)),
       position: Vector2(5, -5),
       scale: Vector2.all(4.5),

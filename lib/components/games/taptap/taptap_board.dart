@@ -3,9 +3,9 @@ import 'package:untitled_rhythm_game/components/games/taptap/taptap_column.dart'
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 
 class TapTapBoardComponent extends MiniGameComponent {
-  TapTapBoardComponent(MiniGameModel model) : super(model: model);
-
   late List<TapTapColumn> columns;
+
+  TapTapBoardComponent(MiniGameModel model) : super(model: model);
 
   @override
   Future<void> onLoad() async {

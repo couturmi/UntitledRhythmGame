@@ -4,12 +4,9 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_scoring.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_multiplier_component.dart';
 
-class ScoreComponent extends PositionComponent
-    with GameSizeAware
-    implements TapTapScoring {
+class ScoreComponent extends PositionComponent implements TapTapScoring {
   /// The streak amount that must be reached before the next score multiplier is applied.
   static const _streakMultiplierThreshold = 10;
 
@@ -37,28 +34,8 @@ class ScoreComponent extends PositionComponent
   @override
   void tapTapHit() async {
     streak++;
-    int multiplier = noteMultiplier;
-    score += TapTapScoring.noteBasePoints * multiplier;
-    _scoreMultiplierComponent.multiplier = multiplier;
-  }
-
-  @override
-  Future<void> onLoad() async {
-    _scoreComponent = TextComponent(
-      text: '0',
-      textRenderer: TextPaint(
-          style: TextStyle(color: Colors.yellowAccent[100], fontSize: 20)),
-      position: Vector2(10, 20),
-      scale: Vector2.all(2),
-      anchor: Anchor.topLeft,
-    );
-    _scoreMultiplierComponent = ScoreMultiplierComponent(
-      position: Vector2(gameSize.x - 10, 20),
-      anchor: Anchor.topLeft,
-    );
-    add(_scoreComponent);
-    add(_scoreMultiplierComponent);
-    super.onLoad();
+    score += TapTapScoring.noteBasePoints * noteMultiplier;
+    _scoreMultiplierComponent.multiplier = noteMultiplier;
   }
 
   @override
@@ -68,7 +45,28 @@ class ScoreComponent extends PositionComponent
 
   @override
   void onGameResize(Vector2 gameSize) {
-    this.onResize(gameSize);
     super.onGameResize(gameSize);
+    // set initial properties if needed
+    if (position == Vector2.zero()) {
+      anchor = Anchor.center;
+      position = gameSize / 2;
+    }
+    // rebuild child widgets
+    children.clear();
+    _scoreComponent = TextComponent(
+      text: score.toString(),
+      textRenderer: TextPaint(
+          style: TextStyle(color: Colors.yellowAccent[100], fontSize: 20)),
+      position: Vector2(-(gameSize.x / 2) + 10, -(gameSize.y / 2) + 10),
+      scale: Vector2.all(2),
+      anchor: Anchor.topLeft,
+    );
+    _scoreMultiplierComponent = ScoreMultiplierComponent(
+      position: Vector2((gameSize.x / 2) - 10, -(gameSize.y / 2) + 10),
+      anchor: Anchor.topLeft,
+      multiplier: noteMultiplier,
+    );
+    add(_scoreComponent);
+    add(_scoreMultiplierComponent);
   }
 }
