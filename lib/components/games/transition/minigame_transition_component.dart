@@ -58,7 +58,8 @@ class GameTransitionComponent extends MiniGameComponent
   @override
   void handleNote({required int interval, required NoteModel noteModel}) {
     // Add Title.
-    if (miniGameBeatCount == 0) {
+    if (miniGameBeatCount ==
+        SongLevelComponent.INTERVAL_TIMING_MULTIPLIER - 2) {
       add(title);
     }
     // Add Subtitle.
@@ -67,7 +68,7 @@ class GameTransitionComponent extends MiniGameComponent
     }
     // Rotate component.
     if (miniGameBeatCount ==
-        SongLevelComponent.INTERVAL_TIMING_MULTIPLIER * 2) {
+        SongLevelComponent.INTERVAL_TIMING_MULTIPLIER + 2) {
       int currentOrientationWeight =
           getOrientationWeight(gameRef.currentLevel.currentLevelOrientation);
       int newOrientationWeight = getOrientationWeight(newOrientation);
@@ -85,9 +86,7 @@ class GameTransitionComponent extends MiniGameComponent
           )));
     }
     // Hide component and rotate entire level if necessary
-    else if (model.beats.length -
-            SongLevelComponent.INTERVAL_TIMING_MULTIPLIER ==
-        miniGameBeatCount - 1) {
+    else if (model.beats.length - 1 == miniGameBeatCount) {
       removeAll(children);
       if (newOrientation != gameRef.currentLevel.currentLevelOrientation) {
         gameRef.currentLevel.backgroundComponent.angle = 0;
