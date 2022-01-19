@@ -68,7 +68,7 @@ class OsuNote extends SpriteComponent {
     // update with golden glow.
     paint
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
-      ..colorFilter = ColorFilter.mode(Colors.amberAccent, BlendMode.overlay);
+      ..colorFilter = ColorFilter.mode(Colors.greenAccent, BlendMode.overlay);
     // Provide haptic feedback.
     HapticFeedback.lightImpact();
     // remove the note after a short time of displaying.

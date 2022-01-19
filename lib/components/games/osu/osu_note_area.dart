@@ -10,9 +10,9 @@ import 'package:untitled_rhythm_game/main.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 
 class OsuNoteArea extends PositionComponent
-    with Tappable, GameSizeAware, HasGameRef<MyGame> {
+    with GameSizeAware, HasGameRef<MyGame> {
   /// Diameter of a note.
-  static const double noteDiameter = 100;
+  static const double noteDiameter = 120;
 
   /// Margin for where the game area should be held. This is so the notes aren't
   /// added too close to the edge.
@@ -43,7 +43,7 @@ class OsuNoteArea extends PositionComponent
     // Set delay for when the note should appear.
     Async.Timer(Duration(microseconds: (interval * beatDelay).round()),
         () async {
-      noteQueue.addFirst(noteComponent);
+      noteQueue.addLast(noteComponent);
       await add(noteComponent);
       noteComponent.startTimingEffect(interval);
 
@@ -66,18 +66,16 @@ class OsuNoteArea extends PositionComponent
     return Vector2(size.x * xPercentage, size.y * yPercentage);
   }
 
-  @override
-  bool onTapDown(TapDownInfo info) {
+  void onGameAreaTapped(TapDownInfo info) {
     // Check if a note collision occurred with any notes in the queue.
     // Note: All notes need to be checked rather than just checking the top note
     // in the queue since the note location is 2-dimensional.
     OsuNote? successfulHitOnNote;
     for (OsuNote note in noteQueue) {
       // location is within range of note
-      Vector2 posDiff = (info.eventPosition.game - note.absolutePosition)
-        ..absolute();
       double noteRadius = noteDiameter / 2;
-      if (posDiff.x <= noteRadius && posDiff.y <= noteRadius) {
+      if (note.absolutePosition.distanceTo(info.eventPosition.game) <=
+          noteRadius) {
         // if the note timing is correct
         if (note.isHitTimingSuccessful()) {
           successfulHitOnNote = note;
@@ -99,7 +97,6 @@ class OsuNoteArea extends PositionComponent
       // Reset score streak;
       gameRef.currentLevel.scoreComponent.resetStreak();
     }
-    return true;
   }
 
   /// Add a temporary highlight to the column that will quickly disappear.

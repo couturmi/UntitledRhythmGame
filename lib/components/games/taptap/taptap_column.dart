@@ -20,7 +20,7 @@ class TapTapColumn extends PositionComponent
 
   /// Represents how much of the game size's full Y axis should be allowed above
   /// or below a hit circle to consider a note hit successful.
-  static const double hitCircleAllowanceModifier = 0.1; // 0.04
+  static const double hitCircleAllowanceModifier = 0.08; // 0.04
 
   /// Represents the maximum percentage of the Y-axis that the note should travel before removal.
   static const double noteMaxBoundaryModifier = 1.0;

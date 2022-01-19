@@ -15,5 +15,6 @@ abstract class LandscapeMiniGameComponent extends MiniGameComponent {
     // and if counterclockwise, the device's BottomLeft.)
     position =
         Vector2(-(gameSize.y - gameSize.x) / 2, (gameSize.y - gameSize.x) / 2);
+    size = Vector2(gameSize.y, gameSize.x);
   }
 }
