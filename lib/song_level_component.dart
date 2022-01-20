@@ -9,6 +9,7 @@ import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/osu/osu_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_board.dart';
+import 'package:untitled_rhythm_game/components/games/tilt/tilt_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/transition/minigame_transition_component.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_component.dart';
@@ -100,11 +101,14 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
                 _beatMap.gameOrder[currentMiniGameIndex + 1].gameType,
           );
           break;
+        case MiniGameType.tapTap:
+          currentGameComponent = TapTapBoardComponent(nextMiniGameModel);
+          break;
         case MiniGameType.osu:
           currentGameComponent = OsuGameComponent(nextMiniGameModel);
           break;
-        case MiniGameType.tapTap:
-          currentGameComponent = TapTapBoardComponent(nextMiniGameModel);
+        case MiniGameType.tilt:
+          currentGameComponent = TiltGameComponent(nextMiniGameModel);
           break;
       }
       add(currentGameComponent);
