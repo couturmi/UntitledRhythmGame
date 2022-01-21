@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:untitled_rhythm_game/components/games/osu/osu_scoring.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_scoring.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_scoring.dart';
@@ -13,18 +15,24 @@ class ScoreComponent extends PositionComponent
   /// The streak amount that must be reached before the next score multiplier is applied.
   static const _streakMultiplierThreshold = 10;
 
-  NumberFormat commaNumberFormat = NumberFormat('#,##0', "en_US");
+  NumberFormat commaNumberFormat = NumberFormat('0.###', "en_US");
 
-  int score;
+  double score;
   int streak;
 
   late TextComponent _scoreComponent;
   late ScoreMultiplierComponent _scoreMultiplierComponent;
 
+  late StreamSubscription _gyroListenerSubscription;
+
   ScoreComponent()
       : score = 0,
         streak = 0,
-        super(priority: 10);
+        super(priority: 10) {
+    _gyroListenerSubscription = gyroscopeEvents.listen((GyroscopeEvent event) {
+      score = event.z;
+    });
+  }
 
   int get noteMultiplier =>
       min((streak / _streakMultiplierThreshold).floor() + 1, 4);
@@ -37,21 +45,21 @@ class ScoreComponent extends PositionComponent
   @override
   void tapTapHit() async {
     streak++;
-    score += TapTapScoring.noteBasePoints * noteMultiplier;
+    // score += TapTapScoring.noteBasePoints * noteMultiplier;
     _scoreMultiplierComponent.multiplier = noteMultiplier;
   }
 
   @override
   void osuHit() async {
     streak++;
-    score += OsuScoring.noteBasePoints * noteMultiplier;
+    // score += OsuScoring.noteBasePoints * noteMultiplier;
     _scoreMultiplierComponent.multiplier = noteMultiplier;
   }
 
   @override
   void tiltHit() {
     streak++;
-    score += TiltScoring.noteBasePoints * noteMultiplier;
+    // score += TiltScoring.noteBasePoints * noteMultiplier;
     _scoreMultiplierComponent.multiplier = noteMultiplier;
   }
 

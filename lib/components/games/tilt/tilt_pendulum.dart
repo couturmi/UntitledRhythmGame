@@ -18,6 +18,8 @@ class TiltPendulum extends PositionComponent with GameSizeAware {
   double _pendulumTargetAngle = 0.0;
   double _deviceCurrentAngle = 0.0;
 
+  double _currentRotationRate = 0.0;
+
   TiltPendulum({int? priority})
       : super(anchor: Anchor.bottomCenter, priority: priority);
 
@@ -43,8 +45,18 @@ class TiltPendulum extends PositionComponent with GameSizeAware {
     );
     await add(_pendulumSprite);
     _gyroListenerSubscription = gyroscopeEvents.listen((GyroscopeEvent event) {
+      if (event.z.abs() > _currentRotationRate.abs()) {
+        _currentRotationRate = event.z;
+      }
+    });
+    super.onLoad();
+  }
+
+  @override
+  void update(double dt) {
+    if (_currentRotationRate != 0) {
       // TODO add semaphore here
-      final double sideTiltAmount = -event.z / 2;
+      final double sideTiltAmount = -_currentRotationRate / 2;
       // TODO remove this commented code ONLY if you decide the current performance is best.
       // Check if the pendulum has reached its max range or not
       // late double newAngle;
@@ -88,8 +100,10 @@ class TiltPendulum extends PositionComponent with GameSizeAware {
             RotateEffect.to(_pendulumTargetAngle, LinearEffectController(0.1));
         add(_pendulumRotateEffect!);
       }
-    });
-    super.onLoad();
+      // reset the rotation rate.
+      _currentRotationRate = 0;
+    }
+    super.update(dt);
   }
 
   @override
