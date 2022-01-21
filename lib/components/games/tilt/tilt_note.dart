@@ -24,14 +24,9 @@ class TiltNote extends SpriteComponent {
   void hit(int column) {
     // clearing children will stop all active effects.
     children.clear();
-    // update with green glow.
-    paint
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
-      ..colorFilter = ColorFilter.mode(Colors.greenAccent, BlendMode.overlay);
-    // Add a shoot off effect.
     int shootDirection = column == 0 ? -1 : 1;
     add(MoveEffect.by(
-        Vector2(shootDirection * 100, -100), LinearEffectController(0.15)));
+        Vector2(shootDirection * 100, -200), LinearEffectController(0.15)));
     // remove the note after a short time of displaying.
     Async.Timer(Duration(milliseconds: 150), () {
       parent?.remove(this);

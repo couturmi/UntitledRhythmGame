@@ -27,9 +27,10 @@ class TiltPendulum extends PositionComponent with GameSizeAware {
   @override
   Future<void> onLoad() async {
     pendulumSize = gameSize.y / 3;
-    double pendulumEndDiameter = gameSize.x / 4 + 10;
+    double pendulumEndDiameter = gameSize.x / 3;
     // calculate the maximum pendulum angle based on the device size. TRIGONOMETRY BITCH.
-    _maxPendulumAngle = atan(pendulumEndDiameter / pendulumSize);
+    _maxPendulumAngle = atan((pendulumEndDiameter - 10) /
+        (pendulumSize + (pendulumEndDiameter / 2)));
 
     // Set the default angle to be to the left on the initial load.
     _pendulumTargetAngle = -_maxPendulumAngle;
@@ -68,7 +69,7 @@ class TiltPendulum extends PositionComponent with GameSizeAware {
 
       _deviceCurrentAngle += sideTiltAmount;
       // Check for either a large motion, or if the device has been rotating long enough.
-      if (sideTiltAmount.abs() > 0.2 ||
+      if (sideTiltAmount.abs() > 0.4 ||
           _deviceCurrentAngle.abs() > _maxPendulumAngle / 2) {
         _deviceCurrentAngle = sideTiltAmount.sign * _maxPendulumAngle / 2;
       }

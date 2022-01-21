@@ -57,7 +57,7 @@ class TiltColumn extends PositionComponent
   addNote({required int interval, required double beatDelay}) {
     // Create note component.
     final TiltNote noteComponent = TiltNote(
-      diameter: size.x / 2,
+      diameter: size.x * (3 / 5),
       position: Vector2(size.x / 2, 0),
       anchor: Anchor.center,
     );
