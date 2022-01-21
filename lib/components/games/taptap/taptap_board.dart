@@ -3,18 +3,18 @@ import 'package:untitled_rhythm_game/components/games/taptap/taptap_column.dart'
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 
 class TapTapBoardComponent extends MiniGameComponent {
-  late List<TapTapColumn> columns;
+  static const int numberOfColumns = 3;
+  late List<TapTapColumn> _columns;
 
   TapTapBoardComponent(MiniGameModel model) : super(model: model);
 
   @override
   Future<void> onLoad() async {
-    columns = [
-      TapTapColumn(columnIndex: 0),
-      TapTapColumn(columnIndex: 1),
-      TapTapColumn(columnIndex: 2),
-    ];
-    await addAll(columns);
+    _columns = [];
+    for (int i = 0; i < numberOfColumns; i++) {
+      _columns.add(TapTapColumn(columnIndex: i));
+    }
+    await addAll(_columns);
     super.onLoad();
   }
 
@@ -23,7 +23,7 @@ class TapTapBoardComponent extends MiniGameComponent {
     required int interval,
     required NoteModel noteModel,
   }) {
-    columns[noteModel.column]
+    _columns[noteModel.column]
         .addNote(interval: interval, beatDelay: noteModel.timing);
   }
 }

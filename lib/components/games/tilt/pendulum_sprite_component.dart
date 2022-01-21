@@ -1,16 +1,24 @@
 import 'package:flame/components.dart';
 
-class PendulumSpriteComponent extends SpriteComponent {
-  static const double defaultRadius = 128.0;
+class PendulumSpriteComponent extends PositionComponent {
+  final double hitCircleCenterHeight;
+  final double hitCircleDiameter;
 
-  PendulumSpriteComponent({required Vector2 position, Vector2? size})
-      : super(
-            position: position,
-            size: size ?? Vector2.all(defaultRadius),
-            anchor: Anchor.bottomCenter);
+  PendulumSpriteComponent(
+      {required this.hitCircleCenterHeight, required this.hitCircleDiameter})
+      : super(anchor: Anchor.bottomCenter);
 
   Future<void> onLoad() async {
-    sprite = await Sprite.load("pendulum.png");
+    await add(RectangleComponent(
+      size: Vector2(10, hitCircleCenterHeight),
+      anchor: Anchor.bottomCenter,
+    ));
+    await add(SpriteComponent(
+      sprite: await Sprite.load("boxing_glove.png"),
+      size: Vector2.all(hitCircleDiameter),
+      anchor: Anchor.center,
+      position: Vector2(0, -hitCircleCenterHeight),
+    ));
     await super.onLoad();
   }
 }

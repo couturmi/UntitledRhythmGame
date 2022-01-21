@@ -18,7 +18,8 @@ import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class SongLevelComponent extends PositionComponent with GameSizeAware {
-  static const int AUDIO_DELAY_MICROSECONDS = 300000; // was 250000
+  static const int AUDIO_DELAY_MICROSECONDS =
+      250000; // was 250000 // was 300000
 
   /// The number of beat intervals it should take a note from creation to reach the hit mark.
   /// TODO 2 = hard, 3 = medium, 4 = easy
