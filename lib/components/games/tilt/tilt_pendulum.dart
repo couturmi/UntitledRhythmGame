@@ -15,6 +15,7 @@ class TiltPendulum extends PositionComponent with GameSizeAware {
 
   late PendulumSpriteComponent _pendulumSprite;
   RotateEffect? _pendulumRotateEffect;
+  int lastRotationTimestamp = 0;
   double _pendulumTargetAngle = 0.0;
   double _deviceCurrentAngle = 0.0;
 
@@ -43,51 +44,39 @@ class TiltPendulum extends PositionComponent with GameSizeAware {
     );
     await add(_pendulumSprite);
     _gyroListenerSubscription = gyroscopeEvents.listen((GyroscopeEvent event) {
-      // TODO add semaphore here
-      final double sideTiltAmount = -event.z / 2;
-      // TODO remove this commented code ONLY if you decide the current performance is best.
-      // Check if the pendulum has reached its max range or not
-      // late double newAngle;
-      // if (_pendulumTargetAngle + sideTiltAmount < -_maxPendulumAngle) {
-      //   newAngle = -_maxPendulumAngle;
-      // } else if (_pendulumTargetAngle + sideTiltAmount > _maxPendulumAngle) {
-      //   newAngle = _maxPendulumAngle;
-      // } else {
-      //   newAngle = _pendulumTargetAngle + sideTiltAmount;
-      // }
-      // // Only update the effect if the angle changed.
-      // if (_pendulumTargetAngle != newAngle) {
-      //   _pendulumTargetAngle = newAngle;
-      //   // Remove previous rotation effect and set a new rotation.
-      //   if (_pendulumRotateEffect != null) {
-      //     remove(_pendulumRotateEffect!);
-      //   }
-      //   _pendulumRotateEffect =
-      //       RotateEffect.to(newAngle, LinearEffectController(0.15));
-      //   add(_pendulumRotateEffect!);
-      // }
-
-      _deviceCurrentAngle += sideTiltAmount;
-      // Check for either a large motion, or if the device has been rotating long enough.
-      if (sideTiltAmount.abs() > 0.4 ||
-          _deviceCurrentAngle.abs() > _maxPendulumAngle / 2) {
-        _deviceCurrentAngle = sideTiltAmount.sign * _maxPendulumAngle / 2;
-      }
-      if ((_deviceCurrentAngle > 0 &&
-              _pendulumTargetAngle != _maxPendulumAngle) ||
-          (_deviceCurrentAngle < 0 &&
-              _pendulumTargetAngle != -_maxPendulumAngle)) {
-        _pendulumTargetAngle = _deviceCurrentAngle.sign * _maxPendulumAngle;
-        _deviceCurrentAngle = _pendulumTargetAngle / 2;
-
-        // Remove previous rotation effect and set a new rotation.
-        if (_pendulumRotateEffect != null) {
-          remove(_pendulumRotateEffect!);
+      // ******** Something to Note ************
+      // For gyroscope events such as this, it is important to note that the
+      // "rate" of angle change (in radians) is what is reported, NOT the current angle.
+      // So in order to calculate the change in angle, you have to multiply the rate
+      // of the angle change by the time that has passed since the last event.
+      int now = DateTime.now().microsecondsSinceEpoch;
+      if (lastRotationTimestamp != 0) {
+        final dT = (now - lastRotationTimestamp) /
+            1000000; // convert from ms to seconds.
+        double rotationAmount = -event.z * dT;
+        _deviceCurrentAngle += rotationAmount;
+        // Minimize the stored device angle to a range.
+        if (_deviceCurrentAngle.abs() > _maxPendulumAngle / 2) {
+          _deviceCurrentAngle = rotationAmount.sign * _maxPendulumAngle / 2;
         }
-        _pendulumRotateEffect =
-            RotateEffect.to(_pendulumTargetAngle, LinearEffectController(0.1));
-        add(_pendulumRotateEffect!);
+        // Check if the target angle should be updated.
+        if ((_deviceCurrentAngle > 0 &&
+            _pendulumTargetAngle != _maxPendulumAngle) ||
+            (_deviceCurrentAngle < 0 &&
+                _pendulumTargetAngle != -_maxPendulumAngle)) {
+          _pendulumTargetAngle = _deviceCurrentAngle.sign * _maxPendulumAngle;
+          _deviceCurrentAngle = _pendulumTargetAngle / 2;
+
+          // Remove previous rotation effect and set a new rotation.
+          if (_pendulumRotateEffect != null) {
+            remove(_pendulumRotateEffect!);
+          }
+          _pendulumRotateEffect = RotateEffect.to(
+              _pendulumTargetAngle, LinearEffectController(0.1));
+          add(_pendulumRotateEffect!);
+        }
       }
+      lastRotationTimestamp = now;
     });
     super.onLoad();
   }
