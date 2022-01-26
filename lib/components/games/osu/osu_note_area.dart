@@ -16,7 +16,7 @@ class OsuNoteArea extends PositionComponent
 
   /// Margin for where the game area should be held. This is so the notes aren't
   /// added too close to the edge.
-  final Vector2 gameAreaMargin = Vector2(120.0, 60.0);
+  final Vector2 gameAreaMargin = Vector2(130.0, 70.0);
 
   /// Current queue of live/active notes.
   final Queue<OsuNote> noteQueue = Queue();

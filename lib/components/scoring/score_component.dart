@@ -4,12 +4,13 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:untitled_rhythm_game/components/games/osu/osu_scoring.dart';
+import 'package:untitled_rhythm_game/components/games/slide/slide_scoring.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_scoring.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_scoring.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_multiplier_component.dart';
 
 class ScoreComponent extends PositionComponent
-    implements TapTapScoring, OsuScoring, TiltScoring {
+    implements TapTapScoring, OsuScoring, TiltScoring, SlideScoring {
   /// The streak amount that must be reached before the next score multiplier is applied.
   static const _streakMultiplierThreshold = 10;
 
@@ -52,6 +53,13 @@ class ScoreComponent extends PositionComponent
   void tiltHit() {
     streak++;
     score += TiltScoring.noteBasePoints * noteMultiplier;
+    _scoreMultiplierComponent.multiplier = noteMultiplier;
+  }
+
+  @override
+  void slideHit() {
+    streak++;
+    score += SlideScoring.noteBasePoints * noteMultiplier;
     _scoreMultiplierComponent.multiplier = noteMultiplier;
   }
 
