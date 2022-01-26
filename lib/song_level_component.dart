@@ -9,6 +9,7 @@ import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/osu/osu_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_board.dart';
+import 'package:untitled_rhythm_game/components/games/tilt/tilt_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/transition/minigame_transition_component.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_component.dart';
@@ -17,7 +18,8 @@ import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class SongLevelComponent extends PositionComponent with GameSizeAware {
-  static const int AUDIO_DELAY_MICROSECONDS = 300000; // was 250000
+  static const int AUDIO_DELAY_MICROSECONDS =
+      250000; // was 250000 // was 300000
 
   /// The number of beat intervals it should take a note from creation to reach the hit mark.
   /// TODO 2 = hard, 3 = medium, 4 = easy
@@ -100,11 +102,14 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
                 _beatMap.gameOrder[currentMiniGameIndex + 1].gameType,
           );
           break;
+        case MiniGameType.tapTap:
+          currentGameComponent = TapTapBoardComponent(nextMiniGameModel);
+          break;
         case MiniGameType.osu:
           currentGameComponent = OsuGameComponent(nextMiniGameModel);
           break;
-        case MiniGameType.tapTap:
-          currentGameComponent = TapTapBoardComponent(nextMiniGameModel);
+        case MiniGameType.tilt:
+          currentGameComponent = TiltGameComponent(nextMiniGameModel);
           break;
       }
       add(currentGameComponent);
