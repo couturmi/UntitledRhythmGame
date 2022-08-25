@@ -8,7 +8,7 @@ import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class OsuNote extends SpriteComponent {
   /// Scale of the timing ring when the note is created.
-  static const double timingRingStartingScale = 1.75;
+  static const double timingRingStartingScale = 2.5;
 
   /// Represents how close the timing ring is to completion to
   /// consider a note hit successful.

@@ -5,7 +5,7 @@ import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
-import 'package:untitled_rhythm_game/main.dart';
+import 'package:untitled_rhythm_game/my_game.dart';
 
 class BucketComponent extends PositionComponent
     with GameSizeAware, HasGameRef<MyGame>, Flame.Draggable {

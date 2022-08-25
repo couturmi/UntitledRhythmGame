@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'dart:async' as Async;
 import 'package:untitled_rhythm_game/components/games/osu/osu_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
-import 'package:untitled_rhythm_game/main.dart';
+import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 
 class OsuNoteArea extends PositionComponent

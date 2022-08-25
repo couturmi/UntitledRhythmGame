@@ -216,7 +216,7 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
   @override
   void onRemove() {
     super.onRemove();
-    _audioPlayer.stop();
+    _audioPlayer.dispose();
   }
 
   @override
