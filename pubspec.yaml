@@ -44,4 +44,5 @@ flutter:
   assets:
     - assets/beat_maps/
     - assets/audio/music/
+    - assets/audio/effects/
     - assets/images/

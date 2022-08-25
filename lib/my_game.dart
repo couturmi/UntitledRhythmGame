@@ -3,6 +3,7 @@ import 'package:flame/effects.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flame/rendering.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:untitled_rhythm_game/home_screen_component.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
@@ -20,6 +21,7 @@ class MyGame extends FlameGame with HasTappableComponents, HasDraggables {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    FlameAudio.bgm.initialize();
     add(
       router = RouterComponent(
         routes: {
@@ -83,5 +85,8 @@ class PausePage extends Component with TapCallbacks, HasGameRef<MyGame> {
   bool containsLocalPoint(Vector2 point) => true;
 
   @override
-  void onTapUp(TapUpEvent event) => gameRef.router.pop();
+  void onTapUp(TapUpEvent event) {
+    FlameAudio.play('effects/button_click.mp3');
+    gameRef.router.pop();
+  }
 }

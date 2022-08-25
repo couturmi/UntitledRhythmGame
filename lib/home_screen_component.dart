@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/menu/play_button.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 class HomeScreenComponent extends Component with HasGameRef<MyGame> {
   late final TextComponent _title;
   late final PlayButton _playButton;
-  late AudioPlayer _menuMusicPlayer;
 
   HomeScreenComponent() {
     addAll([
@@ -31,18 +29,13 @@ class HomeScreenComponent extends Component with HasGameRef<MyGame> {
   Future<void> onLoad() async {
     await super.onLoad();
     // Play menu music.
-    _menuMusicPlayer = await FlameAudio.loopLongAudio('music/menu.mp3');
+    FlameAudio.bgm.play('music/menu.mp3');
+    FlameAudio.audioCache.load('effects/button_click.mp3');
 
     // Preload all songs. TODO don't load all songs, just as needed
     Level.values.forEach((level) {
       FlameAudio.audioCache.load(getLevelMP3PathMap(level));
     });
-  }
-
-  @override
-  void onRemove() {
-    super.onRemove();
-    _menuMusicPlayer.dispose();
   }
 
   @override
@@ -53,7 +46,8 @@ class HomeScreenComponent extends Component with HasGameRef<MyGame> {
   }
 
   void startLevel() {
-    _menuMusicPlayer.stop();
+    FlameAudio.bgm.stop();
+    FlameAudio.play('effects/button_click.mp3');
     gameRef.router.pushNamed(GameRoutes.level.name);
     // TODO, eventually set the above route to a ValueRoute, so that you can resume the music when returning to the menu.
   }

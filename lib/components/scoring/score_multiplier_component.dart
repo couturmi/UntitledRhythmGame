@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flame/components.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 
 class ScoreMultiplierComponent extends PositionComponent {
@@ -11,6 +12,9 @@ class ScoreMultiplierComponent extends PositionComponent {
     Colors.orange,
     Colors.red
   ];
+  static const String streakIncreasedSoundEffectPath = "effects/streak_up.mp3";
+  static const String streakLostSoundEffectPath = "effects/streak_lost.mp3";
+
   late TextComponent textComponent;
   late TextComponent textComponentOutline;
 
@@ -23,6 +27,10 @@ class ScoreMultiplierComponent extends PositionComponent {
 
   @override
   Future<void> onLoad() async {
+    FlameAudio.audioCache.loadAll([
+      streakIncreasedSoundEffectPath,
+      streakLostSoundEffectPath,
+    ]);
     add(CircleComponent(
       radius: 100,
       position: Vector2(10, 5),
@@ -56,6 +64,9 @@ class ScoreMultiplierComponent extends PositionComponent {
       // If the multiplier increased, add flashy effect.
       if (multiplier > _multiplier) {
         // TODO add a flashy effect lol.
+        FlameAudio.play(streakIncreasedSoundEffectPath, volume: 0.8);
+      } else {
+        FlameAudio.play(streakLostSoundEffectPath, volume: 0.8);
       }
       textComponent.textRenderer =
           TextPaint(style: _getTextStyle(multiplierColors[multiplier - 1]));
