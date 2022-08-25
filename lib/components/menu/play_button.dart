@@ -1,9 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/input.dart';
+import 'package:flame/experimental.dart';
 import 'package:flutter/material.dart';
 
-class PlayButton extends PositionComponent with Tappable {
+class PlayButton extends PositionComponent with TapCallbacks {
   final Vector2 buttonSize = Vector2(200, 75);
   final Vector2 hoverOffset = Vector2(0, 10);
   late LinearEffectController hoverEffectController;
@@ -78,16 +78,14 @@ class PlayButton extends PositionComponent with Tappable {
   }
 
   @override
-  bool onTapDown(TapDownInfo info) {
-    super.onTapDown(info);
+  void onTapDown(TapDownEvent event) {
+    super.onTapDown(event);
     scale = scale * 0.9;
-    return true;
   }
 
   @override
-  bool onTapUp(TapUpInfo info) {
-    super.onTapUp(info);
+  void onTapUp(TapUpEvent event) {
+    super.onTapUp(event);
     this.onButtonTap();
-    return true;
   }
 }

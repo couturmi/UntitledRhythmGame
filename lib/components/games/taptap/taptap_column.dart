@@ -3,7 +3,7 @@ import 'dart:collection';
 
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/input.dart';
+import 'package:flame/experimental.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +15,7 @@ import 'package:untitled_rhythm_game/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class TapTapColumn extends PositionComponent
-    with Tappable, GameSizeAware, HasGameRef<MyGame> {
+    with TapCallbacks, GameSizeAware, HasGameRef<MyGame> {
   /// Represents the Y placement of the hit circle out of the game size's full Y axis.
   static const double hitCircleYPlacementModifier = 0.85;
 
@@ -108,7 +108,7 @@ class TapTapColumn extends PositionComponent
   }
 
   @override
-  bool onTapDown(TapDownInfo info) {
+  void onTapDown(TapDownEvent _) {
     // Grab the last note in the queue that hasn't passed the hit circle threshold.
     final TapTapNote frontNoteComponent = noteQueue.last;
     // Check if a note collision occurred.
@@ -131,7 +131,6 @@ class TapTapColumn extends PositionComponent
       // Reset score streak;
       gameRef.currentLevel.scoreComponent.resetStreak();
     }
-    return true;
   }
 
   /// Add a temporary highlight to the column that will quickly disappear.

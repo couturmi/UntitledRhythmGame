@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:flame/components.dart';
-import 'package:flame/input.dart';
+import 'package:flame/experimental.dart';
 import 'package:flutter/material.dart';
 import 'dart:async' as Async;
 import 'package:untitled_rhythm_game/components/games/osu/osu_note.dart';
@@ -66,7 +66,7 @@ class OsuNoteArea extends PositionComponent
     return Vector2(size.x * xPercentage, size.y * yPercentage);
   }
 
-  void onGameAreaTapped(TapDownInfo info) {
+  void onGameAreaTapped(TapDownEvent event) {
     // Check if a note collision occurred with any notes in the queue.
     // Note: All notes need to be checked rather than just checking the top note
     // in the queue since the note location is 2-dimensional.
@@ -74,7 +74,7 @@ class OsuNoteArea extends PositionComponent
     for (OsuNote note in noteQueue) {
       // location is within range of note
       double noteRadius = noteDiameter / 2;
-      if (note.absolutePosition.distanceTo(info.eventPosition.game) <=
+      if (note.absolutePosition.distanceTo(event.canvasPosition) <=
           noteRadius) {
         // if the note timing is correct
         if (note.isHitTimingSuccessful()) {
