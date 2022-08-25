@@ -48,7 +48,7 @@ class BucketComponent extends PositionComponent
   }
 
   @override
-  bool onDragUpdate(int pointerId, DragUpdateInfo info) {
+  bool onDragUpdate(DragUpdateInfo info) {
     double dragAmount = info.delta.game.y;
     if (gameRef.currentLevel.currentLevelOrientation ==
         DeviceOrientation.landscapeRight) {

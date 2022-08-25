@@ -77,7 +77,7 @@ class ScoreComponent extends PositionComponent
       position = gameSize / 2;
     }
     // rebuild child widgets
-    children.clear();
+    children.removeWhere((c) => true);
     _scoreComponent = TextComponent(
       text: score.toString(),
       textRenderer: TextPaint(

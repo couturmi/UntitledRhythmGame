@@ -1,5 +1,6 @@
 import 'dart:async' as Async;
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 
 class TapTapNote extends SpriteComponent {
@@ -20,8 +21,8 @@ class TapTapNote extends SpriteComponent {
 
   /// Called if a note is tapped and cleared successfully.
   void hit() {
-    // clearing children will stop all active effects.
-    children.clear();
+    // Remove all active effects.
+    children.removeWhere((c) => c is Effect);
     // update with golden glow.
     paint
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)

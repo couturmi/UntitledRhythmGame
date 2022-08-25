@@ -63,7 +63,7 @@ class MyGame extends FlameGame with HasTappables, HasDraggables {
   }
 
   void startLevel() {
-    children.clear();
+    children.removeWhere((c) => true);
     currentLevel = SongLevelComponent(songLevel: Level.megalovania);
     add(currentLevel);
   }

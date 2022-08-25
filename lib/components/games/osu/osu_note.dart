@@ -34,12 +34,12 @@ class OsuNote extends SpriteComponent {
       radius: size.x / 2,
       position: size / 2,
       anchor: Anchor.center,
-      scale: Vector2.all(timingRingStartingScale),
       paint: Paint()
         ..color = Colors.yellow
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2,
     );
+    _timingRing.scale = Vector2.all(timingRingStartingScale);
     await add(_timingRing);
     await super.onLoad();
   }
@@ -63,8 +63,8 @@ class OsuNote extends SpriteComponent {
 
   /// Called if a note is tapped and cleared successfully.
   void hit() {
-    // clearing children will stop all active effects.
-    children.clear();
+    // Remove all active effects.
+    children.removeWhere((c) => c is Effect);
     // update with golden glow.
     paint
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
@@ -73,14 +73,14 @@ class OsuNote extends SpriteComponent {
     HapticFeedback.lightImpact();
     // remove the note after a short time of displaying.
     Async.Timer(Duration(milliseconds: 100), () {
-      parent?.remove(this);
+      this.removeFromParent();
     });
   }
 
   /// Called if a note is missed completely and the player has horribly failed.
   void missed() {
-    // clearing children will stop all active effects.
-    children.clear();
+    // Remove all active effects.
+    children.removeWhere((c) => c is Effect);
     // update with red glow.
     paint
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
@@ -91,7 +91,7 @@ class OsuNote extends SpriteComponent {
     add(OpacityEffect.fadeOut(LinearEffectController(0.2)));
     // remove the note after a short time of displaying.
     Async.Timer(Duration(milliseconds: 200), () {
-      parent?.remove(this);
+      this.removeFromParent();
     });
   }
 }

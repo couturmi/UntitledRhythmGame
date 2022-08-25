@@ -22,8 +22,8 @@ class TiltNote extends SpriteComponent {
 
   /// Called if a note is hit and cleared successfully.
   void hit(int column) {
-    // clearing children will stop all active effects.
-    children.clear();
+    // Remove all active effects.
+    children.removeWhere((c) => c is Effect);
     int shootDirection = column == 0 ? -1 : 1;
     add(MoveEffect.by(
         Vector2(shootDirection * 100, -200), LinearEffectController(0.15)));
@@ -36,8 +36,8 @@ class TiltNote extends SpriteComponent {
 
   /// Called if a note is missed completely and the player has horribly failed.
   void missed() {
-    // clearing children will stop all active effects.
-    children.clear();
+    // Remove all active effects.
+    children.removeWhere((c) => c is Effect);
     // update with red glow.
     paint
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
