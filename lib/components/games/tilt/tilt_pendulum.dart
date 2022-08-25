@@ -23,7 +23,7 @@ class TiltPendulum extends PositionComponent with GameSizeAware {
       : super(anchor: Anchor.bottomCenter, priority: priority);
 
   /// Get the current column the pendulum is pointing to
-  int get currentColumn => _deviceCurrentAngle < 0 ? 0 : 1;
+  int get currentColumn => angle < 0 ? 0 : 1;
 
   @override
   Future<void> onLoad() async {
@@ -61,7 +61,7 @@ class TiltPendulum extends PositionComponent with GameSizeAware {
         }
         // Check if the target angle should be updated.
         if ((_deviceCurrentAngle > 0 &&
-            _pendulumTargetAngle != _maxPendulumAngle) ||
+                _pendulumTargetAngle != _maxPendulumAngle) ||
             (_deviceCurrentAngle < 0 &&
                 _pendulumTargetAngle != -_maxPendulumAngle)) {
           _pendulumTargetAngle = _deviceCurrentAngle.sign * _maxPendulumAngle;

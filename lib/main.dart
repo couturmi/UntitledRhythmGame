@@ -7,7 +7,7 @@ import 'package:untitled_rhythm_game/components/menu/play_button.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 
-class MyGame extends FlameGame with HasTappables {
+class MyGame extends FlameGame with HasTappables, HasDraggables {
   late SongLevelComponent currentLevel;
 
   /// TODO This is a temporary flag until this annoying onGameResize issue is fixed.

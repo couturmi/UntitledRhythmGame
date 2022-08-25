@@ -496,6 +496,72 @@
         [],
         []
       ]
+    },
+    {
+      "game": "gameTransition",
+      "beats": [
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}]
+      ]
+    },
+    {
+      "game": "slide",
+      "beats": [
+        [
+          {"timing": 0.0,
+            "posX": 0.9},
+          {"timing": 0.5,
+            "posX": 0.7},
+          {"timing": 0.75,
+            "posX": 0.7}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.4},
+          {"timing": 0.25,
+            "posX": 0.4},
+          {"timing": 0.5,
+            "posX": 0.2},
+          {"timing": 0.75,
+            "posX": 0.2}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.0},
+          {"timing": 0.5,
+            "posX": 0.2}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.4},
+          {"timing": 0.5,
+            "posX": 0.6}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.9},
+          {"timing": 0.5,
+            "posX": 0.7}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.7},
+          {"timing": 0.25,
+            "posX": 0.5},
+          {"timing": 0.5,
+            "posX": 0.3},
+          {"timing": 0.75,
+            "posX": 0.5}
+        ],
+        [],
+        []
+      ]
     }
   ]
 }
