@@ -108,9 +108,6 @@ class SlideNoteArea extends PositionComponent
         bool noteIsInXBucketRange =
             (frontNoteComponent.x - bucketXPosition).abs() <=
                 BucketComponent.bucketWidth / 2;
-        if (noteHasReachedYBucketRange) {
-          print((frontNoteComponent.x - bucketXPosition).abs());
-        }
         // If note was hit.
         if (noteHasReachedYBucketRange && noteIsInXBucketRange) {
           // Update UI.
