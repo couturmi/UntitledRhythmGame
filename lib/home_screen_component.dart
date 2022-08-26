@@ -7,15 +7,37 @@ import 'package:untitled_rhythm_game/my_game.dart';
 
 class HomeScreenComponent extends Component with HasGameRef<MyGame> {
   late final TextComponent _title;
+  late final TextComponent _title2;
+  late final TextComponent _title3;
   late final PlayButton _playButton;
 
   HomeScreenComponent() {
     addAll([
       _title = TextComponent(
         priority: 0,
-        text: "Megalovania?",
-        textRenderer:
-            TextPaint(style: TextStyle(color: Colors.white, fontSize: 26)),
+        text: "Untitled",
+        textRenderer: TextPaint(
+            style: TextStyle(
+                fontFamily: 'Courier', color: Colors.white, fontSize: 36)),
+        anchor: Anchor.center,
+      ),
+      _title2 = TextComponent(
+        priority: 0,
+        text: "R H Y T H M",
+        textRenderer: TextPaint(
+            style: TextStyle(
+                fontFamily: 'Courier',
+                color: Colors.teal,
+                fontSize: 42,
+                fontWeight: FontWeight.bold)),
+        anchor: Anchor.center,
+      ),
+      _title3 = TextComponent(
+        priority: 0,
+        text: "Game",
+        textRenderer: TextPaint(
+            style: TextStyle(
+                fontFamily: 'Courier', color: Colors.white, fontSize: 36)),
         anchor: Anchor.center,
       ),
       _playButton = PlayButton(
@@ -41,8 +63,10 @@ class HomeScreenComponent extends Component with HasGameRef<MyGame> {
   @override
   void onGameResize(Vector2 canvasSize) {
     super.onGameResize(canvasSize);
-    _title.position = canvasSize / 2 - Vector2(0, 150);
-    _playButton.position = canvasSize / 2;
+    _title.position = canvasSize / 2 - Vector2(0, 175);
+    _title2.position = canvasSize / 2 - Vector2(0, 124);
+    _title3.position = canvasSize / 2 - Vector2(0, 75);
+    _playButton.position = canvasSize / 2 + Vector2(0, 25);
   }
 
   void startLevel() {
