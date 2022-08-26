@@ -18,6 +18,8 @@ class TapTapNote extends SpriteComponent with HasGameRef<MyGame> {
   /// Max time (in seconds) that the note is displayed before automatic removal.
   final double timeNoteIsVisible;
 
+  bool isRemovingFromParent = false;
+
   TapTapNote({
     required double diameter,
     required Vector2 position,
@@ -49,7 +51,7 @@ class TapTapNote extends SpriteComponent with HasGameRef<MyGame> {
   @override
   void update(double dt) {
     // Check if the note should be removed from the scene.
-    if (currentTimingOfNote >= timeNoteIsVisible) {
+    if (currentTimingOfNote >= timeNoteIsVisible && !isRemovingFromParent) {
       _missed();
     }
     super.update(dt);
@@ -57,6 +59,7 @@ class TapTapNote extends SpriteComponent with HasGameRef<MyGame> {
 
   /// Called if a note is tapped and cleared successfully.
   void hit() {
+    isRemovingFromParent = true;
     // Remove all active effects.
     children.removeWhere((c) => c is Effect);
     // update with golden glow.
@@ -69,6 +72,7 @@ class TapTapNote extends SpriteComponent with HasGameRef<MyGame> {
 
   /// Called if a note is missed completely and the player has horribly failed.
   void _missed() {
+    isRemovingFromParent = true;
     // update with red glow.
     paint
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50)

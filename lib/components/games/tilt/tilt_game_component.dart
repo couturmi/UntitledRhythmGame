@@ -34,8 +34,10 @@ class TiltGameComponent extends MiniGameComponent {
     required int interval,
     required NoteModel noteModel,
   }) {
-    _columns[noteModel.column]
-        .addNote(interval: interval, beatDelay: noteModel.timing);
+    _columns[noteModel.column].addNote(
+      exactTiming: exactTiming,
+      interval: interval,
+    );
   }
 
   /// Checks if the pendulum is pointing the the column at [columnIndex].
