@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
 class TapTapNote extends SpriteComponent with HasGameRef<MyGame> {
-  /// Time (in microseconds) that this note was expected to be loaded.
+  /// Time (in seconds) that this note was expected to be loaded.
   final double expectedTimeOfStart;
 
   /// Max distance that the note travels before automatic removal.

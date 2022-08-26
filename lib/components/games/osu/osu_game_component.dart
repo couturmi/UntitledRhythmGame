@@ -30,7 +30,7 @@ class OsuGameComponent extends LandscapeMiniGameComponent with TapCallbacks {
   }) {
     _noteArea.addNote(
       interval: interval,
-      beatDelay: noteModel.timing,
+      exactTiming: exactTiming,
       xPercentage: noteModel.posX,
       yPercentage: noteModel.posY,
     );
