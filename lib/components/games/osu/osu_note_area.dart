@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/experimental.dart';
 import 'package:flutter/material.dart';
 import 'dart:async' as Async;
@@ -107,10 +108,8 @@ class OsuNoteArea extends PositionComponent
       anchor: Anchor.topLeft,
       paint: Paint()..color = highlightColor.withOpacity(0.3),
     );
+    highlight.add(RemoveEffect(delay: 0.1));
     parent?.add(highlight);
-    Async.Timer(Duration(milliseconds: 100), () {
-      parent?.remove(highlight);
-    });
   }
 
   @override

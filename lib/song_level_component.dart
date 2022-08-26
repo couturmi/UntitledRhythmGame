@@ -17,10 +17,11 @@ import 'package:untitled_rhythm_game/components/scoring/score_component.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class SongLevelComponent extends PositionComponent with GameSizeAware {
   static const int AUDIO_DELAY_MICROSECONDS =
-      250000; // was 250000 // was 300000
+      258000; // This value is calculated based on average delay from music player
 
   /// The number of beat intervals it should take a note from creation to reach the hit mark.
   /// TODO 2 = hard, 3 = medium, 4 = easy
@@ -39,6 +40,12 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
   /// Note that this does NOT the represent the current beat playing in the audio, instead it is
   /// the current beat that is being loaded.
   int _currentBeatCount = 0;
+
+  /// Exact time that the beatMap starts to execute.
+  DateTime? songStartedAt;
+
+  /// Time (in seconds) from the start of the music playing.
+  double songTime = 0.0;
 
   /// Current orientation that the level is set to.
   DeviceOrientation currentLevelOrientation = DeviceOrientation.portraitUp;
@@ -140,7 +147,7 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
         (gameIntroTimer) {
       currentGameComponent.thisBeat.notes.forEach((note) {
         currentGameComponent.handleNote(
-            interval: _beatMap.beatInterval, noteModel: note);
+            exactTiming: 0, interval: _beatMap.beatInterval, noteModel: note);
       });
       if (currentGameComponent.isLastBeat) {
         // Start the song.
@@ -165,6 +172,7 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
     });
     // Wrap in a one-time delay to account for the music start-delay
     Async.Timer(Duration(microseconds: AUDIO_DELAY_MICROSECONDS), () {
+      songStartedAt = DateTime.now();
       // Set timer to handle each beat.
       Async.Timer.periodic(Duration(microseconds: _beatMap.beatInterval), (_) {
         // Clean up any components that should no longer be in view.
@@ -184,7 +192,10 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
       // Handle each note that occurs during this beat.
       currentGameComponent.thisBeat.notes.forEach((note) {
         currentGameComponent.handleNote(
-            interval: _beatMap.beatInterval, noteModel: note);
+            exactTiming: (_currentBeatCount * _beatMap.beatInterval) +
+                (_beatMap.beatInterval * note.timing).round(),
+            interval: _beatMap.beatInterval,
+            noteModel: note);
       });
       // Check if if a new mini-game should be queued up for the next beat.
       if (currentGameComponent.isLastBeat) {
@@ -216,6 +227,25 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
     scoreComponent.onGameResize(newGameSize);
   }
 
+  @override
+  void update(double dt) {
+    // If the song has started.
+    if (songStartedAt != null) {
+      // For initial songTime value, get the difference from when the song truly started.
+      // This is to maintain extreme time precision.
+      if (songTime == 0.0) {
+        songTime = microsecondsToSeconds(
+            DateTime.now().difference(songStartedAt!).inMicroseconds);
+      }
+      // Otherwise, just add the time since the last update.
+      else {
+        songTime += dt;
+      }
+    }
+    // The super.update call NEEDS to be at the end, so that the children are
+    // working off the updated [songTime].
+    super.update(dt);
+  }
 
   /// Stop the music!
   void pause() {
