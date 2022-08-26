@@ -14,7 +14,7 @@ class OsuNote extends SpriteComponent with HasGameRef<MyGame> {
 
   /// Represents how close the timing ring is to completion to
   /// consider a note hit successful.
-  static const double timingRingHitAllowanceModifier = 0.15;
+  static const double timingRingHitAllowanceModifier = 0.2;
 
   /// Time (in seconds) that this note was expected to be loaded.
   final double expectedTimeOfStart;
