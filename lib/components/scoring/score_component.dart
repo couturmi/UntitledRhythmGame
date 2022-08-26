@@ -7,6 +7,7 @@ import 'package:untitled_rhythm_game/components/games/osu/osu_scoring.dart';
 import 'package:untitled_rhythm_game/components/games/slide/slide_scoring.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_scoring.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_scoring.dart';
+import 'package:untitled_rhythm_game/components/menu/pause_button.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_multiplier_component.dart';
 
 class ScoreComponent extends PositionComponent
@@ -93,5 +94,9 @@ class ScoreComponent extends PositionComponent
     );
     add(_scoreComponent);
     add(_scoreMultiplierComponent);
+    add(PauseButton(
+      position: Vector2(-20, -(gameSize.y / 2) + 10),
+      anchor: Anchor.topLeft,
+    ));
   }
 }
