@@ -56,6 +56,9 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    // Clear existing audio cache and preload song.
+    FlameAudio.audioCache.clearAll();
+    FlameAudio.audioCache.load(getLevelMP3PathMap(songLevel));
     // Load song BeatMap.
     _beatMap = await BeatMap.loadFromFile(getLevelBeatMapPath(songLevel));
     // Set game components.
@@ -211,6 +214,17 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
     angle = rotationAngle;
     // Resize/Rebuild any components that depend on the gameSize
     scoreComponent.onGameResize(newGameSize);
+  }
+
+
+  /// Stop the music!
+  void pause() {
+    _audioPlayer.pause();
+  }
+
+  /// Put that shit back on!
+  void resume() {
+    _audioPlayer.resume();
   }
 
   @override
