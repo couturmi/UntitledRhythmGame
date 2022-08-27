@@ -10,7 +10,7 @@ class TiltGameComponent extends MiniGameComponent {
   late List<TiltColumn> _columns;
   late final TiltPendulum _pendulum;
 
-  TiltGameComponent(MiniGameModel model) : super(model: model);
+  TiltGameComponent({required super.model, required super.beatInterval});
 
   @override
   Future<void> onLoad() async {
@@ -31,12 +31,11 @@ class TiltGameComponent extends MiniGameComponent {
   @override
   void handleNote({
     required int exactTiming,
-    required int interval,
     required NoteModel noteModel,
   }) {
     _columns[noteModel.column].addNote(
       exactTiming: exactTiming,
-      interval: interval,
+      interval: beatInterval,
     );
   }
 

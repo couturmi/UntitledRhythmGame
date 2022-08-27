@@ -7,7 +7,7 @@ class SlideGameComponent extends LandscapeMiniGameComponent {
   late BucketComponent _bucket;
   late SlideNoteArea _noteArea;
 
-  SlideGameComponent(MiniGameModel model) : super(model: model);
+  SlideGameComponent({required super.model, required super.beatInterval});
 
   double get bucketXPosition => _bucket.position.x;
 
@@ -22,11 +22,10 @@ class SlideGameComponent extends LandscapeMiniGameComponent {
   @override
   void handleNote({
     required int exactTiming,
-    required int interval,
     required NoteModel noteModel,
   }) {
     _noteArea.addNote(
-      interval: interval,
+      interval: beatInterval,
       exactTiming: exactTiming,
       xPercentage: noteModel.posX,
     );

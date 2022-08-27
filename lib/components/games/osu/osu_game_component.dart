@@ -6,7 +6,7 @@ import 'package:untitled_rhythm_game/model/beat_map.dart';
 
 class OsuGameComponent extends LandscapeMiniGameComponent with TapCallbacks {
   late OsuNoteArea _noteArea;
-  OsuGameComponent(MiniGameModel model) : super(model: model);
+  OsuGameComponent({required super.model, required super.beatInterval});
 
   Future<void> onLoad() async {
     anchor = Anchor.topLeft;
@@ -25,11 +25,10 @@ class OsuGameComponent extends LandscapeMiniGameComponent with TapCallbacks {
   @override
   void handleNote({
     required int exactTiming,
-    required int interval,
     required NoteModel noteModel,
   }) {
     _noteArea.addNote(
-      interval: interval,
+      interval: beatInterval,
       exactTiming: exactTiming,
       xPercentage: noteModel.posX,
       yPercentage: noteModel.posY,

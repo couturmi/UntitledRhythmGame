@@ -32,10 +32,6 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
   /// Index of the current mini-game being played. Value is -1 when no games have started.
   late int currentMiniGameIndex = -1;
 
-  /// The number of intervals left until the previous mini-game should be removed from view.
-  /// Once the value reaches 0, the previous mini-game will be removed.
-  int removePreviousMiniGameCountDown = -1;
-
   /// Current beat count for the entire song.
   /// Note that this does NOT the represent the current beat playing in the audio, instead it is
   /// the current beat that is being loaded.
@@ -96,7 +92,8 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
   /// Set the starting MiniGame transition that introduces the first MiniGame.
   void setStartingTransition() {
     currentGameComponent = GameTransitionComponent(
-      MiniGameModel.gameStartTransition(),
+      model: MiniGameModel.gameStartTransition(),
+      beatInterval: _beatMap.beatInterval,
       nextMiniGameType: _beatMap.gameOrder[0].gameType,
       isStartingTransition: true,
     );
@@ -105,10 +102,6 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
 
   /// Queue up the next mini-game.
   void queueUpNextMiniGame() {
-    // Set a countdown to remove the current mini-game component.
-    removePreviousMiniGameCountDown = INTERVAL_TIMING_MULTIPLIER;
-    previousGameComponent = currentGameComponent;
-
     // Set up the next mini-game as the current component.
     currentMiniGameIndex++;
     if (_beatMap.gameOrder.length > currentMiniGameIndex) {
@@ -117,35 +110,39 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
       switch (nextMiniGameModel.gameType) {
         case MiniGameType.gameTransition:
           currentGameComponent = GameTransitionComponent(
-            nextMiniGameModel,
+            model: nextMiniGameModel,
+            beatInterval: _beatMap.beatInterval,
             nextMiniGameType:
                 _beatMap.gameOrder[currentMiniGameIndex + 1].gameType,
           );
           break;
         case MiniGameType.tapTap:
-          currentGameComponent = TapTapBoardComponent(nextMiniGameModel);
+          currentGameComponent = TapTapBoardComponent(
+            model: nextMiniGameModel,
+            beatInterval: _beatMap.beatInterval,
+          );
           break;
         case MiniGameType.osu:
-          currentGameComponent = OsuGameComponent(nextMiniGameModel);
+          currentGameComponent = OsuGameComponent(
+            model: nextMiniGameModel,
+            beatInterval: _beatMap.beatInterval,
+          );
           break;
         case MiniGameType.tilt:
-          currentGameComponent = TiltGameComponent(nextMiniGameModel);
+          currentGameComponent = TiltGameComponent(
+            model: nextMiniGameModel,
+            beatInterval: _beatMap.beatInterval,
+          );
           break;
         case MiniGameType.slide:
-          currentGameComponent = SlideGameComponent(nextMiniGameModel);
+          currentGameComponent = SlideGameComponent(
+            model: nextMiniGameModel,
+            beatInterval: _beatMap.beatInterval,
+          );
           break;
       }
       add(currentGameComponent);
     }
-  }
-
-  /// Clean up any components that should no longer be in view.
-  /// NOTE TODO: This should be handled by individual child components once they each have their own "update" handling.
-  void componentCleanUp() {
-    if (removePreviousMiniGameCountDown == 0) {
-      remove(previousGameComponent);
-    }
-    removePreviousMiniGameCountDown--;
   }
 
   void _setupMusicAudio() async {
@@ -199,24 +196,16 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
         backgroundComponent.beatUpdate();
       }
       // Handle each note that occurs during this beat.
-      // TODO "This" beat might cause funky things to happen if there is a lot of lagging. You should pass the currentBeatCount in to check if multiple beats should be added/updated.
-      currentGameComponent.thisBeat.notes.forEach((note) {
-        currentGameComponent.handleNote(
-            exactTiming: (_currentBeatCount * _beatMap.beatInterval) +
-                (_beatMap.beatInterval * note.timing).round(),
-            interval: _beatMap.beatInterval,
-            noteModel: note);
-      });
-      // Check if if a new mini-game should be queued up for the next beat.
+      bool isLastBeatOfMiniGame = currentGameComponent.isLastBeat;
+      currentGameComponent.handleUpcomingBeat(songBeatCount: _currentBeatCount);
       // TODO should _currentBeatCount be ++ or more calculated? Just in case multiple beats pass before the next update, you know?
       _currentBeatCount++;
-      if (currentGameComponent.isLastBeat) {
+      // Check if if a new mini-game should be queued up for the next beat.
+      if (isLastBeatOfMiniGame) {
         queueUpNextMiniGame();
         if (!hasSongStarted) {
           _startSong();
         }
-      } else {
-        currentGameComponent.miniGameBeatCount++;
       }
     }
   }
@@ -248,17 +237,8 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
       hasLevelStarted = true;
     } else {
       songTime += dt;
-      // If the song has not started, start the level.
-      // 1. Show the introduction.
-      // 2. Start the song.
-      if (!hasSongStarted) {
-        // Handle the next beat if one has passed.
-        if (hasNextBeatPassed) {
-          handleBeat();
-        }
-      }
-      // If the song has started.
-      else {
+      if (hasSongStarted) {
+        // Start the audio if it hasn't been started yet.
         if (!hasAudioStarted &&
             ((songTime + microsecondsToSeconds(AUDIO_DELAY_MICROSECONDS)) /
                     microsecondsToSeconds(_beatMap.beatInterval)) >
@@ -266,13 +246,10 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
           hasAudioStarted = true;
           _resumeAudio();
         }
-        // Handle the next beat if one has passed.
-        if (hasNextBeatPassed) {
-          // Clean up any components that should no longer be in view.
-          componentCleanUp();
-          // Handle the beat.
-          handleBeat();
-        }
+      }
+      // Handle the next beat if one has passed.
+      if (hasNextBeatPassed) {
+        handleBeat();
       }
     }
     // The super.update call NEEDS to be at the end, so that the children are

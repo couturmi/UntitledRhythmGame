@@ -28,10 +28,12 @@ class GameTransitionComponent extends MiniGameComponent
   late final Component title;
   late final Component subTitle;
 
-  GameTransitionComponent(MiniGameModel model,
-      {required this.nextMiniGameType, this.isStartingTransition = false})
-      : newOrientation = getOrientationForMiniGame(nextMiniGameType),
-        super(model: model);
+  GameTransitionComponent(
+      {required this.nextMiniGameType,
+      this.isStartingTransition = false,
+      required super.model,
+      required super.beatInterval})
+      : newOrientation = getOrientationForMiniGame(nextMiniGameType);
 
   @override
   Future<void> onLoad() async {
@@ -58,7 +60,6 @@ class GameTransitionComponent extends MiniGameComponent
   @override
   void handleNote({
     required int exactTiming,
-    required int interval,
     required NoteModel noteModel,
   }) {
     // Add Title.
@@ -81,12 +82,12 @@ class GameTransitionComponent extends MiniGameComponent
       add(RotateEffect.to(
           rotationAngle,
           LinearEffectController(
-            microsecondsToSeconds(interval * 2),
+            microsecondsToSeconds(beatInterval * 2),
           )));
       gameRef.currentLevel.backgroundComponent.add(RotateEffect.to(
           rotationAngle,
           LinearEffectController(
-            microsecondsToSeconds(interval * 2),
+            microsecondsToSeconds(beatInterval * 2),
           )));
     }
     // Hide component and rotate entire level if necessary

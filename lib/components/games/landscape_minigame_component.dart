@@ -1,10 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
-import 'package:untitled_rhythm_game/model/beat_map.dart';
 
 abstract class LandscapeMiniGameComponent extends MiniGameComponent {
-  LandscapeMiniGameComponent({required MiniGameModel model})
-      : super(model: model);
+  LandscapeMiniGameComponent(
+      {required super.model, required super.beatInterval});
 
   @override
   void onGameResize(Vector2 gameSize) {

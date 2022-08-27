@@ -6,7 +6,7 @@ class TapTapBoardComponent extends MiniGameComponent {
   static const int numberOfColumns = 3;
   late List<TapTapColumn> _columns;
 
-  TapTapBoardComponent(MiniGameModel model) : super(model: model);
+  TapTapBoardComponent({required super.model, required super.beatInterval});
 
   @override
   Future<void> onLoad() async {
@@ -21,12 +21,11 @@ class TapTapBoardComponent extends MiniGameComponent {
   @override
   void handleNote({
     required int exactTiming,
-    required int interval,
     required NoteModel noteModel,
   }) {
     _columns[noteModel.column].addNote(
       exactTiming: exactTiming,
-      interval: interval,
+      interval: beatInterval,
     );
   }
 }
