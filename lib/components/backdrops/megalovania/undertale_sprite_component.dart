@@ -1,11 +1,10 @@
-import 'dart:async' as Async;
-
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
-class UndertaleSpriteComponent extends SpriteComponent {
+class UndertaleSpriteComponent extends SpriteComponent with HasGameRef<MyGame> {
   bool visible = false;
   static const double defaultRadius = 128.0;
   double componentSize = defaultRadius;
@@ -15,6 +14,8 @@ class UndertaleSpriteComponent extends SpriteComponent {
   Vector2 positionOffset;
   bool isMainSprite;
   double directionalModifier;
+
+  int _cymbalCrashes = 0;
 
   UndertaleSpriteComponent(this.positionOffset,
       {this.isMainSprite = false, this.directionalModifier = 1})
@@ -41,52 +42,84 @@ class UndertaleSpriteComponent extends SpriteComponent {
   }
 
   void handleBeat(int interval, int beatCount) async {
-    // When the beat drop hits.
-    if (beatCount >= 33) {
+    double intervalPercentage =
+        (gameRef.currentLevel.songTime % microsecondsToSeconds(interval)) /
+            microsecondsToSeconds(interval);
+    // Last beats of the song.
+    if (beatCount >= 289) {
+      sprite = mainSprite;
+      if (isMainSprite) {
+        size = Vector2.all(componentSize);
+        transform.angle = 0;
+      } else {
+        size = Vector2.all(0);
+      }
+    }
+    // Things slow down a bit here.
+    else if (beatCount >= 161) {
+      transform.angle = 0;
+      scale.x = beatCount.isEven ? scale.x.abs() : -scale.x.abs();
+      size = intervalPercentage < 0.5
+          ? Vector2.all(componentSize) * 1.3
+          : Vector2.all(componentSize);
+    }
+    // When the initial beat drop hits.
+    else if (beatCount >= 33) {
       // switch sprites when beat drops.
       if (beatCount == 33) {
         sprite = secondarySprite;
       }
       // When the cymbals triple crash
-      if ((beatCount - 33) % 16 == 14) {
+      bool isFirstBeatOfCrash = (beatCount - 33) % 16 == 14;
+      bool isSecondBeatOfCrash = (beatCount - 33) % 16 == 15;
+      if (isFirstBeatOfCrash || isSecondBeatOfCrash) {
         if (isMainSprite) {
-          visible = true;
-          paint..colorFilter = null;
-          transform.angle = 0;
-          size = Vector2.all(componentSize) * 0.8;
-          add(_quickZoomEffect(interval));
-          int cymbalCrashes = 1;
-          Async.Timer.periodic(
-              Duration(microseconds: ((interval * 2) / 3).round()), (timer) {
-            cymbalCrashes++;
+          // If start of cymbal crashes.
+          if (_cymbalCrashes == 0) {
+            visible = true; // TODO needed?
+            paint..colorFilter = null;
+            transform.angle = 0;
+            size = Vector2.all(componentSize) * 0.8;
             add(_quickZoomEffect(interval));
-            if (cymbalCrashes == 3) {
-              timer.cancel();
-            }
-          });
+            _cymbalCrashes++;
+          }
+          // If time for second crash.
+          else if (_cymbalCrashes == 1 &&
+              isFirstBeatOfCrash &&
+              (intervalPercentage * interval) >= ((interval * 2) / 3)) {
+            add(_quickZoomEffect(interval));
+            _cymbalCrashes++;
+          }
+          // If time for third crash.
+          else if (_cymbalCrashes == 2 &&
+              isSecondBeatOfCrash &&
+              (intervalPercentage * interval) >= ((interval) / 3)) {
+            add(_quickZoomEffect(interval));
+            _cymbalCrashes++;
+          }
         } else {
           size = Vector2.all(0);
         }
-      } else if ((beatCount - 33) % 16 == 15) {
-        // do nothing.
       } else {
-        flipHorizontally();
+        _cymbalCrashes = 0;
+        scale.x = beatCount.isEven ? scale.x.abs() : -scale.x.abs();
 
-        // change size
-        size = Vector2.all(componentSize) * 1.3;
-        add(RotateEffect.to(0.5 * directionalModifier,
-            LinearEffectController(microsecondsToSeconds(interval / 2))));
-        Async.Timer(Duration(microseconds: (interval / 2).round()), () {
-          size = Vector2.all(componentSize);
-          add(RotateEffect.to(-0.5 * directionalModifier,
-              LinearEffectController(microsecondsToSeconds(interval / 2))));
-        });
+        // change size and rotation
+        size = intervalPercentage < 0.5
+            ? Vector2.all(componentSize) * 1.3
+            : Vector2.all(componentSize);
+        double angleSize = 0.7;
+        transform.angle = directionalModifier *
+            (intervalPercentage < 0.5
+                ? -angleSize + (intervalPercentage * (angleSize * 4))
+                : angleSize -
+                    ((intervalPercentage * (angleSize * 4)) - (angleSize * 2)));
       }
     }
     // When the beat starts picking up
-    else if (beatCount >= 18) {
-      flipHorizontally();
-    } else if (beatCount == 16 && !isMainSprite) {
+    else if (beatCount >= 17) {
+      scale.x = beatCount.isEven ? scale.x.abs() : -scale.x.abs();
+    } else if (beatCount == 15 && !isMainSprite) {
       show();
     }
   }

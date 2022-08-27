@@ -97,18 +97,32 @@ class MegalovaniaBackgroundComponent extends PositionComponent
 
   /// Updates the UI to reflect a new beat occurrence.
   void beatUpdate() {
-    if (beatCount >= SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) {
-      sprites.forEach((sprite) {
-        sprite.handleBeat(interval, beatCount);
-      });
-    }
     beatCount++;
   }
 
   @override
+  void update(double dt) {
+    sprites.forEach((sprite) {
+      sprite.handleBeat(
+          interval, beatCount - SongLevelComponent.INTERVAL_TIMING_MULTIPLIER);
+    });
+    super.update(dt);
+  }
+
+  @override
   void render(Canvas canvas) {
-    // Background color.
-    if (beatCount >= 34) {
+    // Background color depending on what part of the song its in.
+    int actualBeatCount =
+        beatCount - SongLevelComponent.INTERVAL_TIMING_MULTIPLIER;
+    if (actualBeatCount >= 289) {
+      canvas.drawColor(Colors.black, BlendMode.src);
+    } else if (actualBeatCount >= 193) {
+      canvas.drawColor(
+          beatCount.isOdd ? Colors.deepPurple.shade900 : Colors.deepPurple,
+          BlendMode.src);
+    } else if (actualBeatCount >= 161) {
+      canvas.drawColor(Colors.black, BlendMode.src);
+    } else if (actualBeatCount >= 33) {
       canvas.drawColor(Colors.deepPurple, BlendMode.src);
     } else {
       canvas.drawColor(Colors.black, BlendMode.src);

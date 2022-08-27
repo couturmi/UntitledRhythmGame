@@ -29,9 +29,15 @@ class TiltGameComponent extends MiniGameComponent {
   }
 
   @override
-  void handleNote({required int interval, required NoteModel noteModel}) {
-    _columns[noteModel.column]
-        .addNote(interval: interval, beatDelay: noteModel.timing);
+  void handleNote({
+    required int exactTiming,
+    required int interval,
+    required NoteModel noteModel,
+  }) {
+    _columns[noteModel.column].addNote(
+      exactTiming: exactTiming,
+      interval: interval,
+    );
   }
 
   /// Checks if the pendulum is pointing the the column at [columnIndex].

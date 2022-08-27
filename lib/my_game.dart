@@ -7,9 +7,11 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:untitled_rhythm_game/home_screen_component.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
+import 'package:untitled_rhythm_game/song_list_menu_component.dart';
 
 enum GameRoutes {
   home,
+  menuSongList,
   pause,
   level,
 }
@@ -26,23 +28,28 @@ class MyGame extends FlameGame with HasTappableComponents, HasDraggables {
       router = RouterComponent(
         routes: {
           GameRoutes.home.name: Route(HomeScreenComponent.new),
+          GameRoutes.menuSongList.name: Route(SongListMenuComponent.new),
           GameRoutes.pause.name: PauseRoute(),
-          GameRoutes.level.name: Route(() {
-            currentLevel = SongLevelComponent(songLevel: Level.megalovania);
-            return currentLevel;
-          }),
         },
         initialRoute: 'home',
       ),
     );
   }
+
+  /// Route to a [SongLevelComponent] for the given [level].
+  void startSongLevel(Level level) {
+    currentLevel = SongLevelComponent(songLevel: level);
+    router.pushRoute(Route(() => currentLevel));
+  }
 }
 
-class PauseRoute extends Route {
+class PauseRoute extends Route with HasGameRef<MyGame> {
   PauseRoute() : super(PausePage.new, transparent: true);
 
   @override
   void onPush(Route? previousRoute) {
+    // Not sure if this stuff should be here, on in the song component somehow?
+    gameRef.currentLevel.pause();
     previousRoute!
       ..stopTime()
       ..addRenderEffect(
@@ -52,6 +59,8 @@ class PauseRoute extends Route {
 
   @override
   void onPop(Route previousRoute) {
+    // Not sure if this stuff should be here, on in the song component somehow?
+    gameRef.currentLevel.resume();
     previousRoute
       ..resumeTime()
       ..removeRenderEffect();

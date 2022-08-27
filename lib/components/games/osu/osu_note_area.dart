@@ -1,13 +1,14 @@
 import 'dart:collection';
 
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/experimental.dart';
 import 'package:flutter/material.dart';
-import 'dart:async' as Async;
 import 'package:untitled_rhythm_game/components/games/osu/osu_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
+import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class OsuNoteArea extends PositionComponent
     with GameSizeAware, HasGameRef<MyGame> {
@@ -18,8 +19,11 @@ class OsuNoteArea extends PositionComponent
   /// added too close to the edge.
   final Vector2 gameAreaMargin = Vector2(130.0, 70.0);
 
-  /// Current queue of live/active notes.
+  /// Queue for notes that are currently displayed and able to be hit.
   final Queue<OsuNote> noteQueue = Queue();
+
+  /// Queue for notes that are yet to be displayed and are waiting for the exact timing.
+  final Queue<OsuNote> upcomingNoteQueue = Queue();
 
   OsuNoteArea() : super(anchor: Anchor.topLeft);
 
@@ -29,37 +33,52 @@ class OsuNoteArea extends PositionComponent
     super.onLoad();
   }
 
+  @override
+  void update(double dt) {
+    // Check if any new notes need to be added.
+    upcomingNoteQueue.removeWhere((newNote) {
+      if (newNote.expectedTimeOfStart <= gameRef.currentLevel.songTime) {
+        noteQueue.addLast(newNote);
+        add(newNote);
+        return true;
+      }
+      return false;
+    });
+    // Check if the note was definitely missed, and should be removed from hittable notes queue.
+    bool anyNotesMissed = false;
+    noteQueue.removeWhere((note) {
+      if (note.currentTimingOfNote >= note.timeNoteIsInQueue) {
+        note.missed();
+        anyNotesMissed = true;
+        return true;
+      }
+      return false;
+    });
+    if (anyNotesMissed) {
+      // Update score with miss.
+      gameRef.currentLevel.scoreComponent.resetStreak();
+    }
+    super.update(dt);
+  }
+
   void addNote(
       {required int interval,
-      required double beatDelay,
+      required int exactTiming,
       required double xPercentage,
       required double yPercentage}) {
     // Create note component.
+    final double timeNoteIsInQueue =
+        (interval * SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) +
+            (interval * OsuNote.timingRingHitAllowanceModifier);
     final OsuNote noteComponent = OsuNote(
       diameter: noteDiameter,
       position: calculateNotePosition(xPercentage, yPercentage),
       anchor: Anchor.center,
+      timeNoteIsInQueue: microsecondsToSeconds(timeNoteIsInQueue),
+      expectedTimeOfStart: microsecondsToSeconds(exactTiming),
+      beatInterval: interval,
     );
-    // Set delay for when the note should appear.
-    Async.Timer(Duration(microseconds: (interval * beatDelay).round()),
-        () async {
-      noteQueue.addLast(noteComponent);
-      await add(noteComponent);
-      noteComponent.startTimingEffect(interval);
-
-      // Set a timer for when the note was definitely missed, and should be removed.
-      final double timeNoteIsInQueue =
-          (interval * SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) +
-              (interval * OsuNote.timingRingHitAllowanceModifier);
-      Async.Timer(Duration(microseconds: timeNoteIsInQueue.round()), () {
-        if (noteQueue.contains(noteComponent)) {
-          noteQueue.remove(noteComponent);
-          noteComponent.missed();
-          // Update score with miss.
-          gameRef.currentLevel.scoreComponent.resetStreak();
-        }
-      });
-    });
+    upcomingNoteQueue.addLast(noteComponent);
   }
 
   Vector2 calculateNotePosition(double xPercentage, double yPercentage) {
@@ -107,10 +126,8 @@ class OsuNoteArea extends PositionComponent
       anchor: Anchor.topLeft,
       paint: Paint()..color = highlightColor.withOpacity(0.3),
     );
+    highlight.add(RemoveEffect(delay: 0.1));
     parent?.add(highlight);
-    Async.Timer(Duration(milliseconds: 100), () {
-      parent?.remove(highlight);
-    });
   }
 
   @override

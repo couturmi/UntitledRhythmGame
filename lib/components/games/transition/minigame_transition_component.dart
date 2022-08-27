@@ -56,7 +56,11 @@ class GameTransitionComponent extends MiniGameComponent
   }
 
   @override
-  void handleNote({required int interval, required NoteModel noteModel}) {
+  void handleNote({
+    required int exactTiming,
+    required int interval,
+    required NoteModel noteModel,
+  }) {
     // Add Title.
     if (miniGameBeatCount ==
         SongLevelComponent.INTERVAL_TIMING_MULTIPLIER - 2) {

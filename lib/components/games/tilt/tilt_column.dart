@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:async' as Async;
 
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -29,7 +28,11 @@ class TiltColumn extends PositionComponent
 
   final Function isPendulumAtThisColumn;
 
+  /// Queue for notes that are currently displayed and able to be hit.
   final Queue<TiltNote> noteQueue = Queue();
+
+  /// Queue for notes that are yet to be displayed and are waiting for the exact timing.
+  final Queue<TiltNote> upcomingNoteQueue = Queue();
 
   TiltColumn(
       {required this.columnIndex,
@@ -54,29 +57,24 @@ class TiltColumn extends PositionComponent
     super.onLoad();
   }
 
-  addNote({required int interval, required double beatDelay}) {
+  addNote({
+    required int exactTiming,
+    required int interval,
+  }) {
+    // Sets the timing in such a way that the note will cross the hit circle exactly on beat.
+    double fullNoteTravelDistance = gameSize.y * (noteMaxBoundaryModifier);
+    double timeNoteIsVisible =
+        timeForNoteToTravel(noteMaxBoundaryModifier, interval);
     // Create note component.
     final TiltNote noteComponent = TiltNote(
       diameter: size.x * (3 / 5),
       position: Vector2(size.x / 2, 0),
       anchor: Anchor.center,
+      expectedTimeOfStart: microsecondsToSeconds(exactTiming),
+      fullNoteTravelDistance: fullNoteTravelDistance,
+      timeNoteIsVisible: microsecondsToSeconds(timeNoteIsVisible),
     );
-    // Set delay for when the note should appear.
-    Async.Timer(Duration(microseconds: (interval * beatDelay).round()), () {
-      noteQueue.addFirst(noteComponent);
-      add(noteComponent);
-      // Sets the movement in such a way that the note will cross the hit circle exactly on beat.
-      double fullNoteTravelDistance = gameSize.y * (noteMaxBoundaryModifier);
-      double timeNoteIsVisible =
-          timeForNoteToTravel(noteMaxBoundaryModifier, interval);
-      noteComponent.add(MoveEffect.to(
-          Vector2(size.x / 2, fullNoteTravelDistance),
-          LinearEffectController(microsecondsToSeconds(timeNoteIsVisible))));
-      // Set a timer for when the note should be remove from the scene.
-      Async.Timer(Duration(microseconds: timeNoteIsVisible.round()), () {
-        noteComponent.missed();
-      });
-    });
+    upcomingNoteQueue.addFirst(noteComponent);
   }
 
   /// Calculates the time it should take for a note to travel [yPercentageTarget] percent of the Y-Axis.
@@ -92,6 +90,15 @@ class TiltColumn extends PositionComponent
 
   @override
   void update(double dt) {
+    // Check if any new notes need to be added.
+    upcomingNoteQueue.removeWhere((newNote) {
+      if (newNote.expectedTimeOfStart <= gameRef.currentLevel.songTime) {
+        noteQueue.addFirst(newNote);
+        add(newNote);
+        return true;
+      }
+      return false;
+    });
     // Every update, check if any notes were hit.
     if (noteQueue.isNotEmpty) {
       // Grab the last note in the queue that hasn't passed the hit circle threshold.
@@ -135,9 +142,7 @@ class TiltColumn extends PositionComponent
       paint: Paint()..color = highlightColor.withOpacity(0.3),
     );
     add(highlight);
-    Async.Timer(Duration(milliseconds: 100), () {
-      remove(highlight);
-    });
+    highlight.add(RemoveEffect(delay: 0.1));
   }
 
   @override

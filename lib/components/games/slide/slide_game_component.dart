@@ -20,10 +20,14 @@ class SlideGameComponent extends LandscapeMiniGameComponent {
   }
 
   @override
-  void handleNote({required int interval, required NoteModel noteModel}) {
+  void handleNote({
+    required int exactTiming,
+    required int interval,
+    required NoteModel noteModel,
+  }) {
     _noteArea.addNote(
       interval: interval,
-      beatDelay: noteModel.timing,
+      exactTiming: exactTiming,
       xPercentage: noteModel.posX,
     );
   }

@@ -68,12 +68,12 @@ class TiltPendulum extends PositionComponent with GameSizeAware {
           _deviceCurrentAngle = _pendulumTargetAngle / 2;
 
           // Remove previous rotation effect and set a new rotation.
-          if (_pendulumRotateEffect != null) {
-            remove(_pendulumRotateEffect!);
+          Effect? oldRotateEffect = _pendulumRotateEffect;
+          add(_pendulumRotateEffect = RotateEffect.to(
+              _pendulumTargetAngle, LinearEffectController(0.1)));
+          if (oldRotateEffect != null) {
+            oldRotateEffect.removeFromParent();
           }
-          _pendulumRotateEffect = RotateEffect.to(
-              _pendulumTargetAngle, LinearEffectController(0.1));
-          add(_pendulumRotateEffect!);
         }
       }
       lastRotationTimestamp = now;

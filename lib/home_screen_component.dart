@@ -2,7 +2,6 @@ import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/menu/play_button.dart';
-import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
 class HomeScreenComponent extends Component with HasGameRef<MyGame> {
@@ -41,7 +40,7 @@ class HomeScreenComponent extends Component with HasGameRef<MyGame> {
         anchor: Anchor.center,
       ),
       _playButton = PlayButton(
-        onButtonTap: startLevel,
+        onButtonTap: goToMenu,
         anchor: Anchor.center,
       ),
     ]);
@@ -53,11 +52,6 @@ class HomeScreenComponent extends Component with HasGameRef<MyGame> {
     // Play menu music.
     FlameAudio.bgm.play('music/menu.mp3');
     FlameAudio.audioCache.load('effects/button_click.mp3');
-
-    // Preload all songs. TODO don't load all songs, just as needed
-    Level.values.forEach((level) {
-      FlameAudio.audioCache.load(getLevelMP3PathMap(level));
-    });
   }
 
   @override
@@ -69,10 +63,8 @@ class HomeScreenComponent extends Component with HasGameRef<MyGame> {
     _playButton.position = canvasSize / 2 + Vector2(0, 25);
   }
 
-  void startLevel() {
-    FlameAudio.bgm.stop();
+  void goToMenu() {
     FlameAudio.play('effects/button_click.mp3');
-    gameRef.router.pushNamed(GameRoutes.level.name);
-    // TODO, eventually set the above route to a ValueRoute, so that you can resume the music when returning to the menu.
+    gameRef.router.pushNamed(GameRoutes.menuSongList.name);
   }
 }
