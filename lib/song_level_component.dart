@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/services.dart';
-import 'dart:async' as Async;
 import 'package:untitled_rhythm_game/components/backdrops/megalovania/megalovania_background_component.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
@@ -20,6 +19,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class SongLevelComponent extends PositionComponent with GameSizeAware {
+  /// Delay that the music should start at compared to when the notes are added. (TODO this is a temporary solution. This may be fixed with a more recent version of the audio player)
   static const int AUDIO_DELAY_MICROSECONDS =
       258000; // This value is calculated based on average delay from music player
 
@@ -41,8 +41,16 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
   /// the current beat that is being loaded.
   int _currentBeatCount = 0;
 
-  /// Exact time that the beatMap starts to execute.
-  DateTime? songStartedAt;
+  /// True once the level is loaded and ready to begin.
+  bool hasLevelStarted = false;
+
+  /// True once the beat map has started to execute.
+  bool hasSongStarted = false;
+
+  /// True once the audio has first started playing. This does not represent if
+  /// the audio is currently playing vs paused, but instead if the level has
+  /// reached the point where the audio would've started playing.
+  bool hasAudioStarted = false;
 
   /// Time (in seconds) from the start of the music playing.
   double songTime = 0.0;
@@ -60,18 +68,20 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
 
   SongLevelComponent({required this.songLevel});
 
+  bool get hasNextBeatPassed =>
+      (songTime / microsecondsToSeconds(_beatMap.beatInterval)) >
+      _currentBeatCount;
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
     // Clear existing audio cache and preload song.
     FlameAudio.audioCache.clearAll();
-    FlameAudio.audioCache.load(getLevelMP3PathMap(songLevel));
+    _setupMusicAudio();
     // Load song BeatMap.
     _beatMap = await BeatMap.loadFromFile(getLevelBeatMapPath(songLevel));
     // Set game components.
     setGameComponents();
-    // Start level.
-    startLevel();
   }
 
   void setGameComponents() {
@@ -138,58 +148,58 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
     removePreviousMiniGameCountDown--;
   }
 
-  /// Start the level.
-  /// 1. Show the introduction.
-  /// 2. Play the song.
-  void startLevel() {
-    // Show the starting transition for the game type.
-    Async.Timer.periodic(Duration(microseconds: _beatMap.beatInterval),
-        (gameIntroTimer) {
-      currentGameComponent.thisBeat.notes.forEach((note) {
-        currentGameComponent.handleNote(
-            exactTiming: 0, interval: _beatMap.beatInterval, noteModel: note);
-      });
-      if (currentGameComponent.isLastBeat) {
-        // Start the song.
-        queueUpNextMiniGame();
-        playSong();
-        gameIntroTimer.cancel();
-      } else {
-        currentGameComponent.miniGameBeatCount++;
-      }
-    });
+  void _setupMusicAudio() async {
+    Uri audioFile = await FlameAudio.audioCache
+        .fetchToMemory(getLevelMP3PathMap(songLevel));
+    _audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+    await _audioPlayer.setUrl(
+      audioFile.toString(),
+    );
   }
 
-  /// Play the song and set the timer that occurs every beat.
-  void playSong() {
-    // set delay for when music should start playing.
-    Async.Timer(
-        Duration(
-            microseconds: _beatMap.beatInterval * INTERVAL_TIMING_MULTIPLIER),
-        () async {
-      _audioPlayer =
-          await FlameAudio.playLongAudio(getLevelMP3PathMap(songLevel));
-    });
-    // Wrap in a one-time delay to account for the music start-delay
-    Async.Timer(Duration(microseconds: AUDIO_DELAY_MICROSECONDS), () {
-      songStartedAt = DateTime.now();
-      // Set timer to handle each beat.
-      Async.Timer.periodic(Duration(microseconds: _beatMap.beatInterval), (_) {
-        // Clean up any components that should no longer be in view.
-        componentCleanUp();
-        // Handle the beat.
-        backgroundComponent.beatUpdate();
-        handleBeat();
-      });
-      // Load first beat.
-      handleBeat();
-    });
+  /// Pause audio, and adjust the [songTime] to account for delay.
+  ///
+  /// Note: This shouldn't be necessary once the song delay issue is fixed,
+  /// if we periodically check the song timing for corrections.
+  Future<void> _pauseAudio() async {
+    DateTime audioChangeStart = DateTime.now();
+    await _audioPlayer.pause();
+    DateTime audioChangeComplete = DateTime.now();
+    songTime += microsecondsToSeconds(
+            audioChangeComplete.difference(audioChangeStart).inMicroseconds) +
+        0.004;
+  }
+
+  /// Resume audio, and adjust the [songTime] to account for delay.
+  ///
+  /// Note: This shouldn't be necessary once the song delay issue is fixed,
+  /// if we periodically check the song timing for corrections.
+  Future<void> _resumeAudio() async {
+    DateTime audioChangeStart = DateTime.now();
+    await _audioPlayer.resume();
+    DateTime audioChangeComplete = DateTime.now();
+    songTime += microsecondsToSeconds(
+            audioChangeComplete.difference(audioChangeStart).inMicroseconds) +
+        0.004;
+  }
+
+  /// Start the song notes.
+  void _startSong() {
+    // Reset beat count and song time to align with the actual song.
+    songTime = 0;
+    _currentBeatCount = 0;
+    // Set flag that song notes have officially started.
+    hasSongStarted = true;
   }
 
   /// Execute a beat update for the game component.
   void handleBeat() {
     if (_currentBeatCount < _beatMap.beatTotal) {
+      if (hasSongStarted) {
+        backgroundComponent.beatUpdate();
+      }
       // Handle each note that occurs during this beat.
+      // TODO "This" beat might cause funky things to happen if there is a lot of lagging. You should pass the currentBeatCount in to check if multiple beats should be added/updated.
       currentGameComponent.thisBeat.notes.forEach((note) {
         currentGameComponent.handleNote(
             exactTiming: (_currentBeatCount * _beatMap.beatInterval) +
@@ -198,13 +208,17 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
             noteModel: note);
       });
       // Check if if a new mini-game should be queued up for the next beat.
+      // TODO should _currentBeatCount be ++ or more calculated? Just in case multiple beats pass before the next update, you know?
+      _currentBeatCount++;
       if (currentGameComponent.isLastBeat) {
         queueUpNextMiniGame();
+        if (!hasSongStarted) {
+          _startSong();
+        }
       } else {
         currentGameComponent.miniGameBeatCount++;
       }
     }
-    _currentBeatCount++;
   }
 
   void rotateLevel(DeviceOrientation orientation) {
@@ -229,17 +243,36 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
 
   @override
   void update(double dt) {
-    // If the song has started.
-    if (songStartedAt != null) {
-      // For initial songTime value, get the difference from when the song truly started.
-      // This is to maintain extreme time precision.
-      if (songTime == 0.0) {
-        songTime = microsecondsToSeconds(
-            DateTime.now().difference(songStartedAt!).inMicroseconds);
+    // First update occurs too late, so don't include it in the level progression.
+    if (!hasLevelStarted) {
+      hasLevelStarted = true;
+    } else {
+      songTime += dt;
+      // If the song has not started, start the level.
+      // 1. Show the introduction.
+      // 2. Start the song.
+      if (!hasSongStarted) {
+        // Handle the next beat if one has passed.
+        if (hasNextBeatPassed) {
+          handleBeat();
+        }
       }
-      // Otherwise, just add the time since the last update.
+      // If the song has started.
       else {
-        songTime += dt;
+        if (!hasAudioStarted &&
+            ((songTime + microsecondsToSeconds(AUDIO_DELAY_MICROSECONDS)) /
+                    microsecondsToSeconds(_beatMap.beatInterval)) >
+                INTERVAL_TIMING_MULTIPLIER) {
+          hasAudioStarted = true;
+          _resumeAudio();
+        }
+        // Handle the next beat if one has passed.
+        if (hasNextBeatPassed) {
+          // Clean up any components that should no longer be in view.
+          componentCleanUp();
+          // Handle the beat.
+          handleBeat();
+        }
       }
     }
     // The super.update call NEEDS to be at the end, so that the children are
@@ -249,12 +282,14 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
 
   /// Stop the music!
   void pause() {
-    _audioPlayer.pause();
+    _pauseAudio();
   }
 
   /// Put that shit back on!
   void resume() {
-    _audioPlayer.resume();
+    if (hasAudioStarted) {
+      _resumeAudio();
+    }
   }
 
   @override

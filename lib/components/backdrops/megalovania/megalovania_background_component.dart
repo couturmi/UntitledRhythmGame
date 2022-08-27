@@ -10,7 +10,7 @@ class MegalovaniaBackgroundComponent extends PositionComponent
     with GameSizeAware {
   List<UndertaleSpriteComponent> sprites = [];
   final int interval;
-  int beatCount = -1;
+  int beatCount = 0;
 
   MegalovaniaBackgroundComponent({required this.interval}) : super(priority: 0);
 
@@ -114,17 +114,15 @@ class MegalovaniaBackgroundComponent extends PositionComponent
     // Background color depending on what part of the song its in.
     int actualBeatCount =
         beatCount - SongLevelComponent.INTERVAL_TIMING_MULTIPLIER;
-    if (actualBeatCount >= 287) {
+    if (actualBeatCount >= 289) {
       canvas.drawColor(Colors.black, BlendMode.src);
-    } else if (actualBeatCount >= 191) {
+    } else if (actualBeatCount >= 193) {
       canvas.drawColor(
-          beatCount.isOdd
-              ? Colors.deepPurple.shade900
-              : Colors.deepPurple,
+          beatCount.isOdd ? Colors.deepPurple.shade900 : Colors.deepPurple,
           BlendMode.src);
-    } else if (actualBeatCount >= 159) {
+    } else if (actualBeatCount >= 161) {
       canvas.drawColor(Colors.black, BlendMode.src);
-    } else if (actualBeatCount >= 31) {
+    } else if (actualBeatCount >= 33) {
       canvas.drawColor(Colors.deepPurple, BlendMode.src);
     } else {
       canvas.drawColor(Colors.black, BlendMode.src);

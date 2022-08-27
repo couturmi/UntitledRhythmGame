@@ -46,7 +46,7 @@ class UndertaleSpriteComponent extends SpriteComponent with HasGameRef<MyGame> {
         (gameRef.currentLevel.songTime % microsecondsToSeconds(interval)) /
             microsecondsToSeconds(interval);
     // Last beats of the song.
-    if (beatCount >= 287) {
+    if (beatCount >= 289) {
       sprite = mainSprite;
       if (isMainSprite) {
         size = Vector2.all(componentSize);
@@ -56,7 +56,7 @@ class UndertaleSpriteComponent extends SpriteComponent with HasGameRef<MyGame> {
       }
     }
     // Things slow down a bit here.
-    else if (beatCount >= 159) {
+    else if (beatCount >= 161) {
       transform.angle = 0;
       scale.x = beatCount.isEven ? scale.x.abs() : -scale.x.abs();
       size = intervalPercentage < 0.5
@@ -64,14 +64,14 @@ class UndertaleSpriteComponent extends SpriteComponent with HasGameRef<MyGame> {
           : Vector2.all(componentSize);
     }
     // When the initial beat drop hits.
-    else if (beatCount >= 31) {
+    else if (beatCount >= 33) {
       // switch sprites when beat drops.
-      if (beatCount == 31) {
+      if (beatCount == 33) {
         sprite = secondarySprite;
       }
       // When the cymbals triple crash
-      bool isFirstBeatOfCrash = (beatCount - 31) % 16 == 14;
-      bool isSecondBeatOfCrash = (beatCount - 31) % 16 == 15;
+      bool isFirstBeatOfCrash = (beatCount - 33) % 16 == 14;
+      bool isSecondBeatOfCrash = (beatCount - 33) % 16 == 15;
       if (isFirstBeatOfCrash || isSecondBeatOfCrash) {
         if (isMainSprite) {
           // If start of cymbal crashes.
@@ -117,9 +117,9 @@ class UndertaleSpriteComponent extends SpriteComponent with HasGameRef<MyGame> {
       }
     }
     // When the beat starts picking up
-    else if (beatCount >= 15) {
+    else if (beatCount >= 17) {
       scale.x = beatCount.isEven ? scale.x.abs() : -scale.x.abs();
-    } else if (beatCount == 13 && !isMainSprite) {
+    } else if (beatCount == 15 && !isMainSprite) {
       show();
     }
   }
