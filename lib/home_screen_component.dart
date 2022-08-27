@@ -42,6 +42,7 @@ class HomeScreenComponent extends Component with HasGameRef<MyGame> {
       _playButton = PlayButton(
         onButtonTap: goToMenu,
         anchor: Anchor.center,
+        buttonText: "S T A R T",
       ),
     ]);
   }

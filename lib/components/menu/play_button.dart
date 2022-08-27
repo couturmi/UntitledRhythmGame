@@ -8,6 +8,7 @@ class PlayButton extends PositionComponent with TapCallbacks {
   final Vector2 hoverOffset = Vector2(0, 10);
 
   final Function onButtonTap;
+  final String buttonText;
 
   PlayButton({
     required this.onButtonTap,
@@ -15,6 +16,7 @@ class PlayButton extends PositionComponent with TapCallbacks {
     double? angle,
     Anchor? anchor,
     int? priority,
+    this.buttonText = "P L A Y",
   }) : super(
             position: position,
             angle: angle,
@@ -39,7 +41,7 @@ class PlayButton extends PositionComponent with TapCallbacks {
     ));
     add(TextComponent(
       priority: 2,
-      text: "P L A Y",
+      text: buttonText,
       textRenderer:
           TextPaint(style: TextStyle(color: Colors.black, fontSize: 26)),
       position: buttonSize / 2,
