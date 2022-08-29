@@ -3,9 +3,10 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
-class SlideNote extends SpriteComponent with HasGameRef<MyGame> {
+class SlideNote extends SpriteComponent with HasGameRef<MyGame>, GameSizeAware {
   /// Time (in seconds) that this note was expected to be loaded.
   final double expectedTimeOfStart;
 
@@ -19,26 +20,28 @@ class SlideNote extends SpriteComponent with HasGameRef<MyGame> {
 
   SlideNote({
     required double diameter,
-    required Vector2 position,
-    required Anchor anchor,
+    super.position,
+    super.anchor,
+    super.priority,
     required this.expectedTimeOfStart,
     required this.fullNoteTravelDistance,
     required this.timeNoteIsVisible,
   }) : super(
           size: Vector2.all(diameter),
-          position: position,
-          anchor: anchor,
         );
 
   double get currentTimingOfNote =>
       gameRef.currentLevel.songTime - expectedTimeOfStart;
 
   Future<void> onLoad() async {
-    sprite = await Sprite.load('osu_note.png');
+    sprite = await Sprite.load('hoop_note.png');
+    scale = Vector2.all(1.3);
     double currentTiming = currentTimingOfNote;
     final double currentProgress = currentTiming / timeNoteIsVisible;
-    position.y = min(currentProgress, 1) * fullNoteTravelDistance;
-    add(MoveEffect.to(Vector2(position.x, fullNoteTravelDistance),
+    // Remember: Note is travelling up for this game. So we need to start at [gameSize.y].
+    position.y =
+        gameSize.y - (min(currentProgress, 1) * fullNoteTravelDistance);
+    add(MoveEffect.to(Vector2(position.x, gameSize.y - fullNoteTravelDistance),
         LinearEffectController(timeNoteIsVisible - currentTiming)));
     await super.onLoad();
   }
@@ -81,5 +84,11 @@ class SlideNote extends SpriteComponent with HasGameRef<MyGame> {
     add(OpacityEffect.fadeOut(LinearEffectController(0.2)));
     // remove the note after a short time of displaying.
     add(RemoveEffect(delay: 0.2));
+  }
+
+  @override
+  void onGameResize(Vector2 canvasSize) {
+    super.onGameResize(canvasSize);
+    this.onResize(Vector2(canvasSize.y, canvasSize.x));
   }
 }

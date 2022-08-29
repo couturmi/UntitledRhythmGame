@@ -36,6 +36,10 @@ class TapTapColumn extends PositionComponent
   /// Queue for notes that are yet to be displayed and are waiting for the exact timing.
   final Queue<TapTapNote> upcomingNoteQueue = Queue();
 
+  /// Determines the priority of the next note to display, so that is is always
+  /// visually in front of the note after it.
+  int nextNotePriority = 999;
+
   TapTapColumn({required this.columnIndex});
 
   @override
@@ -111,7 +115,9 @@ class TapTapColumn extends PositionComponent
       fullNoteTravelDistance: fullNoteTravelDistance,
       timeNoteIsInQueue: microsecondsToSeconds(timeNoteIsInQueue),
       timeNoteIsVisible: microsecondsToSeconds(timeNoteIsVisible),
+      priority: nextNotePriority,
     );
+    nextNotePriority--;
     upcomingNoteQueue.addFirst(noteComponent);
   }
 

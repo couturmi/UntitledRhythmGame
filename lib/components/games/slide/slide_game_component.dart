@@ -12,8 +12,11 @@ class SlideGameComponent extends LandscapeMiniGameComponent {
   double get bucketXPosition => _bucket.position.x;
 
   Future<void> onLoad() async {
-    _bucket = BucketComponent();
-    _noteArea = SlideNoteArea(getBucketXPosition: () => bucketXPosition);
+    _bucket = BucketComponent(priority: 1);
+    _noteArea = SlideNoteArea(
+      priority: 0,
+      getBucketXPosition: () => bucketXPosition,
+    );
     add(_bucket);
     add(_noteArea);
     await super.onLoad();

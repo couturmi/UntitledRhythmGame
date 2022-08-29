@@ -28,9 +28,13 @@ class SlideNoteArea extends PositionComponent
   /// Queue for notes that are yet to be displayed and are waiting for the exact timing.
   final Queue<SlideNote> upcomingNoteQueue = Queue();
 
+  /// Determines the priority of the next note to display, so that is is always
+  /// visually in front of the note after it.
+  int nextNotePriority = 999;
+
   final Function getBucketXPosition;
 
-  SlideNoteArea({required this.getBucketXPosition})
+  SlideNoteArea({required this.getBucketXPosition, super.priority})
       : super(anchor: Anchor.topLeft);
 
   Future<void> onLoad() async {
@@ -52,11 +56,13 @@ class SlideNoteArea extends PositionComponent
     final SlideNote noteComponent = SlideNote(
       diameter: noteDiameter,
       position: calculateNotePosition(xPercentage),
-      anchor: Anchor.bottomCenter,
+      anchor: Anchor.center,
       expectedTimeOfStart: microsecondsToSeconds(exactTiming),
       fullNoteTravelDistance: fullNoteTravelDistance,
       timeNoteIsVisible: microsecondsToSeconds(timeNoteIsVisible),
+      priority: nextNotePriority,
     );
+    nextNotePriority--;
     upcomingNoteQueue.addFirst(noteComponent);
   }
 
@@ -68,11 +74,11 @@ class SlideNoteArea extends PositionComponent
     return ((yPercentageTarget) *
             beatInterval *
             SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) /
-        BucketComponent.hitCircleYPlacementModifier;
+        (1 - BucketComponent.hitCircleYPlacementModifier);
   }
 
   Vector2 calculateNotePosition(double xPercentage) {
-    return Vector2(size.x * xPercentage, 0);
+    return Vector2(size.x * xPercentage, gameSize.y);
   }
 
   @override
@@ -92,9 +98,9 @@ class SlideNoteArea extends PositionComponent
       final SlideNote frontNoteComponent = noteQueue.last;
 
       // Check if the note has passed the hit range of the bucket yet.
-      bool noteIsPassedBucketArea = frontNoteComponent.y >
+      bool noteIsPassedBucketArea = frontNoteComponent.y <
           gameSize.y *
-              (BucketComponent.hitCircleYPlacementModifier +
+              (BucketComponent.hitCircleYPlacementModifier -
                   hitCircleAllowanceModifier);
       if (noteIsPassedBucketArea) {
         noteQueue.remove(frontNoteComponent);
@@ -102,9 +108,9 @@ class SlideNoteArea extends PositionComponent
         gameRef.currentLevel.scoreComponent.resetStreak();
       } else {
         // Check if the note is in the bucket.
-        bool noteHasReachedYBucketRange = frontNoteComponent.y >=
+        bool noteHasReachedYBucketRange = frontNoteComponent.y <=
             gameSize.y *
-                (BucketComponent.hitCircleYPlacementModifier -
+                (BucketComponent.hitCircleYPlacementModifier +
                     hitCircleAllowanceModifier);
         double bucketXPosition = getBucketXPosition() - position.x;
         bool noteIsInXBucketRange =

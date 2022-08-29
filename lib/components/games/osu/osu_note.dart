@@ -30,15 +30,14 @@ class OsuNote extends SpriteComponent with HasGameRef<MyGame> {
 
   OsuNote({
     required double diameter,
-    required Vector2 position,
-    required Anchor anchor,
+    super.position,
+    super.anchor,
+    super.priority,
     required this.expectedTimeOfStart,
     required this.timeNoteIsInQueue,
     required this.beatInterval,
   }) : super(
           size: Vector2.all(diameter),
-          position: position,
-          anchor: anchor,
         );
 
   double get currentTimingOfNote =>
