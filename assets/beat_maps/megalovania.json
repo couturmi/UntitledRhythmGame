@@ -633,6 +633,156 @@
         ],
         []
       ]
+    },
+    {
+      "game": "gameTransition",
+      "beats": [
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}]
+      ]
+    },
+    {
+      "game": "tapTap",
+      "beats": [
+        [
+          {"timing": 0.0,
+            "column": 2},
+          {"timing": 0.5,
+            "column": 2},
+          {"timing": 0.75,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.25,
+            "column": 1},
+          {"timing": 0.5,
+            "column": 0},
+          {"timing": 0.75,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.5,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 2},
+          {"timing": 0.5,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 2},
+          {"timing": 0.25,
+            "column": 1},
+          {"timing": 0.5,
+            "column": 0},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [],
+        [],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.5,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        [],
+        [
+          {"timing": 0.0,
+            "column": 2},
+          {"timing": 0.25,
+            "column": 1},
+          {"timing": 0.5,
+            "column": 2},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 2},
+          {"timing": 0.25,
+            "column": 0},
+          {"timing": 0.5,
+            "column": 2},
+          {"timing": 0.75,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1}
+        ],
+        [],
+        [
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        []
+      ]
+    },
+    {
+      "game": "gameTransition",
+      "beats": [
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}]
+      ]
     }
   ]
 }
