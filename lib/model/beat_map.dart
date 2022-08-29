@@ -81,10 +81,12 @@ class NoteModel {
   final int column;
   final double posX;
   final double posY;
+  final String label;
 
   NoteModel.fromJson(Map<String, dynamic> json)
       : timing = json["timing"] ?? 0,
         column = json["column"] ?? 0,
         posX = double.tryParse(json["posX"].toString()) ?? 0.0,
-        posY = double.tryParse(json["posY"].toString()) ?? 0.0;
+        posY = double.tryParse(json["posY"].toString()) ?? 0.0,
+        label = json["label"] ?? "";
 }

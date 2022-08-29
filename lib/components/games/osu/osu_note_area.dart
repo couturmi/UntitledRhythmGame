@@ -65,11 +65,13 @@ class OsuNoteArea extends PositionComponent
     super.update(dt);
   }
 
-  void addNote(
-      {required int interval,
-      required int exactTiming,
-      required double xPercentage,
-      required double yPercentage}) {
+  void addNote({
+    required int interval,
+    required int exactTiming,
+    required double xPercentage,
+    required double yPercentage,
+    required String label,
+  }) {
     // Create note component.
     final double timeNoteIsInQueue =
         (interval * SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) +
@@ -81,6 +83,7 @@ class OsuNoteArea extends PositionComponent
       timeNoteIsInQueue: microsecondsToSeconds(timeNoteIsInQueue),
       expectedTimeOfStart: microsecondsToSeconds(exactTiming),
       beatInterval: interval,
+      label: label,
       priority: nextNotePriority,
     );
     nextNotePriority--;
