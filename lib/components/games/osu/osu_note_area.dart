@@ -25,6 +25,10 @@ class OsuNoteArea extends PositionComponent
   /// Queue for notes that are yet to be displayed and are waiting for the exact timing.
   final Queue<OsuNote> upcomingNoteQueue = Queue();
 
+  /// Determines the priority of the next note to display, so that is is always
+  /// visually in front of the note after it.
+  int nextNotePriority = 999;
+
   OsuNoteArea() : super(anchor: Anchor.topLeft);
 
   Future<void> onLoad() async {
@@ -77,7 +81,9 @@ class OsuNoteArea extends PositionComponent
       timeNoteIsInQueue: microsecondsToSeconds(timeNoteIsInQueue),
       expectedTimeOfStart: microsecondsToSeconds(exactTiming),
       beatInterval: interval,
+      priority: nextNotePriority,
     );
+    nextNotePriority--;
     upcomingNoteQueue.addLast(noteComponent);
   }
 
