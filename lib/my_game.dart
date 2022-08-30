@@ -16,7 +16,8 @@ enum GameRoutes {
   level,
 }
 
-class MyGame extends FlameGame with HasTappableComponents, HasDraggables {
+class MyGame extends FlameGame
+    with HasTappableComponents, HasDraggableComponents {
   late final RouterComponent router;
   late SongLevelComponent currentLevel;
 

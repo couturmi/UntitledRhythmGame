@@ -11,8 +11,7 @@ enum MiniGameType {
 }
 
 MiniGameType miniGameTypeFromString(String name) {
-  return MiniGameType.values
-      .firstWhere((type) => type.toString().split(".").last == name);
+  return MiniGameType.values.firstWhere((type) => type.name == name);
 }
 
 String getMiniGameName(MiniGameType game) {
@@ -24,7 +23,7 @@ String getMiniGameName(MiniGameType game) {
     case MiniGameType.tilt:
       return "↶Tilt↷";
     case MiniGameType.slide:
-      return "←Slide→";
+      return "←Drag→";
     case MiniGameType.gameTransition:
       throw ArgumentError(
           "This is a transition, and not a true mini-game, and "

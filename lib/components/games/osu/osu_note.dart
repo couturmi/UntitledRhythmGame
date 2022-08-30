@@ -66,10 +66,10 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
 
   /// Returns the list of all note color options.
   List<Color> get _noteColors => [
-        Colors.indigo.shade900,
-        Colors.red.shade900,
-        Colors.green.shade700,
         Colors.pinkAccent.shade200,
+        Colors.green.shade700,
+        Colors.blue.shade900,
+        Colors.red.shade900,
         Colors.orange.shade700,
         Colors.amber,
         Colors.purple,
@@ -163,8 +163,8 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   void hit() {
     // Remove all active effects.
     children.removeWhere((c) => c is Effect);
-    // update with golden glow.
-    _sprite.paint
+    // update with glow.
+    _sprite.paint = Paint()
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
       ..colorFilter = ColorFilter.mode(Colors.greenAccent, BlendMode.overlay);
     // Provide haptic feedback.
@@ -178,7 +178,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
     // Remove all active effects.
     children.removeWhere((c) => c is Effect);
     // update with red glow.
-    _sprite.paint
+    _sprite.paint = Paint()
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
       ..colorFilter =
           ColorFilter.mode(Colors.red.withOpacity(0.5), BlendMode.overlay);

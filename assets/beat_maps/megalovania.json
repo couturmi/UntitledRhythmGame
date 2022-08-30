@@ -480,21 +480,21 @@
           {"timing": 0.0,
             "posX": 0.0,
             "posY": 0.0,
-            "label":  "5"},
+            "label":  "1"},
           {"timing": 0.5,
             "posX": 0.33,
             "posY": 0.33,
-            "label":  "6"}
+            "label":  "2"}
         ],
         [
           {"timing": 0.0,
             "posX": 0.66,
             "posY": 0.66,
-            "label":  "7"},
+            "label":  "3"},
           {"timing": 0.5,
             "posX": 1.0,
             "posY": 1.0,
-            "label":  "8"}
+            "label":  "4"}
         ],
         [
           {"timing": 0.0,

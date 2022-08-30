@@ -1,13 +1,12 @@
 import 'package:flame/components.dart';
-import 'package:flame/components.dart' as Flame;
 import 'package:flame/effects.dart';
-import 'package:flame/input.dart';
+import 'package:flame/experimental.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
 class BucketComponent extends PositionComponent
-    with GameSizeAware, HasGameRef<MyGame>, Flame.Draggable {
+    with GameSizeAware, HasGameRef<MyGame>, DragCallbacks {
   /// Represents the Y placement of the hit circle out of the game size's full Y axis (from the top of the canvas).
   static const double hitCircleYPlacementModifier = 0.2;
 
@@ -47,8 +46,8 @@ class BucketComponent extends PositionComponent
   }
 
   @override
-  bool onDragUpdate(DragUpdateInfo info) {
-    double dragAmount = info.delta.game.y;
+  bool onDragUpdate(DragUpdateEvent event) {
+    double dragAmount = event.delta.y;
     if (gameRef.currentLevel.currentLevelOrientation ==
         DeviceOrientation.landscapeRight) {
       dragAmount *= -1;
