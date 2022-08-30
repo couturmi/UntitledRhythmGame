@@ -8,6 +8,7 @@ import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/osu/osu_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/slide/slide_game_component.dart';
+import 'package:untitled_rhythm_game/components/games/swipe/swipe_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_board.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/transition/minigame_transition_component.dart';
