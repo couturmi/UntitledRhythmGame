@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:untitled_rhythm_game/components/games/osu/osu_scoring.dart';
 import 'package:untitled_rhythm_game/components/games/slide/slide_scoring.dart';
+import 'package:untitled_rhythm_game/components/games/swipe/swipe_scoring.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_scoring.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_scoring.dart';
 import 'package:untitled_rhythm_game/components/menu/pause_button.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_multiplier_component.dart';
 
 class ScoreComponent extends PositionComponent
-    implements TapTapScoring, OsuScoring, TiltScoring, SlideScoring {
+    implements TapTapScoring, OsuScoring, TiltScoring, SlideScoring, SwipeScoring {
   /// The streak amount that must be reached before the next score multiplier is applied.
   static const _streakMultiplierThreshold = 10;
 
@@ -61,6 +62,13 @@ class ScoreComponent extends PositionComponent
   void slideHit() {
     streak++;
     score += SlideScoring.noteBasePoints * noteMultiplier;
+    _scoreMultiplierComponent.multiplier = noteMultiplier;
+  }
+
+  @override
+  void swipeSuccessfulAvoid() {
+    streak += 2; // Streak is increased faster since there are less chances.
+    score += SwipeScoring.noteBasePoints * noteMultiplier;
     _scoreMultiplierComponent.multiplier = noteMultiplier;
   }
 

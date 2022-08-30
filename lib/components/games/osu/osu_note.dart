@@ -69,10 +69,10 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
         Colors.pinkAccent.shade200,
         Colors.green.shade700,
         Colors.blue.shade900,
-        Colors.red.shade900,
         Colors.orange.shade700,
-        Colors.amber,
         Colors.purple,
+        Colors.red.shade900,
+        Colors.amber,
       ];
 
   double get currentTimingOfNote =>

@@ -140,6 +140,12 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
             beatInterval: _beatMap.beatInterval,
           );
           break;
+        case MiniGameType.swipe:
+          currentGameComponent = SwipeGameComponent(
+            model: nextMiniGameModel,
+            beatInterval: _beatMap.beatInterval,
+          );
+          break;
       }
       add(currentGameComponent);
     }

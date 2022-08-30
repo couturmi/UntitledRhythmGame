@@ -8,6 +8,7 @@ enum MiniGameType {
   osu,
   tilt,
   slide,
+  swipe,
 }
 
 MiniGameType miniGameTypeFromString(String name) {
@@ -24,6 +25,8 @@ String getMiniGameName(MiniGameType game) {
       return "↶Tilt↷";
     case MiniGameType.slide:
       return "←Drag→";
+    case MiniGameType.swipe:
+      return "←Dodge!→";
     case MiniGameType.gameTransition:
       throw ArgumentError(
           "This is a transition, and not a true mini-game, and "
@@ -36,6 +39,7 @@ DeviceOrientation getOrientationForMiniGame(MiniGameType game) {
   switch (game) {
     case MiniGameType.tapTap:
     case MiniGameType.tilt:
+    case MiniGameType.swipe:
       return DeviceOrientation.portraitUp;
     case MiniGameType.osu:
     case MiniGameType.slide:

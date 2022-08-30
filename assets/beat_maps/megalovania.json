@@ -810,6 +810,278 @@
         [{}],
         [{}]
       ]
+    },
+    {
+      "game": "swipe",
+      "beats": [
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        [],
+        [],
+        [],
+        [
+          {"timing": 0.0,
+            "column": 1}
+        ],
+        [],
+        [
+          {"timing": 0.0,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1}
+        ],
+        [],
+        [
+          {"timing": 0.0,
+            "column": 2}],
+        [],
+        [
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1}
+        ],
+        [],
+        [
+          {"timing": 0.0,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 2}],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        [],
+        [],
+        [],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.5,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        []
+      ]
+    },
+    {
+      "game": "gameTransition",
+      "beats": [
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}]
+      ]
+    },
+    {
+      "game": "tilt",
+      "beats": [
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.25,
+            "column": 0},
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.75,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.25,
+            "column": 0},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.25,
+            "column": 1},
+          {"timing": 0.5,
+            "column": 1},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.25,
+            "column": 0},
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.75,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.25,
+            "column": 0},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.25,
+            "column": 1},
+          {"timing": 0.5,
+            "column": 1},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.25,
+            "column": 0},
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.75,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.25,
+            "column": 0},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.25,
+            "column": 1},
+          {"timing": 0.5,
+            "column": 1},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.25,
+            "column": 0},
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.75,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.25,
+            "column": 0},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.25,
+            "column": 1},
+          {"timing": 0.5,
+            "column": 1},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.5,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.75,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.25,
+            "column": 0},
+          {"timing": 0.75,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.25,
+            "column": 0},
+          {"timing": 0.5,
+            "column": 0},
+          {"timing": 0.75,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.25,
+            "column": 1},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.25,
+            "column": 1},
+          {"timing": 0.5,
+            "column": 1},
+          {"timing": 0.75,
+            "column": 1}
+        ]
+      ]
+    },
+    {
+      "game": "gameTransition",
+      "beats": [
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}]
+      ]
+    },
+    {
+      "game": "slide",
+      "beats": [
+        [
+          {"timing": 0.0,
+            "posX": 0.7}
+        ]
+      ]
     }
   ]
 }
