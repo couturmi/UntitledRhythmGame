@@ -73,7 +73,7 @@ class TiltNote extends SpriteComponent with HasGameRef<MyGame> {
         Vector2(shootDirection * 200, -200), LinearEffectController(1.0)));
     // remove the note after a short time of displaying.
     add(RemoveEffect(delay: 1.0));
-    HapticFeedback.lightImpact();
+    HapticFeedback.mediumImpact();
   }
 
   /// Called if a note is missed completely and the player has horribly failed.

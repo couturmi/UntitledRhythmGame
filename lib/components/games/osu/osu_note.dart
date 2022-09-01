@@ -168,7 +168,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
       ..colorFilter = ColorFilter.mode(Colors.greenAccent, BlendMode.overlay);
     // Provide haptic feedback.
-    HapticFeedback.lightImpact();
+    HapticFeedback.mediumImpact();
     // remove the note after a short time of displaying.
     add(RemoveEffect(delay: 0.1));
   }

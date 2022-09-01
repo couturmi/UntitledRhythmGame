@@ -71,7 +71,7 @@ class ShipComponent extends SpriteComponent
     _evadeEffect!.onComplete = () {
       paint.imageFilter = null;
       scale = Vector2.all(1);
-      HapticFeedback.lightImpact();
+      HapticFeedback.mediumImpact();
     };
   }
 

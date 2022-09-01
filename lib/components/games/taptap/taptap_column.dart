@@ -148,7 +148,7 @@ class TapTapColumn extends PositionComponent
       performHighlight(Colors.lightBlueAccent);
       // Update score with hit.
       gameRef.currentLevel.scoreComponent.noteHit(MiniGameType.tapTap);
-      HapticFeedback.lightImpact();
+      HapticFeedback.mediumImpact();
     }
     // If note was not hit.
     else {
