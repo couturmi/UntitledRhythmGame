@@ -433,10 +433,10 @@
           {"timing": 0.75,
             "column": 0}
         ],
-        [],
         [
-          {"timing": 0.0,
-            "column": 1}
+          {"timing": 0.75,
+            "column": 1}],
+        [
         ]
       ]
     },
