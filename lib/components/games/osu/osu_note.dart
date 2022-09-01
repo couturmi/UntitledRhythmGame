@@ -98,7 +98,8 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
         ..color = Colors.white
         ..style = PaintingStyle.stroke
         ..strokeWidth = 10,
-      radius: size.x / 2,
+      radius: size.x / 2 -
+          3, // the -3 here is because the stroke goes outside of the radisu that the [_noteFill] renders.
       position: size / 2,
       anchor: Anchor.center,
       priority: 2,
