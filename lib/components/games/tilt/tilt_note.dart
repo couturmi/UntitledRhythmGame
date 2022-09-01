@@ -46,7 +46,7 @@ class TiltNote extends SpriteComponent with HasGameRef<MyGame> {
     double currentTiming = currentTimingOfNote;
     final double currentProgress = currentTiming / timeNoteIsVisible;
     position.y = min(currentProgress, 1) * fullNoteTravelDistance;
-    add(MoveEffect.to(Vector2(size.x / 2, fullNoteTravelDistance),
+    add(MoveEffect.to(Vector2(position.x, fullNoteTravelDistance),
         LinearEffectController(timeNoteIsVisible - currentTiming)));
     await super.onLoad();
   }
