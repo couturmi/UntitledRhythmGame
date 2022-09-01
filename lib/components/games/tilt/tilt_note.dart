@@ -7,6 +7,10 @@ import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
 class TiltNote extends SpriteComponent with HasGameRef<MyGame> {
+  static const int numberOfBoxerAssets = 2;
+
+  final int columnIndex;
+
   /// Time (in seconds) that this note was expected to be loaded.
   final double expectedTimeOfStart;
 
@@ -16,6 +20,8 @@ class TiltNote extends SpriteComponent with HasGameRef<MyGame> {
   /// Max time (in seconds) that the note is displayed before automatic removal.
   final double timeNoteIsVisible;
 
+  late final Sprite _secondarySprite;
+
   bool isRemovingFromParent = false;
 
   TiltNote({
@@ -23,6 +29,7 @@ class TiltNote extends SpriteComponent with HasGameRef<MyGame> {
     super.position,
     super.anchor,
     super.priority,
+    required this.columnIndex,
     required this.expectedTimeOfStart,
     required this.fullNoteTravelDistance,
     required this.timeNoteIsVisible,
@@ -34,7 +41,8 @@ class TiltNote extends SpriteComponent with HasGameRef<MyGame> {
       gameRef.currentLevel.songTime - expectedTimeOfStart;
 
   Future<void> onLoad() async {
-    sprite = await Sprite.load('tilt_note.png');
+    sprite = await Sprite.load('boxer${columnIndex + 1}.png');
+    _secondarySprite = await Sprite.load('boxer${columnIndex + 1}_punched.png');
     double currentTiming = currentTimingOfNote;
     final double currentProgress = currentTiming / timeNoteIsVisible;
     position.y = min(currentProgress, 1) * fullNoteTravelDistance;
@@ -55,13 +63,16 @@ class TiltNote extends SpriteComponent with HasGameRef<MyGame> {
   /// Called if a note is hit and cleared successfully.
   void hit(int column) {
     isRemovingFromParent = true;
+    int shootDirection = column == 0 ? -1 : 1;
+    // Replace sprite and set direction.
+    sprite = _secondarySprite;
+    scale = Vector2(shootDirection.toDouble(), 1);
     // Remove all active effects.
     children.removeWhere((c) => c is Effect);
-    int shootDirection = column == 0 ? -1 : 1;
     add(MoveEffect.by(
-        Vector2(shootDirection * 100, -200), LinearEffectController(0.15)));
+        Vector2(shootDirection * 200, -200), LinearEffectController(1.0)));
     // remove the note after a short time of displaying.
-    add(RemoveEffect(delay: 0.15));
+    add(RemoveEffect(delay: 1.0));
     HapticFeedback.lightImpact();
   }
 

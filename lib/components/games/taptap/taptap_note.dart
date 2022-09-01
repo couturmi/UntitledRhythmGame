@@ -64,7 +64,7 @@ class TapTapNote extends SpriteComponent with HasGameRef<MyGame> {
     // update with golden glow.
     paint
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
-      ..colorFilter = ColorFilter.mode(Colors.amberAccent, BlendMode.overlay);
+      ..colorFilter = ColorFilter.mode(Colors.greenAccent, BlendMode.overlay);
     // remove the note after a short time of displaying.
     add(RemoveEffect(delay: 0.1));
   }

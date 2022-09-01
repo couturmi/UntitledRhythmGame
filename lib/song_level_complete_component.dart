@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:untitled_rhythm_game/components/menu/play_button.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/components/scoring/song_score.dart';
@@ -12,6 +13,8 @@ import 'package:untitled_rhythm_game/my_game.dart';
 
 class SongLevelCompleteComponent extends Component
     with HasGameRef<MyGame>, GameSizeAware {
+  NumberFormat commaNumberFormat = NumberFormat('#,##0', "en_US");
+
   final Level level;
   final BeatMap songBeatMap;
   final SongScore songScore;
@@ -82,7 +85,7 @@ class SongLevelCompleteComponent extends Component
         position: Vector2(_rankingLabel.size.x + 10 - 2, 200 + 2),
       ),
       TextComponent(
-        text: "Score: ${songScore.score}",
+        text: "Score: ${commaNumberFormat.format(songScore.score)}",
         textRenderer: TextPaint(
             style: TextStyle(
                 fontFamily: 'Courier', color: Colors.teal, fontSize: 28)),
@@ -140,11 +143,12 @@ class SongLevelCompleteComponent extends Component
     return "oof";
   }
 
-  int calculateNotesHitPercentage() {
-    return (songScore.notesHit /
-            (max(songScore.notesHit + songScore.notesMissed, 1)) *
-            100)
-        .floor();
+  double calculateNotesHitPercentage() {
+    return ((songScore.notesHit /
+                (max(songScore.notesHit + songScore.notesMissed, 1)) *
+                1000)
+            .floor()) /
+        10;
   }
 
   void goToMenu() {

@@ -72,6 +72,7 @@ class TiltColumn extends PositionComponent
         timeForNoteToTravel(noteMaxBoundaryModifier, interval);
     // Create note component.
     final TiltNote noteComponent = TiltNote(
+      columnIndex: columnIndex,
       diameter: size.x * (3 / 5),
       position: Vector2(size.x / 2, 0),
       anchor: Anchor.center,
