@@ -1,80 +1,41 @@
-import 'dart:math';
-
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:untitled_rhythm_game/components/games/osu/osu_scoring.dart';
-import 'package:untitled_rhythm_game/components/games/slide/slide_scoring.dart';
-import 'package:untitled_rhythm_game/components/games/swipe/swipe_scoring.dart';
-import 'package:untitled_rhythm_game/components/games/taptap/taptap_scoring.dart';
-import 'package:untitled_rhythm_game/components/games/tilt/tilt_scoring.dart';
+import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/menu/pause_button.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_multiplier_component.dart';
+import 'package:untitled_rhythm_game/components/scoring/song_score.dart';
 
-class ScoreComponent extends PositionComponent
-    implements TapTapScoring, OsuScoring, TiltScoring, SlideScoring, SwipeScoring {
-  /// The streak amount that must be reached before the next score multiplier is applied.
-  static const _streakMultiplierThreshold = 10;
-
+class ScoreComponent extends PositionComponent {
   NumberFormat commaNumberFormat = NumberFormat('#,##0', "en_US");
 
-  int score;
-  int streak;
+  SongScore songScore;
 
   late TextComponent _scoreComponent;
   late ScoreMultiplierComponent _scoreMultiplierComponent;
 
   ScoreComponent()
-      : score = 0,
-        streak = 0,
+      : songScore = SongScore(),
         super(priority: 10);
 
-  int get noteMultiplier =>
-      min((streak / _streakMultiplierThreshold).floor() + 1, 4);
-
   void resetStreak() {
-    streak = 0;
-    _scoreMultiplierComponent.multiplier = noteMultiplier;
+    songScore.streak = 0;
+    _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
   }
 
-  @override
-  void tapTapHit() async {
-    streak++;
-    score += TapTapScoring.noteBasePoints * noteMultiplier;
-    _scoreMultiplierComponent.multiplier = noteMultiplier;
+  void missed(MiniGameType gameType) {
+    songScore.miss(gameType);
+    _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
   }
 
-  @override
-  void osuHit() async {
-    streak++;
-    score += OsuScoring.noteBasePoints * noteMultiplier;
-    _scoreMultiplierComponent.multiplier = noteMultiplier;
-  }
-
-  @override
-  void tiltHit() {
-    streak++;
-    score += TiltScoring.noteBasePoints * noteMultiplier;
-    _scoreMultiplierComponent.multiplier = noteMultiplier;
-  }
-
-  @override
-  void slideHit() {
-    streak++;
-    score += SlideScoring.noteBasePoints * noteMultiplier;
-    _scoreMultiplierComponent.multiplier = noteMultiplier;
-  }
-
-  @override
-  void swipeSuccessfulAvoid() {
-    streak += 2; // Streak is increased faster since there are less chances.
-    score += SwipeScoring.noteBasePoints * noteMultiplier;
-    _scoreMultiplierComponent.multiplier = noteMultiplier;
+  void noteHit(MiniGameType gameType) {
+    songScore.hit(gameType);
+    _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
   }
 
   @override
   void update(double dt) {
-    _scoreComponent.text = '${commaNumberFormat.format(score)}';
+    _scoreComponent.text = '${commaNumberFormat.format(songScore.score)}';
   }
 
   @override
@@ -88,7 +49,7 @@ class ScoreComponent extends PositionComponent
     // rebuild child widgets
     children.removeWhere((c) => true);
     _scoreComponent = TextComponent(
-      text: score.toString(),
+      text: songScore.score.toString(),
       textRenderer: TextPaint(
           style: TextStyle(color: Colors.yellowAccent[100], fontSize: 20)),
       position: Vector2(-(gameSize.x / 2) + 10, -(gameSize.y / 2) + 10),
@@ -98,7 +59,7 @@ class ScoreComponent extends PositionComponent
     _scoreMultiplierComponent = ScoreMultiplierComponent(
       position: Vector2((gameSize.x / 2) - 10, -(gameSize.y / 2) + 10),
       anchor: Anchor.topLeft,
-      multiplier: noteMultiplier,
+      multiplier: songScore.noteMultiplier,
     );
     add(_scoreComponent);
     add(_scoreMultiplierComponent);

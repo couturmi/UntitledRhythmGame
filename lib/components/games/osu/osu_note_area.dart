@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/experimental.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/osu/osu_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
@@ -60,7 +61,7 @@ class OsuNoteArea extends PositionComponent
     });
     if (anyNotesMissed) {
       // Update score with miss.
-      gameRef.currentLevel.scoreComponent.resetStreak();
+      gameRef.currentLevel.scoreComponent.missed(MiniGameType.osu);
     }
     super.update(dt);
   }
@@ -117,7 +118,7 @@ class OsuNoteArea extends PositionComponent
       noteQueue.remove(successfulHitOnNote);
       successfulHitOnNote.hit();
       // Update score with hit.
-      gameRef.currentLevel.scoreComponent.osuHit();
+      gameRef.currentLevel.scoreComponent.noteHit(MiniGameType.osu);
     }
     // If a note was not hit.
     else {

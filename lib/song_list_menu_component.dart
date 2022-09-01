@@ -6,13 +6,11 @@ import 'package:untitled_rhythm_game/components/menu/song_list_tile.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 class SongListMenuComponent extends Component
     with HasGameRef<MyGame>, GameSizeAware {
   SongListTile? _selectedSongTile;
   late final PlayButton _playButton;
-  AudioPlayer? _songPreviewPlayer;
 
   @override
   Future<void> onLoad() async {
@@ -57,20 +55,13 @@ class SongListMenuComponent extends Component
       add(_playButton);
     }
     // Play song preview.
-    FlameAudio.bgm.pause();
-    _songPreviewPlayer?.dispose();
-    _songPreviewPlayer = await FlameAudio.loopLongAudio(
-        getLevelMP3PreviewPathMap(tile.level),
-        volume: 0.8);
+    FlameAudio.bgm.play(getLevelMP3PreviewPathMap(tile.level));
   }
 
   /// Play the selected [level].
   void playSong(Level level) {
     FlameAudio.play('effects/button_click.mp3');
-    // Note: For some reason, calling "stop" doesn't actually stop the audio on a real Android device.
-    // But calling pause, and then stop works fine. This is something to check again for in a future version.
-    _songPreviewPlayer?.pause();
-    _songPreviewPlayer?.stop();
+    FlameAudio.bgm.pause();
     gameRef.startSongLevel(level);
     // TODO, eventually set the above route to a ValueRoute, so that you can resume the music when returning to the menu.
   }
@@ -79,11 +70,5 @@ class SongListMenuComponent extends Component
   void onGameResize(Vector2 canvasSize) {
     super.onGameResize(canvasSize);
     this.onResize(canvasSize);
-  }
-
-  @override
-  void onRemove() {
-    _songPreviewPlayer?.dispose();
-    super.onRemove();
   }
 }

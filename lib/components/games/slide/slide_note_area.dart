@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/slide/bucket_component.dart';
 import 'package:untitled_rhythm_game/components/games/slide/slide_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
@@ -105,7 +106,7 @@ class SlideNoteArea extends PositionComponent
       if (noteIsPassedBucketArea) {
         noteQueue.remove(frontNoteComponent);
         // Update score with miss.
-        gameRef.currentLevel.scoreComponent.resetStreak();
+        gameRef.currentLevel.scoreComponent.missed(MiniGameType.slide);
       } else {
         // Check if the note is in the bucket.
         bool noteHasReachedYBucketRange = frontNoteComponent.y <=
@@ -123,7 +124,7 @@ class SlideNoteArea extends PositionComponent
           frontNoteComponent.hit();
           performHighlight(Colors.lightBlueAccent);
           // Update score with hit.
-          gameRef.currentLevel.scoreComponent.slideHit();
+          gameRef.currentLevel.scoreComponent.noteHit(MiniGameType.slide);
         }
       }
     }

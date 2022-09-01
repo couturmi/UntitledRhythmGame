@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flame/components.dart';
+import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/ship_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_obstacle.dart';
@@ -49,7 +50,9 @@ class SwipeColumn extends PositionComponent
       if (obstacle.currentTimingOfObstacle >= obstacle.timeObstacleIsVisible) {
         // If ship did not collide with this obstacle, update score with points.
         if (!obstacle.hasCollidedWithShip) {
-          gameRef.currentLevel.scoreComponent.swipeSuccessfulAvoid();
+          // Note: "Hit" in this case does not refer to hitting an obstacle,
+          // but to a successful action that should be awarded points.
+          gameRef.currentLevel.scoreComponent.noteHit(MiniGameType.swipe);
         }
         return true;
       }

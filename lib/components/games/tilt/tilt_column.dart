@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
@@ -117,7 +118,7 @@ class TiltColumn extends PositionComponent
       if (noteIsPassedPendulumArea) {
         noteQueue.remove(frontNoteComponent);
         // Update score with miss.
-        gameRef.currentLevel.scoreComponent.resetStreak();
+        gameRef.currentLevel.scoreComponent.missed(MiniGameType.tilt);
       }
 
       // Check if the pendulum is at this column.
@@ -132,7 +133,7 @@ class TiltColumn extends PositionComponent
           frontNoteComponent.hit(columnIndex);
           performHighlight(Colors.lightBlueAccent);
           // Update score with hit.
-          gameRef.currentLevel.scoreComponent.tiltHit();
+          gameRef.currentLevel.scoreComponent.noteHit(MiniGameType.tilt);
         }
       }
     }

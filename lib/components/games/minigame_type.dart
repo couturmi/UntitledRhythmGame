@@ -26,7 +26,7 @@ String getMiniGameName(MiniGameType game) {
     case MiniGameType.slide:
       return "←Drag→";
     case MiniGameType.swipe:
-      return "←Dodge!→";
+      return "←Dodge→";
     case MiniGameType.gameTransition:
       throw ArgumentError(
           "This is a transition, and not a true mini-game, and "

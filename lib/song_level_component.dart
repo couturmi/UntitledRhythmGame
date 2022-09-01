@@ -1,6 +1,8 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flame/components.dart';
+import 'package:flame/game.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/backdrops/megalovania/megalovania_background_component.dart';
@@ -17,12 +19,17 @@ import 'package:untitled_rhythm_game/components/scoring/score_component.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/song_level_complete_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
-class SongLevelComponent extends PositionComponent with GameSizeAware {
+class SongLevelComponent extends PositionComponent
+    with GameSizeAware, HasGameRef<MyGame> {
   /// Delay that the music should start at compared to when the notes are added. (TODO this is a temporary solution. This may be fixed with a more recent version of the audio player)
   static const int AUDIO_DELAY_MICROSECONDS =
-      258000; // This value is calculated based on average delay from music player
+      // 258000; // For the simulator.
+      // 20000; // For my iPhone.
+      150000; // For my Android phone.
 
   /// The number of beat intervals it should take a note from creation to reach the hit mark.
   /// TODO 2 = hard, 3 = medium, 4 = easy
@@ -40,6 +47,9 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
 
   /// True once the level is loaded and ready to begin.
   bool hasLevelStarted = false;
+
+  /// True once the level is finished and all minigames have completed.
+  bool hasLevelFinished = false;
 
   /// True once the beat map has started to execute.
   bool hasSongStarted = false;
@@ -215,6 +225,25 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
         }
       }
     }
+    // If the song is finished, finish up remaining beats to allow notes to play out.
+    else {
+      _currentBeatCount++;
+    }
+  }
+
+  void _checkIfSongIsComplete() {
+    if (!hasLevelFinished &&
+        _currentBeatCount >
+            _beatMap.beatTotal + (INTERVAL_TIMING_MULTIPLIER * 2)) {
+      hasLevelFinished = true;
+      gameRef.router.pushRoute(Route(
+        () => SongLevelCompleteComponent(
+          level: songLevel,
+          songBeatMap: _beatMap,
+          songScore: scoreComponent.songScore,
+        ),
+      ));
+    }
   }
 
   void rotateLevel(DeviceOrientation orientation) {
@@ -242,7 +271,7 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
     // First update occurs too late, so don't include it in the level progression.
     if (!hasLevelStarted) {
       hasLevelStarted = true;
-    } else {
+    } else if (!hasLevelFinished) {
       songTime += dt;
       if (hasSongStarted) {
         // Start the audio if it hasn't been started yet.
@@ -262,6 +291,12 @@ class SongLevelComponent extends PositionComponent with GameSizeAware {
     // The super.update call NEEDS to be at the end, so that the children are
     // working off the updated [songTime].
     super.update(dt);
+  }
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+    _checkIfSongIsComplete();
   }
 
   /// Stop the music!

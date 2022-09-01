@@ -6,6 +6,7 @@ import 'package:flame/experimental.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_board.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
@@ -90,7 +91,7 @@ class TapTapColumn extends PositionComponent
     });
     if (anyNotesMissed) {
       // Update score with miss.
-      gameRef.currentLevel.scoreComponent.resetStreak();
+      gameRef.currentLevel.scoreComponent.missed(MiniGameType.tapTap);
     }
     super.update(dt);
   }
@@ -146,7 +147,7 @@ class TapTapColumn extends PositionComponent
       frontNoteComponent.hit();
       performHighlight(Colors.lightBlueAccent);
       // Update score with hit.
-      gameRef.currentLevel.scoreComponent.tapTapHit();
+      gameRef.currentLevel.scoreComponent.noteHit(MiniGameType.tapTap);
       HapticFeedback.lightImpact();
     }
     // If note was not hit.

@@ -4,6 +4,7 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/services.dart';
+import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_obstacle.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
@@ -98,7 +99,7 @@ class ShipComponent extends SpriteComponent
         ));
         HapticFeedback.heavyImpact();
         // Reset score streak;
-        gameRef.currentLevel.scoreComponent.resetStreak();
+        gameRef.currentLevel.scoreComponent.missed(MiniGameType.swipe);
       }
     }
     super.onCollision(points, other);
