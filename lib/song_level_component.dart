@@ -5,7 +5,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/services.dart';
-import 'package:untitled_rhythm_game/components/backdrops/megalovania/megalovania_background_component.dart';
+import 'package:untitled_rhythm_game/components/backdrops/level_background_component.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/osu/osu_game_component.dart';
@@ -68,7 +68,7 @@ class SongLevelComponent extends PositionComponent
   late final BeatMap _beatMap;
   late AudioPlayer _audioPlayer;
 
-  late final MegalovaniaBackgroundComponent backgroundComponent;
+  late final LevelBackgroundComponent backgroundComponent;
   late final ScoreComponent scoreComponent;
   late MiniGameComponent currentGameComponent;
   late MiniGameComponent previousGameComponent;
@@ -92,8 +92,8 @@ class SongLevelComponent extends PositionComponent
   }
 
   void setGameComponents() {
-    backgroundComponent =
-        MegalovaniaBackgroundComponent(interval: _beatMap.beatInterval);
+    backgroundComponent = getLevelBackgroundComponent(
+        level: songLevel, interval: _beatMap.beatInterval);
     scoreComponent = ScoreComponent();
     add(backgroundComponent);
     add(scoreComponent);
