@@ -236,6 +236,7 @@ class SongLevelComponent extends PositionComponent
         _currentBeatCount >
             _beatMap.beatTotal + (INTERVAL_TIMING_MULTIPLIER * 2)) {
       hasLevelFinished = true;
+      _audioPlayer.stop();
       gameRef.router.pushRoute(Route(
         () => SongLevelCompleteComponent(
           level: songLevel,

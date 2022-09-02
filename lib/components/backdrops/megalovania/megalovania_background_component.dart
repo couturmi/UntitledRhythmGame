@@ -2,17 +2,17 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/image_composition.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled_rhythm_game/components/backdrops/level_background_component.dart';
 import 'package:untitled_rhythm_game/components/backdrops/megalovania/undertale_sprite_component.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 
-class MegalovaniaBackgroundComponent extends PositionComponent
+class MegalovaniaBackgroundComponent extends LevelBackgroundComponent
     with GameSizeAware {
   List<UndertaleSpriteComponent> sprites = [];
-  final int interval;
   int beatCount = 0;
 
-  MegalovaniaBackgroundComponent({required this.interval}) : super(priority: 0);
+  MegalovaniaBackgroundComponent({required super.interval});
 
   @override
   Future<void> onLoad() async {
@@ -96,6 +96,7 @@ class MegalovaniaBackgroundComponent extends PositionComponent
   }
 
   /// Updates the UI to reflect a new beat occurrence.
+  @override
   void beatUpdate() {
     beatCount++;
   }
