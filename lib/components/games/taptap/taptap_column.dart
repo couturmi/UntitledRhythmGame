@@ -11,7 +11,6 @@ import 'package:untitled_rhythm_game/components/games/taptap/taptap_board.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
-import 'package:untitled_rhythm_game/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class TapTapColumn extends PositionComponent
@@ -37,6 +36,9 @@ class TapTapColumn extends PositionComponent
   /// Queue for notes that are yet to be displayed and are waiting for the exact timing.
   final Queue<TapTapNote> upcomingNoteQueue = Queue();
 
+  /// Used to store a note that is currently being held.
+  TapTapNote? _currentHeldNote;
+
   /// Determines the priority of the next note to display, so that is is always
   /// visually in front of the note after it.
   int nextNotePriority = 999;
@@ -50,9 +52,9 @@ class TapTapColumn extends PositionComponent
         Vector2(gameSize.x / TapTapBoardComponent.numberOfColumns, gameSize.y);
 
     final columnBoundaries = RectangleComponent(
-      size: size,
-      position: Vector2(0, 0),
-      anchor: Anchor.topLeft,
+      size: Vector2(size.x, size.y + 100),
+      position: Vector2(0, gameSize.y),
+      anchor: Anchor.bottomLeft,
       paint: BasicPalette.white.paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.5,
@@ -81,56 +83,61 @@ class TapTapColumn extends PositionComponent
       return false;
     });
     // Check if the note was definitely missed, and should be removed from hittable notes queue.
-    bool anyNotesMissed = false;
     noteQueue.removeWhere((note) {
       if (note.currentTimingOfNote >= note.timeNoteIsInQueue) {
-        anyNotesMissed = true;
+        note.noLongerTappable();
+        // Update score with miss.
+        gameRef.currentLevel.scoreComponent.missed(MiniGameType.tapTap,
+            durationOfBeatInterval: note.holdDuration);
         return true;
       }
       return false;
     });
-    if (anyNotesMissed) {
-      // Update score with miss.
-      gameRef.currentLevel.scoreComponent.missed(MiniGameType.tapTap);
+    // If a note is being held, add points for it.
+    if (_currentHeldNote != null) {
+      TapTapNote note = _currentHeldNote!;
+      // Check if the note should still be able to be held (The note bar hasn't run out).
+      // Note: The only reason this is added in so many places is to show live progression of the score
+      // as the player holds the note. Otherwise, we could easily just calculate it after the player
+      // releases, but that's not as COOL.
+      if (gameRef.currentLevel.songTime < note.expectedTimeOfFinish) {
+        note.updateHeldNoteScore(
+          (gameRef.currentLevel.songTime - note.lastPointUpdateTime!) /
+              note.interval,
+        );
+      }
+      // Otherwise, clear the note as the held note.
+      else {
+        // Update score with remaining expected points.
+        note.updateHeldNoteScore(
+          (note.expectedTimeOfFinish - note.lastPointUpdateTime!) /
+              note.interval,
+        );
+        // Notify that end has been reached.
+        note.endOfNoteBarReached();
+        _currentHeldNote = null;
+      }
     }
     super.update(dt);
   }
 
   addNote({
+    required double duration,
     required int exactTiming,
     required int interval,
   }) {
-    // Sets the movement in such a way that the note will cross the hit circle exactly on beat.
-    double fullNoteTravelDistance = gameSize.y * (noteMaxBoundaryModifier);
-    double timeNoteIsVisible =
-        timeForNoteToTravel(noteMaxBoundaryModifier, interval);
-    double timeNoteIsInQueue = timeForNoteToTravel(
-        hitCircleYPlacementModifier + hitCircleAllowanceModifier, interval);
-
     // Create note component.
     final TapTapNote noteComponent = TapTapNote(
       diameter: gameSize.x / 3,
       position: Vector2(0, 0),
       anchor: Anchor.centerLeft,
+      holdDuration: duration,
+      interval: microsecondsToSeconds(interval),
       expectedTimeOfStart: microsecondsToSeconds(exactTiming),
-      fullNoteTravelDistance: fullNoteTravelDistance,
-      timeNoteIsInQueue: microsecondsToSeconds(timeNoteIsInQueue),
-      timeNoteIsVisible: microsecondsToSeconds(timeNoteIsVisible),
       priority: nextNotePriority,
     );
     nextNotePriority--;
     upcomingNoteQueue.addFirst(noteComponent);
-  }
-
-  /// Calculates the time it should take for a note to travel [yPercentageTarget] percent of the Y-Axis.
-  ///
-  /// [yPercentageTarget] : percentage of the Y-axis size that the note will have travelled.
-  /// [beatInterval] : time it takes for a single beat to complete, in microseconds.
-  double timeForNoteToTravel(double yPercentageTarget, int beatInterval) {
-    return ((yPercentageTarget) *
-            beatInterval *
-            SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) /
-        hitCircleYPlacementModifier;
   }
 
   @override
@@ -138,16 +145,20 @@ class TapTapColumn extends PositionComponent
     // Grab the last note in the queue that hasn't passed the hit circle threshold.
     final TapTapNote frontNoteComponent = noteQueue.last;
     // Check if a note collision occurred.
-    bool successfulHit = (hitCircle.y - frontNoteComponent.y).abs() <=
-        gameSize.y * hitCircleAllowanceModifier;
+    bool successfulHit = frontNoteComponent.isSuccessfulHit();
     // If note was hit.
     if (successfulHit) {
-      // Update UI.
+      // If this is a held note, save a copy now.
+      if (frontNoteComponent.holdDuration > 0) {
+        _currentHeldNote = frontNoteComponent;
+      }
       noteQueue.remove(frontNoteComponent);
+      // Update score with hit.
+      gameRef.currentLevel.scoreComponent.noteHit(MiniGameType.tapTap,
+          durationOfBeatInterval: frontNoteComponent.holdDuration);
+      // Update UI.
       frontNoteComponent.hit();
       performHighlight(Colors.lightBlueAccent);
-      // Update score with hit.
-      gameRef.currentLevel.scoreComponent.noteHit(MiniGameType.tapTap);
       HapticFeedback.mediumImpact();
     }
     // If note was not hit.
@@ -156,6 +167,20 @@ class TapTapColumn extends PositionComponent
       performHighlight(Colors.red);
       // Reset score streak;
       gameRef.currentLevel.scoreComponent.resetStreak();
+    }
+  }
+
+  @override
+  void onTapUp(TapUpEvent event) {
+    if (_currentHeldNote != null) {
+      // Update note held score to this moment.
+      _currentHeldNote!.updateHeldNoteScore(
+        (gameRef.currentLevel.songTime -
+                _currentHeldNote!.lastPointUpdateTime!) /
+            _currentHeldNote!.interval,
+      );
+      _currentHeldNote!.released();
+      _currentHeldNote = null;
     }
   }
 

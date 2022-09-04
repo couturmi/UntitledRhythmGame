@@ -23,14 +23,18 @@ class ScoreComponent extends PositionComponent {
     _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
   }
 
-  void missed(MiniGameType gameType) {
-    songScore.miss(gameType);
+  void missed(MiniGameType gameType, {double durationOfBeatInterval = 0}) {
+    songScore.miss(gameType, durationOfBeatInterval: durationOfBeatInterval);
     _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
   }
 
-  void noteHit(MiniGameType gameType) {
-    songScore.hit(gameType);
+  void noteHit(MiniGameType gameType, {double durationOfBeatInterval = 0}) {
+    songScore.hit(gameType, durationOfBeatInterval: durationOfBeatInterval);
     _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
+  }
+
+  void noteHeld(MiniGameType gameType, double percentageOfBeatInterval) {
+    songScore.heldNotePoint(gameType, percentageOfBeatInterval);
   }
 
   @override

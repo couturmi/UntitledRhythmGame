@@ -24,6 +24,7 @@ class TapTapBoardComponent extends MiniGameComponent {
     required NoteModel noteModel,
   }) {
     _columns[noteModel.column].addNote(
+      duration: noteModel.duration,
       exactTiming: exactTiming,
       interval: beatInterval,
     );

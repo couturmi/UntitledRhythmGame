@@ -33,6 +33,9 @@ class BeatMap {
       beatCount += game.beats.length;
     });
     beatTotal = beatCount;
+    // Print out BeatMap info for debugging.
+    print("Beats: $beatTotal");
+    print("BPM (microseconds): $beatInterval");
   }
 
   static Future<BeatMap> loadFromFile(String path) async {
@@ -78,6 +81,7 @@ class BeatModel {
 
 class NoteModel {
   final double timing;
+  final double duration; // in percentage of beat interval.
   final int column;
   final double posX;
   final double posY;
@@ -85,6 +89,7 @@ class NoteModel {
 
   NoteModel.fromJson(Map<String, dynamic> json)
       : timing = json["timing"] ?? 0,
+        duration = json["duration"] ?? 0,
         column = json["column"] ?? 0,
         posX = double.tryParse(json["posX"].toString()) ?? 0.0,
         posY = double.tryParse(json["posY"].toString()) ?? 0.0,

@@ -63,13 +63,12 @@ class PlayButton extends PositionComponent with TapCallbacks {
 
   @override
   void onTapDown(TapDownEvent event) {
-    super.onTapDown(event);
     scale = scale * 0.9;
   }
 
   @override
   void onTapUp(TapUpEvent event) {
-    super.onTapUp(event);
+    scale = scale / 0.9;
     this.onButtonTap();
   }
 }

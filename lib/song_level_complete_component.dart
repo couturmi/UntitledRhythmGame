@@ -124,6 +124,11 @@ class SongLevelCompleteComponent extends Component
       ),
     ]);
     FlameAudio.bgm.play(getLevelMP3PreviewPathMap(level));
+    // Print out info for debugging.
+    print("Best Possible Score: ${songScore.bestPotentialScore}");
+    print(
+        "Total Notes Possible: ${songScore.notesHit + songScore.notesMissed}");
+    print("Total Notes Hit: ${songScore.notesHit}");
   }
 
   String _calculateRanking() {

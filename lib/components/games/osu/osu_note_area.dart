@@ -50,19 +50,15 @@ class OsuNoteArea extends PositionComponent
       return false;
     });
     // Check if the note was definitely missed, and should be removed from hittable notes queue.
-    bool anyNotesMissed = false;
     noteQueue.removeWhere((note) {
       if (note.currentTimingOfNote >= note.timeNoteIsInQueue) {
         note.missed();
-        anyNotesMissed = true;
+        // Update score with miss.
+        gameRef.currentLevel.scoreComponent.missed(MiniGameType.osu);
         return true;
       }
       return false;
     });
-    if (anyNotesMissed) {
-      // Update score with miss.
-      gameRef.currentLevel.scoreComponent.missed(MiniGameType.osu);
-    }
     super.update(dt);
   }
 
