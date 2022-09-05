@@ -1,7 +1,7 @@
 {
   "name": "Jump Up, Superstar",
   "artist": "Super Mario Odyssey",
-  "bpm": 100,
+  "bpm": 102,
   "gameOrder": [
     {
       "game": "tapTap",
@@ -105,6 +105,17 @@
           {"timing": 0.5,
             "column": 1},
           {"timing": 0.75,
+            "duration": 1.0,
+            "column": 2}
+        ],
+        [],
+        [
+          {"timing": 0.25,
+            "column": 0},
+          {"timing": 0.5,
+            "column": 1},
+          {"timing": 0.75,
+            "duration": 1.0,
             "column": 2}
         ],
         [],
@@ -115,6 +126,76 @@
             "column": 1},
           {"timing": 0.75,
             "column": 2}
+        ],
+        [
+          {"timing": 0.5,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.5,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 2},
+          {"timing": 0.25,
+            "column": 1},
+          {"timing": 0.75,
+            "duration": 1.0,
+            "column": 0}
+        ],
+        [],
+        [
+          {"timing": 0.5,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.25,
+            "column": 1},
+          {"timing": 0.75,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.25,
+            "column": 1},
+          {"timing": 0.75,
+            "duration": 1.0,
+            "column": 0}
+        ],
+        []
+      ]
+    },
+    {
+      "game": "gameTransition",
+      "beats": [
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}]
+      ]
+    },
+    {
+      "game": "osu",
+      "beats": [
+        [
+          {"timing": 0.0,
+            "posX": 0.5,
+            "posY": 0.7,
+            "label":  "1"}
         ]
       ]
     }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/backdrops/level_background_component.dart';
@@ -10,7 +12,8 @@ class JumpUpSuperStarBackgroundComponent extends LevelBackgroundComponent
   @override
   Future<void> onLoad() async {
     add(RectangleComponent(
-      size: gameSize,
+      size: Vector2.all(max(gameSize.x, gameSize.y) * 2),
+      anchor: Anchor.center,
       paint: Paint()..color = Colors.red.shade800,
     ));
     await super.onLoad();
@@ -25,5 +28,6 @@ class JumpUpSuperStarBackgroundComponent extends LevelBackgroundComponent
   void onGameResize(Vector2 gameSize) {
     super.onGameResize(gameSize);
     this.onResize(gameSize);
+    position = gameSize / 2;
   }
 }
