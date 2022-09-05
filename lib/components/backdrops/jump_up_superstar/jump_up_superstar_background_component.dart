@@ -11,17 +11,18 @@ class JumpUpSuperStarBackgroundComponent extends LevelBackgroundComponent
 
   @override
   Future<void> onLoad() async {
-    add(RectangleComponent(
-      size: Vector2.all(max(gameSize.x, gameSize.y) * 2),
-      anchor: Anchor.center,
-      paint: Paint()..color = Colors.red.shade800,
-    ));
     await super.onLoad();
   }
 
   @override
   void beatUpdate() {
     // TODO: implement beatUpdate
+  }
+
+  @override
+  void render(Canvas canvas) {
+    canvas.drawColor(Colors.red.shade800, BlendMode.src);
+    super.render(canvas);
   }
 
   @override
