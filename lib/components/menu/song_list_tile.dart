@@ -28,8 +28,7 @@ class SongListTile extends PositionComponent with TapCallbacks, GameSizeAware {
     anchor = Anchor.topLeft;
     size = Vector2(gameSize.x - (xPadding * 2), 80 - (yPadding * 2));
     _beatMap = await BeatMap.loadFromLevel(level);
-    position = 
-        Vector2(0 + xPadding, (80 + yPadding) + (index * (size.y + yPadding)));
+    position = Vector2(0 + xPadding, yPadding + (index * (size.y + yPadding)));
     addAll([
       RectangleComponent(
         priority: 1,
