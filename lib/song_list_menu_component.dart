@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/menu/play_button.dart';
+import 'package:untitled_rhythm_game/components/menu/song_list_component.dart';
 import 'package:untitled_rhythm_game/components/menu/song_list_tile.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
@@ -14,6 +15,7 @@ class SongListMenuComponent extends Component
   static BeatMap? _selectedBeatMap;
   late final PlayButton _playButton;
 
+  late final TextComponent _titleComponent;
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -23,14 +25,8 @@ class SongListMenuComponent extends Component
     });
     FlameAudio.audioCache.load('effects/selection.mp3');
     // Add components.
-    List<SongListTile> songList = [];
-    // TODO not sure if this is the ideal way to make a list... How would I make it scrollable in the future?
-    for (int i = 0; i < Level.values.length; i++) {
-      songList.add(SongListTile(
-          index: i, level: Level.values[i], onTap: _onSongTileTap));
-    }
     addAll([
-      TextComponent(
+      _titleComponent = TextComponent(
         text: "Song List",
         textRenderer: TextPaint(
             style: TextStyle(
@@ -38,7 +34,9 @@ class SongListMenuComponent extends Component
         anchor: Anchor.center,
         position: Vector2(gameSize.x / 2, 50),
       ),
-      ...songList,
+      SongListComponent(
+          yOffset: _titleComponent.position.y + _titleComponent.size.y,
+          onTileTap: _onSongTileTap),
     ]);
     _playButton = PlayButton(
       anchor: Anchor.center,

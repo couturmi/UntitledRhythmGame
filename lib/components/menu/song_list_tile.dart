@@ -12,7 +12,7 @@ class SongListTile extends PositionComponent with TapCallbacks, GameSizeAware {
 
   final int index;
   final Level level;
-  final Function(SongListTile tile) onTap;
+  final Function(SongListTile tile, BeatMap beatMap) onTap;
 
   late final BeatMap _beatMap;
   late final RectangleComponent _tileBackground;
