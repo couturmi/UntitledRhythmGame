@@ -4,6 +4,7 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
+import 'package:untitled_rhythm_game/model/beat_map.dart';
 
 class SongListTile extends PositionComponent with TapCallbacks, GameSizeAware {
   static const double xPadding = 20.0;
@@ -13,6 +14,7 @@ class SongListTile extends PositionComponent with TapCallbacks, GameSizeAware {
   final Level level;
   final Function(SongListTile tile) onTap;
 
+  late final BeatMap _beatMap;
   late final RectangleComponent _tileBackground;
   late final TextComponent _songTitle;
 
@@ -25,7 +27,8 @@ class SongListTile extends PositionComponent with TapCallbacks, GameSizeAware {
     super.onLoad();
     anchor = Anchor.topLeft;
     size = Vector2(gameSize.x - (xPadding * 2), 80 - (yPadding * 2));
-    position =
+    _beatMap = await BeatMap.loadFromLevel(level);
+    position = 
         Vector2(0 + xPadding, (80 + yPadding) + (index * (size.y + yPadding)));
     addAll([
       RectangleComponent(
@@ -43,7 +46,7 @@ class SongListTile extends PositionComponent with TapCallbacks, GameSizeAware {
       ),
       _songTitle = TextComponent(
         priority: 2,
-        text: level.name.toUpperCase(),
+        text: _beatMap.songName,
         textRenderer: TextPaint(style: _getTextStyle(Colors.white)),
         position: Vector2(15, size.y / 2),
         anchor: Anchor.centerLeft,
@@ -75,7 +78,7 @@ class SongListTile extends PositionComponent with TapCallbacks, GameSizeAware {
       FlameAudio.play('effects/selection.mp3');
       activate();
       // Execute parent functionality.
-      this.onTap(this);
+      this.onTap(this, _beatMap);
     }
   }
 

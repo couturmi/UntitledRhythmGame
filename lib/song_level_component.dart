@@ -35,7 +35,7 @@ class SongLevelComponent extends PositionComponent
   /// TODO 2 = hard, 3 = medium, 4 = easy
   static const int INTERVAL_TIMING_MULTIPLIER = 2;
 
-  final Level songLevel;
+  final BeatMap beatMap;
 
   /// Index of the current mini-game being played. Value is -1 when no games have started.
   late int currentMiniGameIndex = -1;
@@ -65,7 +65,6 @@ class SongLevelComponent extends PositionComponent
   /// Current orientation that the level is set to.
   DeviceOrientation currentLevelOrientation = DeviceOrientation.portraitUp;
 
-  late final BeatMap _beatMap;
   late AudioPlayer _audioPlayer;
 
   late final LevelBackgroundComponent backgroundComponent;
@@ -73,10 +72,10 @@ class SongLevelComponent extends PositionComponent
   late MiniGameComponent currentGameComponent;
   late MiniGameComponent previousGameComponent;
 
-  SongLevelComponent({required this.songLevel});
+  SongLevelComponent({required this.beatMap});
 
   bool get hasNextBeatPassed =>
-      (songTime / microsecondsToSeconds(_beatMap.beatInterval)) >
+      (songTime / microsecondsToSeconds(beatMap.beatInterval)) >
       _currentBeatCount;
 
   @override
@@ -85,15 +84,16 @@ class SongLevelComponent extends PositionComponent
     // Clear existing audio cache and preload song.
     FlameAudio.audioCache.clearAll();
     _setupMusicAudio();
-    // Load song BeatMap.
-    _beatMap = await BeatMap.loadFromFile(getLevelBeatMapPath(songLevel));
     // Set game components.
     setGameComponents();
+    // Print out BeatMap info for debugging.
+    print("Beats: ${beatMap.beatTotal}");
+    print("BPM (microseconds): ${beatMap.beatInterval}");
   }
 
   void setGameComponents() {
     backgroundComponent = getLevelBackgroundComponent(
-        level: songLevel, interval: _beatMap.beatInterval);
+        level: beatMap.level, interval: beatMap.beatInterval);
     scoreComponent = ScoreComponent();
     add(backgroundComponent);
     add(scoreComponent);
@@ -104,8 +104,8 @@ class SongLevelComponent extends PositionComponent
   void setStartingTransition() {
     currentGameComponent = GameTransitionComponent(
       model: MiniGameModel.gameStartTransition(),
-      beatInterval: _beatMap.beatInterval,
-      nextMiniGameType: _beatMap.gameOrder[0].gameType,
+      beatInterval: beatMap.beatInterval,
+      nextMiniGameType: beatMap.gameOrder[0].gameType,
       isStartingTransition: true,
     );
     add(currentGameComponent);
@@ -115,46 +115,45 @@ class SongLevelComponent extends PositionComponent
   void queueUpNextMiniGame() {
     // Set up the next mini-game as the current component.
     currentMiniGameIndex++;
-    if (_beatMap.gameOrder.length > currentMiniGameIndex) {
-      MiniGameModel nextMiniGameModel =
-          _beatMap.gameOrder[currentMiniGameIndex];
+    if (beatMap.gameOrder.length > currentMiniGameIndex) {
+      MiniGameModel nextMiniGameModel = beatMap.gameOrder[currentMiniGameIndex];
       switch (nextMiniGameModel.gameType) {
         case MiniGameType.gameTransition:
           currentGameComponent = GameTransitionComponent(
             model: nextMiniGameModel,
-            beatInterval: _beatMap.beatInterval,
+            beatInterval: beatMap.beatInterval,
             nextMiniGameType:
-                _beatMap.gameOrder[currentMiniGameIndex + 1].gameType,
+                beatMap.gameOrder[currentMiniGameIndex + 1].gameType,
           );
           break;
         case MiniGameType.tapTap:
           currentGameComponent = TapTapBoardComponent(
             model: nextMiniGameModel,
-            beatInterval: _beatMap.beatInterval,
+            beatInterval: beatMap.beatInterval,
           );
           break;
         case MiniGameType.osu:
           currentGameComponent = OsuGameComponent(
             model: nextMiniGameModel,
-            beatInterval: _beatMap.beatInterval,
+            beatInterval: beatMap.beatInterval,
           );
           break;
         case MiniGameType.tilt:
           currentGameComponent = TiltGameComponent(
             model: nextMiniGameModel,
-            beatInterval: _beatMap.beatInterval,
+            beatInterval: beatMap.beatInterval,
           );
           break;
         case MiniGameType.slide:
           currentGameComponent = SlideGameComponent(
             model: nextMiniGameModel,
-            beatInterval: _beatMap.beatInterval,
+            beatInterval: beatMap.beatInterval,
           );
           break;
         case MiniGameType.swipe:
           currentGameComponent = SwipeGameComponent(
             model: nextMiniGameModel,
-            beatInterval: _beatMap.beatInterval,
+            beatInterval: beatMap.beatInterval,
           );
           break;
       }
@@ -164,7 +163,7 @@ class SongLevelComponent extends PositionComponent
 
   void _setupMusicAudio() async {
     Uri audioFile = await FlameAudio.audioCache
-        .fetchToMemory(getLevelMP3PathMap(songLevel));
+        .fetchToMemory(getLevelMP3PathMap(beatMap.level));
     _audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
     await _audioPlayer.setUrl(
       audioFile.toString(),
@@ -208,7 +207,7 @@ class SongLevelComponent extends PositionComponent
 
   /// Execute a beat update for the game component.
   void handleBeat() {
-    if (_currentBeatCount < _beatMap.beatTotal) {
+    if (_currentBeatCount < beatMap.beatTotal) {
       if (hasSongStarted) {
         backgroundComponent.beatUpdate();
       }
@@ -234,13 +233,12 @@ class SongLevelComponent extends PositionComponent
   void _checkIfSongIsComplete() {
     if (!hasLevelFinished &&
         _currentBeatCount >
-            _beatMap.beatTotal + (INTERVAL_TIMING_MULTIPLIER * 2)) {
+            beatMap.beatTotal + (INTERVAL_TIMING_MULTIPLIER * 2)) {
       hasLevelFinished = true;
       _audioPlayer.stop();
       gameRef.router.pushRoute(Route(
         () => SongLevelCompleteComponent(
-          level: songLevel,
-          songBeatMap: _beatMap,
+          songBeatMap: beatMap,
           songScore: scoreComponent.songScore,
         ),
       ));
@@ -278,7 +276,7 @@ class SongLevelComponent extends PositionComponent
         // Start the audio if it hasn't been started yet.
         if (!hasAudioStarted &&
             ((songTime + microsecondsToSeconds(AUDIO_DELAY_MICROSECONDS)) /
-                    microsecondsToSeconds(_beatMap.beatInterval)) >
+                    microsecondsToSeconds(beatMap.beatInterval)) >
                 INTERVAL_TIMING_MULTIPLIER) {
           hasAudioStarted = true;
           _resumeAudio();

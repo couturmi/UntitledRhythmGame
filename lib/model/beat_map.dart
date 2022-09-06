@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
+import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class BeatMap {
@@ -20,8 +21,12 @@ class BeatMap {
   /// The total number of beats in this song.
   late final int beatTotal;
 
-  BeatMap.fromJson(Map<String, dynamic> json)
-      : songName = json["name"],
+  /// The song level that this BeatMap maps with.
+  late final Level level;
+
+  BeatMap.fromJson(Map<String, dynamic> json, Level level)
+      : level = level,
+        songName = json["name"],
         artistName = json["artist"],
         beatInterval = bpmToMicroseconds(json["bpm"]),
         gameOrder = json["gameOrder"]
@@ -33,14 +38,12 @@ class BeatMap {
       beatCount += game.beats.length;
     });
     beatTotal = beatCount;
-    // Print out BeatMap info for debugging.
-    print("Beats: $beatTotal");
-    print("BPM (microseconds): $beatInterval");
   }
 
-  static Future<BeatMap> loadFromFile(String path) async {
-    String jsonString = await rootBundle.loadString(path);
-    return BeatMap.fromJson(json.decode(jsonString));
+  static Future<BeatMap> loadFromLevel(Level level) async {
+    String beatMapPath = getLevelBeatMapPath(level);
+    String jsonString = await rootBundle.loadString(beatMapPath);
+    return BeatMap.fromJson(json.decode(jsonString), level);
   }
 }
 

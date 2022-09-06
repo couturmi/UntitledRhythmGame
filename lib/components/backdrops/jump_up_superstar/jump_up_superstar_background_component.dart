@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/backdrops/level_background_component.dart';

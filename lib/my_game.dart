@@ -5,7 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flame/rendering.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:untitled_rhythm_game/home_screen_component.dart';
-import 'package:untitled_rhythm_game/level_constants.dart';
+import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 import 'package:untitled_rhythm_game/song_list_menu_component.dart';
 
@@ -37,9 +37,9 @@ class MyGame extends FlameGame
     );
   }
 
-  /// Route to a [SongLevelComponent] for the given [level].
-  void startSongLevel(Level level) {
-    currentLevel = SongLevelComponent(songLevel: level);
+  /// Route to a [SongLevelComponent] for the given [beatMap]/level.
+  void startSongLevel(BeatMap beatMap) {
+    currentLevel = SongLevelComponent(beatMap: beatMap);
     router.pushRoute(Route(() => currentLevel));
   }
 }

@@ -15,14 +15,12 @@ class SongLevelCompleteComponent extends Component
     with HasGameRef<MyGame>, GameSizeAware {
   NumberFormat commaNumberFormat = NumberFormat('#,##0', "en_US");
 
-  final Level level;
   final BeatMap songBeatMap;
   final SongScore songScore;
 
   late TextComponent _rankingLabel;
 
   SongLevelCompleteComponent({
-    required this.level,
     required this.songBeatMap,
     required this.songScore,
   });
@@ -123,7 +121,7 @@ class SongLevelCompleteComponent extends Component
         position: Vector2(gameSize.x / 2, gameSize.y - 100),
       ),
     ]);
-    FlameAudio.bgm.play(getLevelMP3PreviewPathMap(level));
+    FlameAudio.bgm.play(getLevelMP3PreviewPathMap(songBeatMap.level));
     // Print out info for debugging.
     print("Best Possible Score: ${songScore.bestPotentialScore}");
     print(
