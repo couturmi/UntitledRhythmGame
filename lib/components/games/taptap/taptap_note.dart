@@ -148,7 +148,14 @@ class TapTapNote extends PositionComponent
     // Remove all active effects from sprite only.
     _sprite.children.removeWhere((c) => c is Effect);
     if (_noteBar != null) {
-      _noteBar!.holding();
+      _noteBar!.holding(
+        spriteCenterPosition: Vector2(_sprite.x, _sprite.y + (size.y / 2)),
+      );
+      // Add some transparency to the note sprite, to see the bar behind it.
+      _sprite.paint
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50)
+        ..colorFilter =
+            ColorFilter.mode(Colors.white.withOpacity(0.8), BlendMode.modulate);
       // set last point update time to the start of the note hit.
       lastPointUpdateTime = gameRef.currentLevel.songTime;
     } else {
@@ -225,25 +232,6 @@ class TapTapNote extends PositionComponent
         ..colorFilter = ColorFilter.mode(Colors.red, BlendMode.overlay);
       add(RemoveEffect(delay: 0.05));
     }
-  }
-
-  @override
-  void render(Canvas canvas) {
-    // If this note is being held, clip the view of the back end of the note from the canvas.
-    // THIS SOME HACKY SHIT!
-    if (_noteBar?.isBeingHeld ?? false) {
-      final rect = Rect.fromLTWH(
-        0,
-        0,
-        gameSize.x,
-        _sprite.y + size.y, // clip at the bottom of the note sprite.
-      );
-      canvas.drawRect(rect, Paint()..color = Colors.transparent);
-      canvas.clipRect(rect);
-      canvas.save();
-      canvas.restore();
-    }
-    super.render(canvas);
   }
 
   @override
