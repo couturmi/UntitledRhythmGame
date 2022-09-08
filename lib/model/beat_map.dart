@@ -15,6 +15,8 @@ class BeatMap {
   /// The number of microseconds between each beat. Calculated from the [bpm].
   final int beatInterval;
 
+  final List<SpriteReplacementModel> spriteReplacements;
+
   /// The list of mini-games (in order) that should be played during this song.
   final List<MiniGameModel> gameOrder;
 
@@ -29,6 +31,12 @@ class BeatMap {
         songName = json["name"],
         artistName = json["artist"],
         beatInterval = bpmToMicroseconds(json["bpm"]),
+        spriteReplacements = json["spriteReplacements"] != null
+            ? json["spriteReplacements"]
+                .map<SpriteReplacementModel>((spriteInfoJson) =>
+                    SpriteReplacementModel.fromJson(spriteInfoJson))
+                .toList()
+            : [],
         gameOrder = json["gameOrder"]
             .map<MiniGameModel>((gameJson) => MiniGameModel.fromJson(gameJson))
             .toList() {
@@ -45,6 +53,34 @@ class BeatMap {
     String jsonString = await rootBundle.loadString(beatMapPath);
     return BeatMap.fromJson(json.decode(jsonString), level);
   }
+}
+
+class SpriteReplacementModel {
+  /// The specific mini-game to replace the sprite for.
+  final MiniGameType gameType;
+
+  /// Path to the sprite asset.
+  final String path;
+
+  /// (For GIFs) Number of frames in the sprite sheet.
+  final int frames;
+
+  /// Sprite width in pixels.
+  final double pixelsX;
+
+  /// Sprite height in pixels.
+  final double pixelsY;
+
+  /// (For GIFs) Time (in seconds) between each frame.
+  final double stepTime;
+
+  SpriteReplacementModel.fromJson(Map<String, dynamic> json)
+      : gameType = miniGameTypeFromString(json["game"]),
+        path = json["path"],
+        frames = json["frames"] ?? 0,
+        pixelsX = json["pixelsX"] ?? 0.0,
+        pixelsY = json["pixelsY"] ?? 0.0,
+        stepTime = json["stepTime"] ?? 0.0;
 }
 
 class MiniGameModel {

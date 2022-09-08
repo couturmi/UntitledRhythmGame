@@ -1,8 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/experimental.dart';
 import 'package:flutter/services.dart';
+import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
 class BucketComponent extends PositionComponent
@@ -16,7 +19,7 @@ class BucketComponent extends PositionComponent
   /// Distance the sprite will cover up and down.
   static const double hoverOffset = 10.0;
 
-  late final SpriteComponent _sprite;
+  late final PositionComponent _sprite;
 
   BucketComponent({super.priority}) : super(anchor: Anchor.topCenter);
 
@@ -24,13 +27,7 @@ class BucketComponent extends PositionComponent
     position = Vector2(gameSize.x / 2, 0);
     // Note that "size" here refers to the size of the hit/drag box that your finger can tap.
     size = Vector2(bucketWidth * 1.5, gameSize.y);
-    add(_sprite = SpriteComponent(
-      sprite: await Sprite.load("skydiver.png"),
-      size: Vector2.all(bucketWidth),
-      anchor: Anchor.center,
-      position: Vector2(bucketWidth / 2,
-          gameSize.y * hitCircleYPlacementModifier - (hoverOffset / 2)),
-    ));
+    await loadSprite();
     // Add a hover/floating animation to the sprite.
     _sprite.add(
       MoveEffect.to(
@@ -43,6 +40,43 @@ class BucketComponent extends PositionComponent
       ),
     );
     await super.onLoad();
+  }
+
+  Future<void> loadSprite() async {
+    // Check if sprite replacement exists.
+    final SpriteReplacementModel? spriteModel =
+        gameRef.currentLevel.beatMap.spriteReplacements.firstWhereOrNull(
+            (spriteModel) => spriteModel.gameType == MiniGameType.slide);
+    // Check if sprite is a GIF/SpriteSheet.
+    if (spriteModel != null && spriteModel.frames > 0) {
+      Sprite marioSpriteSheet = await Sprite.load(spriteModel.path);
+      add(_sprite = SpriteAnimationComponent(
+        animation: SpriteAnimation.fromFrameData(
+          marioSpriteSheet.image,
+          SpriteAnimationData.sequenced(
+            amount: spriteModel.frames,
+            textureSize: Vector2(spriteModel.pixelsX, spriteModel.pixelsY),
+            stepTime: spriteModel.stepTime,
+            loop: true,
+          ),
+        ),
+        anchor: Anchor.center,
+        size: Vector2.all(bucketWidth),
+        position: Vector2(bucketWidth / 2,
+            gameSize.y * hitCircleYPlacementModifier - (hoverOffset / 2)),
+        removeOnFinish: false,
+      ));
+    }
+    // Otherwise it is just a sprite image.
+    else {
+      add(_sprite = SpriteComponent(
+        sprite: await Sprite.load(spriteModel?.path ?? "skydiver.png"),
+        anchor: Anchor.center,
+        size: Vector2.all(bucketWidth),
+        position: Vector2(bucketWidth / 2,
+            gameSize.y * hitCircleYPlacementModifier - (hoverOffset / 2)),
+      ));
+    }
   }
 
   @override

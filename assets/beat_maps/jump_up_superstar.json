@@ -2,6 +2,16 @@
   "name": "Jump Up, Superstar",
   "artist": "Super Mario Odyssey",
   "bpm": 102,
+  "spriteReplacements": [
+    {
+      "game": "slide",
+      "path": "mario_falling_sprite_sheet.png",
+      "frames": 75,
+      "pixelsX": 200.0,
+      "pixelsY": 200.0,
+      "stepTime": 0.015
+    }
+  ],
   "gameOrder": [
     {
       "game": "tapTap",
