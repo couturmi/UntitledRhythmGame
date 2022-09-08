@@ -15,7 +15,7 @@ class BeatMap {
   /// The number of microseconds between each beat. Calculated from the [bpm].
   final int beatInterval;
 
-  final List<SpriteReplacementModel> spriteReplacements;
+  final Map<String, SpriteReplacementModel> spriteReplacements;
 
   /// The list of mini-games (in order) that should be played during this song.
   final List<MiniGameModel> gameOrder;
@@ -32,11 +32,10 @@ class BeatMap {
         artistName = json["artist"],
         beatInterval = bpmToMicroseconds(json["bpm"]),
         spriteReplacements = json["spriteReplacements"] != null
-            ? json["spriteReplacements"]
-                .map<SpriteReplacementModel>((spriteInfoJson) =>
-                    SpriteReplacementModel.fromJson(spriteInfoJson))
-                .toList()
-            : [],
+            ? Map.fromIterable(json["spriteReplacements"],
+                key: (e) => e["identifier"],
+                value: (e) => SpriteReplacementModel.fromJson(e))
+            : {},
         gameOrder = json["gameOrder"]
             .map<MiniGameModel>((gameJson) => MiniGameModel.fromJson(gameJson))
             .toList() {
@@ -56,9 +55,6 @@ class BeatMap {
 }
 
 class SpriteReplacementModel {
-  /// The specific mini-game to replace the sprite for.
-  final MiniGameType gameType;
-
   /// Path to the sprite asset.
   final String path;
 
@@ -75,8 +71,7 @@ class SpriteReplacementModel {
   final double stepTime;
 
   SpriteReplacementModel.fromJson(Map<String, dynamic> json)
-      : gameType = miniGameTypeFromString(json["game"]),
-        path = json["path"],
+      : path = json["path"],
         frames = json["frames"] ?? 0,
         pixelsX = json["pixelsX"] ?? 0.0,
         pixelsY = json["pixelsY"] ?? 0.0,

@@ -45,8 +45,7 @@ class BucketComponent extends PositionComponent
   Future<void> loadSprite() async {
     // Check if sprite replacement exists.
     final SpriteReplacementModel? spriteModel =
-        gameRef.currentLevel.beatMap.spriteReplacements.firstWhereOrNull(
-            (spriteModel) => spriteModel.gameType == MiniGameType.slide);
+        gameRef.currentLevel.beatMap.spriteReplacements["slide_bucket"];
     // Check if sprite is a GIF/SpriteSheet.
     if (spriteModel != null && spriteModel.frames > 0) {
       Sprite marioSpriteSheet = await Sprite.load(spriteModel.path);

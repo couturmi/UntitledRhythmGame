@@ -4,7 +4,7 @@
   "bpm": 102,
   "spriteReplacements": [
     {
-      "game": "slide",
+      "identifier": "slide_bucket",
       "path": "mario_falling_sprite_sheet.png",
       "frames": 75,
       "pixelsX": 200.0,
