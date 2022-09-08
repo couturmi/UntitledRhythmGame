@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
 class TiltNote extends SpriteComponent with HasGameRef<MyGame> {
@@ -41,14 +42,26 @@ class TiltNote extends SpriteComponent with HasGameRef<MyGame> {
       gameRef.currentLevel.songTime - expectedTimeOfStart;
 
   Future<void> onLoad() async {
-    sprite = await Sprite.load('boxer${columnIndex + 1}.png');
-    _secondarySprite = await Sprite.load('boxer${columnIndex + 1}_punched.png');
+    await loadSprites();
     double currentTiming = currentTimingOfNote;
     final double currentProgress = currentTiming / timeNoteIsVisible;
     position.y = min(currentProgress, 1) * fullNoteTravelDistance;
     add(MoveEffect.to(Vector2(position.x, fullNoteTravelDistance),
         LinearEffectController(timeNoteIsVisible - currentTiming)));
     await super.onLoad();
+  }
+
+  Future<void> loadSprites() async {
+    // Check if sprite replacements exist.
+    final SpriteReplacementModel? spriteModelDefault = gameRef.currentLevel
+        .beatMap.spriteReplacements["tilt_note_${columnIndex + 1}"];
+    final SpriteReplacementModel? spriteModelSecondary = gameRef.currentLevel
+        .beatMap.spriteReplacements["tilt_note_${columnIndex + 1}_secondary"];
+    // Load default and secondary sprites
+    sprite = await Sprite.load(
+        spriteModelDefault?.path ?? 'boxer${columnIndex + 1}.png');
+    _secondarySprite = await Sprite.load(
+        spriteModelSecondary?.path ?? 'boxer${columnIndex + 1}_punched.png');
   }
 
   @override
@@ -66,7 +79,6 @@ class TiltNote extends SpriteComponent with HasGameRef<MyGame> {
     int shootDirection = column == 0 ? -1 : 1;
     // Replace sprite and set direction.
     sprite = _secondarySprite;
-    scale = Vector2(shootDirection.toDouble(), 1);
     // Remove all active effects.
     children.removeWhere((c) => c is Effect);
     add(MoveEffect.by(

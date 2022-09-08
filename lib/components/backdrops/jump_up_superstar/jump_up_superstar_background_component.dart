@@ -53,7 +53,7 @@ class JumpUpSuperStarBackgroundComponent extends LevelBackgroundComponent
     if (beatCount == 0) {
       final runAcrossMoveEffect = MoveEffect.to(
           Vector2(gameSize.x / 2 + defaultSpriteRadius, 0),
-          LinearEffectController(_beatInterval() * 8));
+          LinearEffectController(_beatInterval() * 16));
       runAcrossMoveEffect.onComplete = () {
         // set up next position.
         _marioSpriteGif.position = Vector2(
@@ -92,6 +92,14 @@ class JumpUpSuperStarBackgroundComponent extends LevelBackgroundComponent
         LinearEffectController(_beatInterval() * 4),
       );
       _marioSpriteGif.add(runIntoFrameMoveEffect);
+    }
+    // Mario runs off screen for the ending.
+    // 187 is very ending
+    else if (beatCount == 146) {
+      final runAwayMoveEffect = MoveEffect.to(
+          Vector2(gameSize.x / 2 + defaultSpriteRadius, 0),
+          LinearEffectController(_beatInterval() * 4));
+      _marioSpriteGif.add(runAwayMoveEffect);
     }
 
     beatCount++;

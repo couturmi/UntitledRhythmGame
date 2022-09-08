@@ -10,6 +10,30 @@
       "pixelsX": 200.0,
       "pixelsY": 200.0,
       "stepTime": 0.015
+    },
+    {
+      "identifier": "tilt_glove",
+      "path": "boxing_glove_white.png"
+    },
+    {
+      "identifier": "tilt_arm",
+      "path": "arm_red_sleeve.png"
+    },
+    {
+      "identifier": "tilt_note_1",
+      "path": "shell_blue.png"
+    },
+    {
+      "identifier": "tilt_note_1_secondary",
+      "path": "shell_blue.png"
+    },
+    {
+      "identifier": "tilt_note_2",
+      "path": "shell_red.png"
+    },
+    {
+      "identifier": "tilt_note_2_secondary",
+      "path": "shell_red.png"
     }
   ],
   "gameOrder": [
