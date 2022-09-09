@@ -51,8 +51,8 @@ class TiltColumn extends PositionComponent
     size = Vector2(gameSize.x / TiltGameComponent.numberOfColumns, gameSize.y);
 
     final columnBoundaries = RectangleComponent(
-      size: size,
-      position: Vector2(0, 0),
+      size: Vector2(size.x, size.y + 100),
+      position: Vector2(0, -100),
       anchor: Anchor.topLeft,
       paint: BasicPalette.white.paint()
         ..style = PaintingStyle.stroke

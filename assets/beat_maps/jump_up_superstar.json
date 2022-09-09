@@ -908,9 +908,9 @@
             "column": 0}
         ],
         [
-          {"timing": 0.5,
+          {"timing": 0.25,
             "column": 0},
-          {"timing": 0.75,
+          {"timing": 0.5,
             "column": 0}],
         [
           {"timing": 0.0,
