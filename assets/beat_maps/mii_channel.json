@@ -1,0 +1,21 @@
+{
+  "name": "Mii Channel",
+  "artist": "VGR",
+  "bpm": 128,
+  "gameOrder": [
+    {
+      "game": "osu",
+      "beats": [
+        [
+          {"timing": 0.0,
+            "posX": 0.0,
+            "posY": 0.0,
+            "duration": 1.0,
+            "poxXEnd": 0.5,
+            "posYEnd": 0.5,
+            "label":  "1"}
+        ]
+      ]
+    }
+  ]
+}

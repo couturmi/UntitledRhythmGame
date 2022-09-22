@@ -26,10 +26,10 @@ import 'package:untitled_rhythm_game/util/time_utils.dart';
 class SongLevelComponent extends PositionComponent
     with GameSizeAware, HasGameRef<MyGame> {
   /// Delay that the music should start at compared to when the notes are added. (TODO this is a temporary solution. This may be fixed with a more recent version of the audio player)
-  static const int AUDIO_DELAY_MICROSECONDS =
+  static const int AUDIO_DELAY_MICROSECONDS = //
       // 258000; // For the simulator.
       // 20000; // For my iPhone.
-      150000; // For my Android phone.
+      200000; // For my Android phone.
 
   /// The number of beat intervals it should take a note from creation to reach the hit mark.
   /// TODO 2 = hard, 3 = medium, 4 = easy
