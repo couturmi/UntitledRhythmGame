@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
+import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:untitled_rhythm_game/components/games/osu/osu_note_bar2.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
@@ -20,6 +22,10 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   /// with a label "1" is added.
   static int currentNoteColorIndex = -1;
 
+  /// Duration (in percentage of an interval) that this note should be held after being tapped.
+  /// A note with no holding will have a [holdDuration] of 0;
+  final double holdDuration;
+
   /// Time (in seconds) that this note was expected to be loaded.
   final double expectedTimeOfStart;
 
@@ -28,6 +34,9 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
 
   /// Max time (in seconds) that the note is able to be tapped.
   final double timeNoteIsInQueue;
+
+  /// For held notes, the position that the note should be dragged to, relative to the starting position.
+  final Vector2 endRelativePosition;
 
   /// Number label displayed on the note.
   final String label;
@@ -41,12 +50,16 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   late final CircleComponent _noteFill;
   late final CircleComponent _noteBorder;
   late final SpriteComponent _sprite;
+  late final TextComponent _labelComponent;
+  OsuNoteBar2? _noteBar;
 
   OsuNote({
     required double diameter,
     super.position,
+    required this.endRelativePosition,
     super.anchor,
     super.priority,
+    required this.holdDuration,
     required this.expectedTimeOfStart,
     required this.timeNoteIsInQueue,
     required this.beatInterval,
@@ -78,20 +91,24 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   double get currentTimingOfNote =>
       gameRef.currentLevel.songTime - expectedTimeOfStart;
 
+  /// Gives the current position of the tappable note circle, relative to the parent's area.
+  Vector2 get currentPositionOfNoteCircle =>
+      position + _noteFill.position - (size / 2);
+
   Future<void> onLoad() async {
     add(_noteFill = CircleComponent(
       paint: Paint()..color = noteColor,
       radius: size.x / 2,
       position: size / 2,
       anchor: Anchor.center,
-      priority: 0,
+      priority: 1,
     ));
     add(_sprite = SpriteComponent(
       sprite: await Sprite.load('osu_note.png'),
       size: size,
       position: size / 2,
       anchor: Anchor.center,
-      priority: 1,
+      priority: 2,
     ));
     add(_noteBorder = CircleComponent(
       paint: Paint()
@@ -102,9 +119,9 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
           3, // the -3 here is because the stroke goes outside of the radisu that the [_noteFill] renders.
       position: size / 2,
       anchor: Anchor.center,
-      priority: 2,
+      priority: 3,
     ));
-    add(TextComponent(
+    add(_labelComponent = TextComponent(
       text: label,
       position: size / 2,
       anchor: Anchor.center,
@@ -115,7 +132,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
         fontFamily: 'Courier',
         fontWeight: FontWeight.bold,
       )),
-      priority: 2,
+      priority: 3,
     ));
     // Set opacity to hidden, and add animation to fade in.
     // Note: Both the timing ring and the text component do not fade in.
@@ -138,6 +155,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
         ..color = noteColor
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3,
+      priority: 2,
     );
     final double currentProgress = currentTiming / timeNoteIsInQueue;
     _timingRing.scale = Vector2.all(
@@ -152,6 +170,20 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
               (beatInterval * SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) -
                   currentTiming))),
     );
+
+    // Add note bar if it is a held note.
+    if (holdDuration > 0) {
+      add(_noteBar = OsuNoteBar2(
+        startCircleCenterPosition: size / 2,
+        endCircleCenterPosition: endRelativePosition + (size / 2),
+        noteRadius: size.x / 2,
+        paint: Paint()..color = noteColor.darken(0.2),
+        priority: 0,
+      ));
+      _noteBar!.setOpacity(0);
+      _noteBar!.add(OpacityEffect.fadeIn(LinearEffectController(
+          microsecondsToSeconds(beatInterval - currentTiming))));
+    }
     await super.onLoad();
   }
 
@@ -167,11 +199,42 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
     // update with glow.
     _sprite.paint = Paint()
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
-      ..colorFilter = ColorFilter.mode(Colors.greenAccent, BlendMode.overlay);
+      ..colorFilter = ColorFilter.mode(Colors.white, BlendMode.overlay);
     // Provide haptic feedback.
     HapticFeedback.mediumImpact();
-    // remove the note after a short time of displaying.
-    add(RemoveEffect(delay: 0.1));
+    if (_noteBar != null) {
+      _labelComponent.scale = Vector2.all(0);
+      // Expand timing ring so timing can be seen under your finger.
+      _timingRing
+          .add(ScaleEffect.to(Vector2.all(2.0), LinearEffectController(0.1)));
+      // Move note along the NoteBar path.
+      _timingRing.add(MoveEffect.to(
+          endRelativePosition + (size / 2),
+          LinearEffectController(
+              microsecondsToSeconds(beatInterval * holdDuration))));
+      _sprite.add(MoveEffect.to(
+          endRelativePosition + (size / 2),
+          LinearEffectController(
+              microsecondsToSeconds(beatInterval * holdDuration))));
+      _noteBorder.add(MoveEffect.to(
+          endRelativePosition + (size / 2),
+          LinearEffectController(
+              microsecondsToSeconds(beatInterval * holdDuration))));
+      _noteFill.add(
+        MoveEffect.to(
+            endRelativePosition + (size / 2),
+            LinearEffectController(
+                microsecondsToSeconds(beatInterval * holdDuration)))
+          ..onComplete = () {
+            // remove the note after a short time of displaying.
+            add(RemoveEffect(delay: 0.1));
+          },
+      );
+    } else {
+      _timingRing.scale = Vector2.all(0);
+      // remove the note after a short time of displaying.
+      add(RemoveEffect(delay: 0.1));
+    }
   }
 
   /// Called if a note is missed completely and the player has horribly failed.
@@ -188,6 +251,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
     _noteFill.add(OpacityEffect.fadeOut(LinearEffectController(0.2)));
     _noteBorder.add(OpacityEffect.fadeOut(LinearEffectController(0.2)));
     _sprite.add(OpacityEffect.fadeOut(LinearEffectController(0.2)));
+    _noteBar?.add(OpacityEffect.fadeOut(LinearEffectController(0.2)));
     // remove the note after a short time of displaying.
     add(RemoveEffect(delay: 0.2));
   }

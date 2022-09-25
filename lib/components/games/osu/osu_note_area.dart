@@ -12,7 +12,7 @@ import 'package:untitled_rhythm_game/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class OsuNoteArea extends PositionComponent
-    with GameSizeAware, HasGameRef<MyGame> {
+    with GameSizeAware, HasGameRef<MyGame>, DragCallbacks {
   /// Diameter of a note.
   static const double noteDiameter = 120;
 
@@ -25,6 +25,9 @@ class OsuNoteArea extends PositionComponent
 
   /// Queue for notes that are yet to be displayed and are waiting for the exact timing.
   final Queue<OsuNote> upcomingNoteQueue = Queue();
+
+  /// Used to store a note that is currently playing through a drag action.
+  OsuNote? _currentDraggableNote;
 
   /// Determines the priority of the next note to display, so that is is always
   /// visually in front of the note after it.
@@ -63,20 +66,29 @@ class OsuNoteArea extends PositionComponent
   }
 
   void addNote({
+    required double duration,
     required int interval,
     required int exactTiming,
     required double xPercentage,
     required double yPercentage,
+    required double xPercentageEnd,
+    required double yPercentageEnd,
     required String label,
   }) {
     // Create note component.
     final double timeNoteIsInQueue =
         (interval * SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) +
             (interval * OsuNote.timingRingHitAllowanceModifier);
+    final noteStartingPosition =
+        calculateNotePosition(xPercentage, yPercentage);
+    final noteEndingPosition =
+        calculateNotePosition(xPercentageEnd, yPercentageEnd);
     final OsuNote noteComponent = OsuNote(
       diameter: noteDiameter,
-      position: calculateNotePosition(xPercentage, yPercentage),
+      position: noteStartingPosition,
+      endRelativePosition: (noteEndingPosition - noteStartingPosition),
       anchor: Anchor.center,
+      holdDuration: duration,
       timeNoteIsInQueue: microsecondsToSeconds(timeNoteIsInQueue),
       expectedTimeOfStart: microsecondsToSeconds(exactTiming),
       beatInterval: interval,
@@ -110,6 +122,10 @@ class OsuNoteArea extends PositionComponent
     }
     // If a note was hit.
     if (successfulHitOnNote != null) {
+      // If this is a held/draggable note, save a copy now.
+      if (successfulHitOnNote.holdDuration > 0) {
+        _currentDraggableNote = successfulHitOnNote;
+      }
       // Update UI.
       noteQueue.remove(successfulHitOnNote);
       successfulHitOnNote.hit();
@@ -121,6 +137,16 @@ class OsuNoteArea extends PositionComponent
       performHighlight(Colors.red);
       // Reset score streak;
       gameRef.currentLevel.scoreComponent.resetStreak();
+    }
+  }
+
+  @override
+  void onDragUpdate(DragUpdateEvent event) {}
+
+  @override
+  void onDragEnd(DragEndEvent event) {
+    if (_currentDraggableNote != null) {
+      _currentDraggableNote = null;
     }
   }
 
