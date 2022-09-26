@@ -6,7 +6,7 @@ import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
-import 'package:untitled_rhythm_game/components/games/osu/osu_note_bar2.dart';
+import 'package:untitled_rhythm_game/components/games/osu/osu_note_bar.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 
@@ -54,7 +54,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   late final CircleComponent _noteBorder;
   late final SpriteComponent _sprite;
   late final TextComponent _labelComponent;
-  OsuNoteBar2? _noteBar;
+  OsuNoteBar? _noteBar;
 
   OsuNote({
     required double diameter,
@@ -185,7 +185,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
 
     // Add note bar if it is a held note.
     if (holdDuration > 0) {
-      add(_noteBar = OsuNoteBar2(
+      add(_noteBar = OsuNoteBar(
         startCircleCenterPosition: size / 2,
         endCircleCenterPosition: endRelativePosition + (size / 2),
         noteRadius: size.x / 2,

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
-class OsuNoteBar2 extends ShapeComponent {
+class OsuNoteBar extends ShapeComponent {
   Vector2 startCircleCenterPosition;
   Vector2 endCircleCenterPosition;
   double noteRadius;
@@ -13,7 +13,7 @@ class OsuNoteBar2 extends ShapeComponent {
     ..style = PaintingStyle.stroke
     ..strokeWidth = 5;
 
-  OsuNoteBar2({
+  OsuNoteBar({
     required this.startCircleCenterPosition,
     required this.endCircleCenterPosition,
     required this.noteRadius,
