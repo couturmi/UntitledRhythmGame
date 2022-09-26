@@ -130,17 +130,31 @@ class SongLevelCompleteComponent extends Component
   }
 
   String _calculateRanking() {
-    if (songScore.score >= songScore.bestPotentialScore) {
+    // if (songScore.score >= songScore.bestPotentialScore) {
+    //   return "SS";
+    // } else if (songScore.score >= songScore.bestPotentialScore * 0.90) {
+    //   return "S";
+    // } else if (songScore.score >= songScore.bestPotentialScore * 0.75) {
+    //   return "A";
+    // } else if (songScore.score >= songScore.bestPotentialScore * 0.60) {
+    //   return "B";
+    // } else if (songScore.score >= songScore.bestPotentialScore * 0.45) {
+    //   return "C";
+    // } else if (songScore.score >= songScore.bestPotentialScore * 0.30) {
+    //   return "D";
+    // }
+    double percentage = calculateNotesHitPercentage();
+    if (percentage >= 100.0) {
       return "SS";
-    } else if (songScore.score >= songScore.bestPotentialScore * 0.90) {
+    } else if (percentage >= 98.0) {
       return "S";
-    } else if (songScore.score >= songScore.bestPotentialScore * 0.75) {
+    } else if (percentage >= 95.0) {
       return "A";
-    } else if (songScore.score >= songScore.bestPotentialScore * 0.60) {
+    } else if (percentage >= 90.0) {
       return "B";
-    } else if (songScore.score >= songScore.bestPotentialScore * 0.45) {
+    } else if (percentage >= 85.0) {
       return "C";
-    } else if (songScore.score >= songScore.bestPotentialScore * 0.30) {
+    } else if (percentage >= 80.0) {
       return "D";
     }
     return "oof";

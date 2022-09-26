@@ -5,10 +5,10 @@ import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/osu/osu_note_bar2.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
-import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   /// Scale of the timing ring when the note is created.
@@ -29,8 +29,11 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   /// Time (in seconds) that this note was expected to be loaded.
   final double expectedTimeOfStart;
 
-  /// Time (in microseconds) of a single beat.
-  final int beatInterval;
+  /// Represents the exact song time (in seconds) that the score was updated for holding the note.
+  double? lastPointUpdateTime;
+
+  /// Time (in seconds) of a single beat.
+  final double beatInterval;
 
   /// Max time (in seconds) that the note is able to be tapped.
   final double timeNoteIsInQueue;
@@ -91,9 +94,18 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   double get currentTimingOfNote =>
       gameRef.currentLevel.songTime - expectedTimeOfStart;
 
+  /// Relevant to held notes only. Represents the exact time the note is expected to finish.
+  double get expectedTimeOfFinish =>
+      expectedTimeOfStart +
+      ((holdDuration + SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) *
+          beatInterval);
+
   /// Gives the current position of the tappable note circle, relative to the parent's area.
   Vector2 get currentPositionOfNoteCircle =>
       position + _noteFill.position - (size / 2);
+
+  /// Gives the current absolute position of the tappable note circle (center).
+  Vector2 get currentAbsoluteCenterOfNoteCircle => _noteFill.absoluteCenter;
 
   Future<void> onLoad() async {
     add(_noteFill = CircleComponent(
@@ -116,7 +128,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
         ..style = PaintingStyle.stroke
         ..strokeWidth = 10,
       radius: size.x / 2 -
-          3, // the -3 here is because the stroke goes outside of the radisu that the [_noteFill] renders.
+          3, // the -3 here is because the stroke goes outside of the radius that the [_noteFill] renders.
       position: size / 2,
       anchor: Anchor.center,
       priority: 3,
@@ -140,12 +152,12 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
     _noteBorder.setOpacity(0);
     _sprite.setOpacity(0);
     double currentTiming = currentTimingOfNote;
-    _noteFill.add(OpacityEffect.fadeIn(LinearEffectController(
-        microsecondsToSeconds(beatInterval - currentTiming))));
-    _noteBorder.add(OpacityEffect.fadeIn(LinearEffectController(
-        microsecondsToSeconds(beatInterval - currentTiming))));
-    _sprite.add(OpacityEffect.fadeIn(LinearEffectController(
-        microsecondsToSeconds(beatInterval - currentTiming))));
+    _noteFill.add(OpacityEffect.fadeIn(
+        LinearEffectController(beatInterval - currentTiming)));
+    _noteBorder.add(OpacityEffect.fadeIn(
+        LinearEffectController(beatInterval - currentTiming)));
+    _sprite.add(OpacityEffect.fadeIn(
+        LinearEffectController(beatInterval - currentTiming)));
     // Create timing ring component and add scaling effect.
     _timingRing = CircleComponent(
       radius: size.x / 2,
@@ -166,9 +178,9 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
     _timingRing.add(
       ScaleEffect.to(
           Vector2.all(1),
-          LinearEffectController(microsecondsToSeconds(
+          LinearEffectController(
               (beatInterval * SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) -
-                  currentTiming))),
+                  currentTiming)),
     );
 
     // Add note bar if it is a held note.
@@ -181,8 +193,8 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
         priority: 0,
       ));
       _noteBar!.setOpacity(0);
-      _noteBar!.add(OpacityEffect.fadeIn(LinearEffectController(
-          microsecondsToSeconds(beatInterval - currentTiming))));
+      _noteBar!.add(OpacityEffect.fadeIn(
+          LinearEffectController(beatInterval - currentTiming)));
     }
     await super.onLoad();
   }
@@ -208,32 +220,79 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
       _timingRing
           .add(ScaleEffect.to(Vector2.all(2.0), LinearEffectController(0.1)));
       // Move note along the NoteBar path.
-      _timingRing.add(MoveEffect.to(
-          endRelativePosition + (size / 2),
-          LinearEffectController(
-              microsecondsToSeconds(beatInterval * holdDuration))));
-      _sprite.add(MoveEffect.to(
-          endRelativePosition + (size / 2),
-          LinearEffectController(
-              microsecondsToSeconds(beatInterval * holdDuration))));
-      _noteBorder.add(MoveEffect.to(
-          endRelativePosition + (size / 2),
-          LinearEffectController(
-              microsecondsToSeconds(beatInterval * holdDuration))));
-      _noteFill.add(
-        MoveEffect.to(
-            endRelativePosition + (size / 2),
-            LinearEffectController(
-                microsecondsToSeconds(beatInterval * holdDuration)))
-          ..onComplete = () {
-            // remove the note after a short time of displaying.
-            add(RemoveEffect(delay: 0.1));
-          },
-      );
+      _timingRing.add(MoveEffect.to(endRelativePosition + (size / 2),
+          LinearEffectController(beatInterval * holdDuration)));
+      _sprite.add(MoveEffect.to(endRelativePosition + (size / 2),
+          LinearEffectController(beatInterval * holdDuration)));
+      _noteBorder.add(MoveEffect.to(endRelativePosition + (size / 2),
+          LinearEffectController(beatInterval * holdDuration)));
+      _noteFill.add(MoveEffect.to(endRelativePosition + (size / 2),
+          LinearEffectController(beatInterval * holdDuration)));
+      // set last point update time to the start of the note hit.
+      lastPointUpdateTime = gameRef.currentLevel.songTime;
     } else {
       _timingRing.scale = Vector2.all(0);
       // remove the note after a short time of displaying.
       add(RemoveEffect(delay: 0.1));
+    }
+  }
+
+  /// Called when the player is dragging within range of the note.
+  void inDraggingRange() {
+    // Only take action if player is re-entering dragging range.
+    if (lastPointUpdateTime == null) {
+      // lastPointUpdateTime should be reset to notify parent that this note should now be awarding points
+      lastPointUpdateTime = gameRef.currentLevel.songTime;
+      // Expand timing ring so timing can be seen under your finger.
+      _timingRing.children.removeWhere((c) => c is ScaleEffect);
+      _timingRing
+          .add(ScaleEffect.to(Vector2.all(2.0), LinearEffectController(0.1)));
+    }
+  }
+
+  /// Called when the player is no longer dragging within range of the note.
+  void leftDraggingRange() {
+    // Only take action if player was last within range.
+    if (lastPointUpdateTime != null) {
+      // Clear lastPointUpdateTime to notify parent that this note should no longer be awarding points.
+      lastPointUpdateTime = null;
+      // Shrink timing ring to let user know they are no longer in range.
+      _timingRing.children.removeWhere((c) => c is ScaleEffect);
+      _timingRing
+          .add(ScaleEffect.to(Vector2.all(1.0), LinearEffectController(0.1)));
+    }
+  }
+
+  /// Called when the the end of the held note was reached.
+  void endOfNoteBarReached() {
+    // If player was in range of note when it ended, add HapticFeedback.
+    if (lastPointUpdateTime != null) {
+      HapticFeedback.mediumImpact();
+    }
+    // remove the note after a short time of displaying.
+    add(RemoveEffect(delay: 0.1));
+  }
+
+  /// If in range, update score for a held note (since the last time it was updated).
+  void updateHeldNoteScoreIfInRange() {
+    if (lastPointUpdateTime != null) {
+      late double percentageOfBeatInterval;
+      bool isNoteDurationFinished =
+          gameRef.currentLevel.songTime >= expectedTimeOfFinish;
+      if (isNoteDurationFinished) {
+        percentageOfBeatInterval =
+            (expectedTimeOfFinish - lastPointUpdateTime!) / beatInterval;
+      } else {
+        percentageOfBeatInterval =
+            (gameRef.currentLevel.songTime - lastPointUpdateTime!) /
+                beatInterval;
+      }
+      if (percentageOfBeatInterval > 0) {
+        gameRef.currentLevel.scoreComponent
+            .noteHeld(MiniGameType.osu, percentageOfBeatInterval);
+      }
+      // Update last updated score to now.
+      lastPointUpdateTime = gameRef.currentLevel.songTime;
     }
   }
 

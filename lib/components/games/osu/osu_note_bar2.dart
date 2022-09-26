@@ -104,22 +104,22 @@ class OsuNoteBar2 extends ShapeComponent {
 
     // draw center fill
     canvas.drawRect(
-      Rect.fromLTRB(
-        -1, // -1 to cover extra pixel that is not painted
+      Rect.fromLTWH(
+        -0.15, // -0.15 to cover extra pixel that is not painted
         -noteRadius,
-        hypotenuse + 1, // +1 to cover extra pixel that is not painted
-        noteRadius,
+        hypotenuse + 0.3, // +0.3 to cover extra pixel that is not painted
+        noteRadius * 2,
       ),
       paint,
     );
     // draw top connecting line
     canvas.drawLine(
       Offset(
-        -1, // -1 to cover extra pixel that is not painted
+        -0.15, // -0.15 to cover extra pixel that is not painted
         -noteRadius,
       ),
       Offset(
-        hypotenuse + 1, // +1 to cover extra pixel that is not painted
+        hypotenuse + 0.15, // +0.15 to cover extra pixel that is not painted
         -noteRadius,
       ),
       _outlinePaint,
@@ -127,11 +127,11 @@ class OsuNoteBar2 extends ShapeComponent {
     // draw bottom connecting line
     canvas.drawLine(
       Offset(
-        -1, // -1 to cover extra pixel that is not painted
+        -0.15, // -0.15 to cover extra pixel that is not painted
         noteRadius,
       ),
       Offset(
-        hypotenuse + 1, // +1 to cover extra pixel that is not painted
+        hypotenuse + 0.15, // +0.15 to cover extra pixel that is not painted
         noteRadius,
       ),
       _outlinePaint,

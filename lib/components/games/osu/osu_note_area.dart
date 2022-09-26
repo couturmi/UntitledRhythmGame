@@ -12,9 +12,13 @@ import 'package:untitled_rhythm_game/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class OsuNoteArea extends PositionComponent
-    with GameSizeAware, HasGameRef<MyGame>, DragCallbacks {
+    with GameSizeAware, HasGameRef<MyGame> {
   /// Diameter of a note.
   static const double noteDiameter = 120;
+
+  /// Represents the number of pixels outside the note to still consider the
+  /// draggable note as within range.
+  static const double dragRangeAllowanceModifier = 20;
 
   /// Margin for where the game area should be held. This is so the notes aren't
   /// added too close to the edge.
@@ -29,11 +33,17 @@ class OsuNoteArea extends PositionComponent
   /// Used to store a note that is currently playing through a drag action.
   OsuNote? _currentDraggableNote;
 
+  /// Represents the last drag event position that occurred to follow [_currentDraggableNote].
+  Vector2? lastDragPosition;
+
   /// Determines the priority of the next note to display, so that is is always
   /// visually in front of the note after it.
   int nextNotePriority = 999;
 
   OsuNoteArea() : super(anchor: Anchor.topLeft);
+
+  double get heldNoteHitBoxRadius =>
+      noteDiameter / 2 + dragRangeAllowanceModifier;
 
   Future<void> onLoad() async {
     size = this.gameSize - (gameAreaMargin * 2);
@@ -62,6 +72,35 @@ class OsuNoteArea extends PositionComponent
       }
       return false;
     });
+    // If note is draggable, award points if within range.
+    if (_currentDraggableNote != null) {
+      OsuNote note = _currentDraggableNote!;
+      // First, check if the [lastDragEvent] is in range of the current draggable note.
+      // If the player is dragging (within range of) the note.
+      if (lastDragPosition != null &&
+          note.currentAbsoluteCenterOfNoteCircle
+                  .distanceTo(lastDragPosition!) <=
+              heldNoteHitBoxRadius) {
+        note.inDraggingRange();
+        // Note: The only reason this is added in so many places is to show live progression of the score
+        // as the player holds the note. Otherwise, we could easily just calculate it after the player
+        // releases, but that's not as COOL.
+        note.updateHeldNoteScoreIfInRange();
+      }
+      // If the player is no longer dragging (within range of) the note.
+      else {
+        note.updateHeldNoteScoreIfInRange();
+        note.leftDraggingRange();
+      }
+
+      // If the note bar has run out, clear the note as the held note.
+      if (gameRef.currentLevel.songTime >= note.expectedTimeOfFinish) {
+        // Notify that end has been reached.
+        note.endOfNoteBarReached();
+        _currentDraggableNote = null;
+        lastDragPosition = null;
+      }
+    }
     super.update(dt);
   }
 
@@ -91,7 +130,7 @@ class OsuNoteArea extends PositionComponent
       holdDuration: duration,
       timeNoteIsInQueue: microsecondsToSeconds(timeNoteIsInQueue),
       expectedTimeOfStart: microsecondsToSeconds(exactTiming),
-      beatInterval: interval,
+      beatInterval: microsecondsToSeconds(interval),
       label: label,
       priority: nextNotePriority,
     );
@@ -132,21 +171,40 @@ class OsuNoteArea extends PositionComponent
       // Update score with hit.
       gameRef.currentLevel.scoreComponent.noteHit(MiniGameType.osu);
     }
-    // If a note was not hit.
-    else {
-      performHighlight(Colors.red);
-      // Reset score streak;
-      gameRef.currentLevel.scoreComponent.resetStreak();
+    // [lastDragPosition] is set to tap event position in case the user never
+    // ends up dragging, therefore never triggering an [onGameAreaDragUpdate()].
+    lastDragPosition = event.canvasPosition;
+  }
+
+  void onGameAreaDragUpdate(DragUpdateEvent event) {
+    if (_currentDraggableNote != null) {
+      // Update last drag position to current even position.
+      lastDragPosition = event.canvasPosition;
+      // Check if player is within dragging range of the note.
+      if (_currentDraggableNote!.currentAbsoluteCenterOfNoteCircle
+              .distanceTo(lastDragPosition!) <=
+          heldNoteHitBoxRadius) {
+        _currentDraggableNote!.inDraggingRange();
+      }
+      // If the player is no longer dragging (within range of) the note.
+      else {
+        _currentDraggableNote!.updateHeldNoteScoreIfInRange();
+        _currentDraggableNote!.leftDraggingRange();
+      }
     }
   }
 
-  @override
-  void onDragUpdate(DragUpdateEvent event) {}
-
-  @override
-  void onDragEnd(DragEndEvent event) {
+  void onGameAreaTapUp(TapUpEvent event) {
     if (_currentDraggableNote != null) {
-      _currentDraggableNote = null;
+      _currentDraggableNote!.updateHeldNoteScoreIfInRange();
+      _currentDraggableNote!.leftDraggingRange();
+    }
+  }
+
+  void onGameAreaDragEnd(DragEndEvent event) {
+    if (_currentDraggableNote != null) {
+      _currentDraggableNote!.updateHeldNoteScoreIfInRange();
+      _currentDraggableNote!.leftDraggingRange();
     }
   }
 
