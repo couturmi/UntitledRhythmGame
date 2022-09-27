@@ -59,6 +59,7 @@ class OsuGameComponent extends LandscapeMiniGameComponent
       yPercentage: noteModel.posY,
       xPercentageEnd: noteModel.posXEnd,
       yPercentageEnd: noteModel.posYEnd,
+      reversals: noteModel.reversals,
       label: noteModel.label,
     );
   }

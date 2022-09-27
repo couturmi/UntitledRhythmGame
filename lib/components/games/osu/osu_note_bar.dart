@@ -4,9 +4,11 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
 class OsuNoteBar extends ShapeComponent {
-  Vector2 startCircleCenterPosition;
-  Vector2 endCircleCenterPosition;
-  double noteRadius;
+  final Vector2 startCircleCenterPosition;
+  final Vector2 endCircleCenterPosition;
+  final double noteRadius;
+  bool showEndReverseArrow;
+  bool showStartReverseArrow;
 
   final Paint _outlinePaint = Paint()
     ..color = Colors.white
@@ -17,6 +19,8 @@ class OsuNoteBar extends ShapeComponent {
     required this.startCircleCenterPosition,
     required this.endCircleCenterPosition,
     required this.noteRadius,
+    required this.showEndReverseArrow,
+    required this.showStartReverseArrow,
     super.paint,
     super.priority,
   }) : super(position: startCircleCenterPosition);
@@ -40,6 +44,14 @@ class OsuNoteBar extends ShapeComponent {
     angle = angleToEndCircle;
 
     await super.onLoad();
+  }
+
+  void hideEndReverseArrow() {
+    showEndReverseArrow = false;
+  }
+
+  void hideStartReverseArrow() {
+    showStartReverseArrow = false;
   }
 
   @override
@@ -136,5 +148,61 @@ class OsuNoteBar extends ShapeComponent {
       ),
       _outlinePaint,
     );
+
+    // Draw start arrow if necessary
+    if (showStartReverseArrow) {
+      canvas.drawArc(
+        Rect.fromLTWH(
+          -noteRadius,
+          -noteRadius,
+          noteRadius * 2,
+          noteRadius * 2,
+        ),
+        0,
+        pi * 2,
+        true,
+        Paint()
+          ..color = _outlinePaint.color
+              .withOpacity(min(_outlinePaint.color.opacity, 0.6)),
+      );
+      final tipPath = Path();
+      tipPath.moveTo(-(noteRadius / 2), -(noteRadius / 4));
+      tipPath.lineTo(0, -(noteRadius / 4));
+      tipPath.lineTo(0, -(noteRadius / 2));
+      tipPath.lineTo((noteRadius / 2), 0);
+      tipPath.lineTo(0, (noteRadius / 2));
+      tipPath.lineTo(0, (noteRadius / 4));
+      tipPath.lineTo(-(noteRadius / 2), (noteRadius / 4));
+      tipPath.close();
+      canvas.drawPath(tipPath, paint);
+    }
+
+    // Draw end arrow if necessary
+    if (showEndReverseArrow) {
+      canvas.drawArc(
+        Rect.fromLTWH(
+          hypotenuse - noteRadius,
+          -noteRadius,
+          noteRadius * 2,
+          noteRadius * 2,
+        ),
+        0,
+        pi * 2,
+        true,
+        Paint()
+          ..color = _outlinePaint.color
+              .withOpacity(min(_outlinePaint.color.opacity, 0.6)),
+      );
+      final tipPath = Path();
+      tipPath.moveTo(hypotenuse + (noteRadius / 2), -(noteRadius / 4));
+      tipPath.lineTo(hypotenuse, -(noteRadius / 4));
+      tipPath.lineTo(hypotenuse, -(noteRadius / 2));
+      tipPath.lineTo(hypotenuse - (noteRadius / 2), 0);
+      tipPath.lineTo(hypotenuse, (noteRadius / 2));
+      tipPath.lineTo(hypotenuse, (noteRadius / 4));
+      tipPath.lineTo(hypotenuse + (noteRadius / 2), (noteRadius / 4));
+      tipPath.close();
+      canvas.drawPath(tipPath, paint);
+    }
   }
 }

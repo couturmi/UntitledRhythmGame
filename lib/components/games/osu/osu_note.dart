@@ -26,6 +26,13 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   /// A note with no holding will have a [holdDuration] of 0;
   final double holdDuration;
 
+  /// Number of times the note should reverse after reaching the end of its hold duration.
+  /// This will essentially mean the "total" hold duration is: ([holdDuration] * [reversals]).
+  final int reversals;
+
+  /// Used to track the number of reversals that have occurred.
+  int _currentReverseCount;
+
   /// Time (in seconds) that this note was expected to be loaded.
   final double expectedTimeOfStart;
 
@@ -63,11 +70,13 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
     super.anchor,
     super.priority,
     required this.holdDuration,
+    required this.reversals,
     required this.expectedTimeOfStart,
     required this.timeNoteIsInQueue,
     required this.beatInterval,
     required this.label,
-  }) : super(
+  })  : _currentReverseCount = 0,
+        super(
           size: Vector2.all(diameter),
         ) {
     // If this is a new group, update the color index.
@@ -97,8 +106,9 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   /// Relevant to held notes only. Represents the exact time the note is expected to finish.
   double get expectedTimeOfFinish =>
       expectedTimeOfStart +
-      ((holdDuration + SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) *
-          beatInterval);
+      (beatInterval *
+          (SongLevelComponent.INTERVAL_TIMING_MULTIPLIER +
+              (holdDuration * (reversals + 1))));
 
   /// Gives the current position of the tappable note circle, relative to the parent's area.
   Vector2 get currentPositionOfNoteCircle =>
@@ -189,6 +199,8 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
         startCircleCenterPosition: size / 2,
         endCircleCenterPosition: endRelativePosition + (size / 2),
         noteRadius: size.x / 2,
+        showEndReverseArrow: reversals > 0,
+        showStartReverseArrow: reversals > 1,
         paint: Paint()..color = noteColor.darken(0.2),
         priority: 0,
       ));
@@ -219,21 +231,54 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
       // Expand timing ring so timing can be seen under your finger.
       _timingRing
           .add(ScaleEffect.to(Vector2.all(2.0), LinearEffectController(0.1)));
-      // Move note along the NoteBar path.
-      _timingRing.add(MoveEffect.to(endRelativePosition + (size / 2),
-          LinearEffectController(beatInterval * holdDuration)));
-      _sprite.add(MoveEffect.to(endRelativePosition + (size / 2),
-          LinearEffectController(beatInterval * holdDuration)));
-      _noteBorder.add(MoveEffect.to(endRelativePosition + (size / 2),
-          LinearEffectController(beatInterval * holdDuration)));
-      _noteFill.add(MoveEffect.to(endRelativePosition + (size / 2),
-          LinearEffectController(beatInterval * holdDuration)));
+      // Move note along the NoteBar path. Any reversals occur automatically.
+      _timingRing.add(MoveEffect.to(
+          endRelativePosition + (size / 2),
+          _OsuReversalEffectController(
+            effectDuration: beatInterval * holdDuration,
+            reversals: reversals,
+          )));
+      _sprite.add(MoveEffect.to(
+          endRelativePosition + (size / 2),
+          _OsuReversalEffectController(
+            effectDuration: beatInterval * holdDuration,
+            reversals: reversals,
+          )));
+      _noteBorder.add(MoveEffect.to(
+          endRelativePosition + (size / 2),
+          _OsuReversalEffectController(
+            effectDuration: beatInterval * holdDuration,
+            reversals: reversals,
+          )));
+      // Manually create the alternating effect in order to track when each end is reached.
+      _noteFill.add(MoveEffect.to(
+          endRelativePosition + (size / 2),
+          _OsuReversalEffectController(
+            effectDuration: beatInterval * holdDuration,
+            reversals: reversals,
+            onEffectCompleted: _onReversal,
+          )));
       // set last point update time to the start of the note hit.
       lastPointUpdateTime = gameRef.currentLevel.songTime;
     } else {
       _timingRing.scale = Vector2.all(0);
       // remove the note after a short time of displaying.
       add(RemoveEffect(delay: 0.1));
+    }
+  }
+
+  /// When a drag note reversal occurs, check if an arrow should be removed
+  /// from either end of the note.
+  void _onReversal() {
+    _currentReverseCount++;
+    if (reversals - _currentReverseCount == 1) {
+      reversals.isOdd
+          ? _noteBar?.hideStartReverseArrow()
+          : _noteBar?.hideEndReverseArrow();
+    } else if (reversals - _currentReverseCount == 0) {
+      reversals.isOdd
+          ? _noteBar?.hideEndReverseArrow()
+          : _noteBar?.hideStartReverseArrow();
     }
   }
 
@@ -270,7 +315,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
       HapticFeedback.mediumImpact();
     }
     // remove the note after a short time of displaying.
-    add(RemoveEffect(delay: 0.1));
+    fadeOutAndRemove(duration: 0.1, delay: 0.1);
   }
 
   /// If in range, update score for a held note (since the last time it was updated).
@@ -307,11 +352,79 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
           ColorFilter.mode(Colors.red.withOpacity(0.5), BlendMode.overlay);
     // Add a fade out and fall effect.
     add(MoveEffect.by(Vector2(0, 25), LinearEffectController(0.2)));
-    _noteFill.add(OpacityEffect.fadeOut(LinearEffectController(0.2)));
-    _noteBorder.add(OpacityEffect.fadeOut(LinearEffectController(0.2)));
-    _sprite.add(OpacityEffect.fadeOut(LinearEffectController(0.2)));
-    _noteBar?.add(OpacityEffect.fadeOut(LinearEffectController(0.2)));
+    fadeOutAndRemove(duration: 0.2);
+  }
+
+  void fadeOutAndRemove({
+    required double duration,
+    double delay = 0.0,
+  }) {
+    _timingRing.add(OpacityEffect.fadeOut(DelayedEffectController(
+        LinearEffectController(duration),
+        delay: delay)));
+    _noteFill.add(OpacityEffect.fadeOut(DelayedEffectController(
+        LinearEffectController(duration),
+        delay: delay)));
+    _noteBorder.add(OpacityEffect.fadeOut(DelayedEffectController(
+        LinearEffectController(duration),
+        delay: delay)));
+    _sprite.add(OpacityEffect.fadeOut(DelayedEffectController(
+        LinearEffectController(duration),
+        delay: delay)));
+    _noteBar?.add(OpacityEffect.fadeOut(DelayedEffectController(
+        LinearEffectController(duration),
+        delay: delay)));
     // remove the note after a short time of displaying.
-    add(RemoveEffect(delay: 0.2));
+    add(RemoveEffect(delay: duration + delay));
+  }
+}
+
+class _OsuReversalEffectController extends _OsuSequenceEffectController {
+  final double effectDuration;
+  final int reversals;
+  final Function? onEffectCompleted;
+
+  _OsuReversalEffectController({
+    required this.effectDuration,
+    required this.reversals,
+    this.onEffectCompleted,
+  }) : super(
+          buildEffectList(reversals, effectDuration),
+          onEffectCompleted: onEffectCompleted,
+        );
+
+  static List<EffectController> buildEffectList(
+      int reversals, double effectDuration) {
+    List<EffectController> effectList = [];
+    for (int i = 0; i <= reversals; i++) {
+      if (i.isEven) {
+        effectList.add(LinearEffectController(effectDuration));
+      } else {
+        effectList.add(ReverseLinearEffectController(effectDuration));
+      }
+    }
+    return effectList;
+  }
+}
+
+class _OsuSequenceEffectController extends SequenceEffectController {
+  int _effectsCompleted;
+
+  final Function? onEffectCompleted;
+
+  _OsuSequenceEffectController(super.controllers, {this.onEffectCompleted})
+      : _effectsCompleted = 0;
+
+  @override
+  double advance(double dt) {
+    var t = super.advance(dt);
+    // check if a child effect was completed.
+    for (int i = _effectsCompleted; i < children.length; i++) {
+      if (children[i].completed) {
+        _effectsCompleted++;
+        onEffectCompleted?.call();
+      }
+    }
+    return t;
   }
 }

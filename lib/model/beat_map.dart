@@ -116,6 +116,7 @@ class BeatModel {
 class NoteModel {
   final double timing;
   final double duration; // in percentage of beat interval.
+  final int reversals;
   final int column;
   final double posX;
   final double posY;
@@ -124,8 +125,9 @@ class NoteModel {
   final String label;
 
   NoteModel.fromJson(Map<String, dynamic> json)
-      : timing = json["timing"] ?? 0,
-        duration = json["duration"] ?? 0,
+      : timing = json["timing"] ?? 0.0,
+        duration = json["duration"] ?? 0.0,
+        reversals = json["reversals"] ?? 0,
         column = json["column"] ?? 0,
         posX = double.tryParse(json["posX"].toString()) ?? 0.0,
         posY = double.tryParse(json["posY"].toString()) ?? 0.0,

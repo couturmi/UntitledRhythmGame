@@ -16,7 +16,7 @@ class MiiChannelBackgroundComponent extends LevelBackgroundComponent
       size: max(gameSize.x * 1.5, gameSize.y * 1.5),
       position: Vector2(0, 0),
       anchor: Anchor.center,
-      paint: Paint()..color = Colors.black.withOpacity(0.2),
+      paint: Paint()..color = Colors.black.withOpacity(0.15),
     );
     add(dimOverlay);
     await super.onLoad();

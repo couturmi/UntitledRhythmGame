@@ -112,6 +112,7 @@ class OsuNoteArea extends PositionComponent
     required double yPercentage,
     required double xPercentageEnd,
     required double yPercentageEnd,
+    required int reversals,
     required String label,
   }) {
     // Create note component.
@@ -128,6 +129,7 @@ class OsuNoteArea extends PositionComponent
       endRelativePosition: (noteEndingPosition - noteStartingPosition),
       anchor: Anchor.center,
       holdDuration: duration,
+      reversals: reversals,
       timeNoteIsInQueue: microsecondsToSeconds(timeNoteIsInQueue),
       expectedTimeOfStart: microsecondsToSeconds(exactTiming),
       beatInterval: microsecondsToSeconds(interval),
