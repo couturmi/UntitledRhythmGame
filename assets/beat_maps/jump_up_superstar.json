@@ -461,11 +461,10 @@
           {"timing": 0.25,
             "posX": 0.25,
             "posY": 1.0,
-            "label":  "4"},
-          {"timing": 0.75,
-            "posX": 1.0,
-            "posY": 0.5,
-            "label":  "5"}
+            "duration": 0.5,
+            "posXEnd": 0.0,
+            "posYEnd": 0.5,
+            "label":  "4"}
         ],
         [],
         [],
@@ -479,35 +478,33 @@
           {"timing": 0.0,
             "posX": 0.3,
             "posY": 0.3,
+            "duration": 0.25,
+            "posXEnd": 0.5,
+            "posYEnd": 0.4,
             "label":  "2"},
-          {"timing": 0.25,
-            "posX": 0.5,
-            "posY": 0.4,
-            "label":  "3"},
           {"timing": 0.75,
             "posX": 0.8,
             "posY": 0.2,
-            "label":  "4"}
+            "label":  "3"}
         ],
         [
           {"timing": 0.5,
             "posX": 0.8,
             "posY": 0.7,
-            "label":  "5"}
+            "label":  "4"}
         ],
         [
           {"timing": 0.0,
             "posX": 0.0,
             "posY": 0.8,
-            "label":  "6"},
+            "label":  "5"},
           {"timing": 0.25,
             "posX": 0.2,
             "posY": 0.7,
-            "label":  "7"},
-          {"timing": 0.75,
-            "posX": 0.5,
-            "posY": 0.6,
-            "label":  "8"}
+            "duration": 0.5,
+            "posXEnd": 0.5,
+            "posYEnd": 0.6,
+            "label":  "6"}
         ],
         [],
         [
