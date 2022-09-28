@@ -42,9 +42,6 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   /// Time (in seconds) of a single beat.
   final double beatInterval;
 
-  /// Max time (in seconds) that the note is able to be tapped.
-  final double timeNoteIsInQueue;
-
   /// For held notes, the position that the note should be dragged to, relative to the starting position.
   final Vector2 endRelativePosition;
 
@@ -72,7 +69,6 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
     required this.holdDuration,
     required this.reversals,
     required this.expectedTimeOfStart,
-    required this.timeNoteIsInQueue,
     required this.beatInterval,
     required this.label,
   })  : _currentReverseCount = 0,
@@ -102,6 +98,20 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
 
   double get currentTimingOfNote =>
       gameRef.currentLevel.songTime - expectedTimeOfStart;
+
+  /// Earliest time (in seconds) that the note is able to be tapped.
+  double get timeNoteCanBeHit =>
+      (beatInterval * SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) -
+      (beatInterval * OsuNote.timingRingHitAllowanceModifier);
+
+  /// Max time (in seconds) that the note is able to be tapped.
+  double get timeNoteIsInQueue =>
+      (beatInterval * SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) +
+      (beatInterval * OsuNote.timingRingHitAllowanceModifier);
+
+  /// Exact time (in seconds) that the timing circle should reach the scale of 1.
+  double get timingCircleCompletionTime =>
+      beatInterval * SongLevelComponent.INTERVAL_TIMING_MULTIPLIER;
 
   /// Relevant to held notes only. Represents the exact time the note is expected to finish.
   double get expectedTimeOfFinish =>
@@ -179,18 +189,15 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
         ..strokeWidth = 3,
       priority: 2,
     );
-    final double currentProgress = currentTiming / timeNoteIsInQueue;
+    final double currentProgress = currentTiming / timingCircleCompletionTime;
     _timingRing.scale = Vector2.all(
       timingRingStartingScale -
           (min(currentProgress, 1) * timingRingStartingScale),
     );
     add(_timingRing);
     _timingRing.add(
-      ScaleEffect.to(
-          Vector2.all(1),
-          LinearEffectController(
-              (beatInterval * SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) -
-                  currentTiming)),
+      ScaleEffect.to(Vector2.all(1),
+          LinearEffectController(timingCircleCompletionTime - currentTiming)),
     );
 
     // Add note bar if it is a held note.
@@ -213,7 +220,8 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
 
   /// Check if the current hit timing would result in a successful hit.
   bool isHitTimingSuccessful() {
-    return _timingRing.scale.x <= 1 + timingRingHitAllowanceModifier;
+    return currentTimingOfNote >= timeNoteCanBeHit &&
+        currentTimingOfNote <= timeNoteIsInQueue;
   }
 
   /// Called if a note is tapped and cleared successfully.

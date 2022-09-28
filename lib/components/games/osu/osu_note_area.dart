@@ -64,7 +64,7 @@ class OsuNoteArea extends PositionComponent
     });
     // Check if the note was definitely missed, and should be removed from hittable notes queue.
     noteQueue.removeWhere((note) {
-      if (note.currentTimingOfNote >= note.timeNoteIsInQueue) {
+      if (note.currentTimingOfNote > note.timeNoteIsInQueue) {
         note.missed();
         // Update score with miss.
         gameRef.currentLevel.scoreComponent.missed(MiniGameType.osu);
@@ -116,9 +116,6 @@ class OsuNoteArea extends PositionComponent
     required String label,
   }) {
     // Create note component.
-    final double timeNoteIsInQueue =
-        (interval * SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) +
-            (interval * OsuNote.timingRingHitAllowanceModifier);
     final noteStartingPosition =
         calculateNotePosition(xPercentage, yPercentage);
     final noteEndingPosition =
@@ -130,7 +127,6 @@ class OsuNoteArea extends PositionComponent
       anchor: Anchor.center,
       holdDuration: duration,
       reversals: reversals,
-      timeNoteIsInQueue: microsecondsToSeconds(timeNoteIsInQueue),
       expectedTimeOfStart: microsecondsToSeconds(exactTiming),
       beatInterval: microsecondsToSeconds(interval),
       label: label,
