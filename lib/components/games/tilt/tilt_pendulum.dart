@@ -88,9 +88,9 @@ class TiltPendulum extends PositionComponent with GameSizeAware {
   }
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    this.onResize(gameSize);
-    position = Vector2(gameSize.x / 2, gameSize.y);
-    super.onGameResize(gameSize);
+  void onGameResize(Vector2 canvasSize) {
+    this.onResize(canvasSize);
+    position = Vector2(this.gameSize.x / 2, this.gameSize.y);
+    super.onGameResize(canvasSize);
   }
 }

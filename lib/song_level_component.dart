@@ -12,6 +12,7 @@ import 'package:untitled_rhythm_game/components/games/osu/osu_game_component.dar
 import 'package:untitled_rhythm_game/components/games/slide/slide_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_board.dart';
+import 'package:untitled_rhythm_game/components/games/taptap/taptap_landscape/taptap_landscape_board.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/transition/minigame_transition_component.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
@@ -128,6 +129,12 @@ class SongLevelComponent extends PositionComponent
           break;
         case MiniGameType.tapTap:
           currentGameComponent = TapTapBoardComponent(
+            model: nextMiniGameModel,
+            beatInterval: beatMap.beatInterval,
+          );
+          break;
+        case MiniGameType.tapTap5:
+          currentGameComponent = TapTapLandscapeBoardComponent(
             model: nextMiniGameModel,
             beatInterval: beatMap.beatInterval,
           );
@@ -317,11 +324,11 @@ class SongLevelComponent extends PositionComponent
   }
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    this.onResize(gameSize);
+  void onGameResize(Vector2 canvasSize) {
+    this.onResize(canvasSize);
     anchor = Anchor.center;
     size = gameSize;
     position = gameSize / 2;
-    super.onGameResize(gameSize);
+    super.onGameResize(canvasSize);
   }
 }

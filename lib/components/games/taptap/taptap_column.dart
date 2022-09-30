@@ -7,7 +7,6 @@ import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
-import 'package:untitled_rhythm_game/components/games/taptap/taptap_board.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
@@ -24,6 +23,9 @@ class TapTapColumn extends PositionComponent
 
   /// Represents the maximum percentage of the Y-axis that the note should travel before removal.
   static const double noteMaxBoundaryModifier = 1.0;
+
+  /// Total number of columns that make up this TapTap board.
+  final int numberOfColumns;
 
   /// Column placement in board (from the left).
   final int columnIndex;
@@ -43,13 +45,15 @@ class TapTapColumn extends PositionComponent
   /// visually in front of the note after it.
   int nextNotePriority = 999;
 
-  TapTapColumn({required this.columnIndex});
+  TapTapColumn({
+    required this.columnIndex,
+    required this.numberOfColumns,
+  });
 
   @override
   Future<void> onLoad() async {
     anchor = Anchor.topLeft;
-    size =
-        Vector2(gameSize.x / TapTapBoardComponent.numberOfColumns, gameSize.y);
+    size = Vector2(gameSize.x / numberOfColumns, gameSize.y);
 
     final columnBoundaries = RectangleComponent(
       size: Vector2(size.x, size.y + 100),
@@ -60,7 +64,7 @@ class TapTapColumn extends PositionComponent
         ..strokeWidth = 1.5,
     );
     hitCircle = CircleComponent(
-      radius: gameSize.x / 6,
+      radius: gameSize.x / (numberOfColumns * 2),
       position: Vector2(0, gameSize.y * hitCircleYPlacementModifier),
       anchor: Anchor.centerLeft,
       paint: Paint()..color = Colors.white.withOpacity(0.6),
@@ -128,7 +132,7 @@ class TapTapColumn extends PositionComponent
   }) {
     // Create note component.
     final TapTapNote noteComponent = TapTapNote(
-      diameter: gameSize.x / 3,
+      diameter: gameSize.x / numberOfColumns,
       position: Vector2(0, 0),
       anchor: Anchor.centerLeft,
       holdDuration: duration,
@@ -197,10 +201,9 @@ class TapTapColumn extends PositionComponent
   }
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    super.onGameResize(gameSize);
-    this.onResize(gameSize);
-    position = Vector2(
-        (gameSize.x / TapTapBoardComponent.numberOfColumns) * columnIndex, 0);
+  void onGameResize(Vector2 canvasSize) {
+    super.onGameResize(canvasSize);
+    this.onResize(canvasSize);
+    position = Vector2((this.gameSize.x / numberOfColumns) * columnIndex, 0);
   }
 }

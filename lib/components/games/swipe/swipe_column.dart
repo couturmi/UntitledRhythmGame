@@ -96,10 +96,11 @@ class SwipeColumn extends PositionComponent
   }
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    super.onGameResize(gameSize);
-    this.onResize(gameSize);
+  void onGameResize(Vector2 canvasSize) {
+    super.onGameResize(canvasSize);
+    this.onResize(canvasSize);
     position = Vector2(
-        (gameSize.x / SwipeGameComponent.numberOfColumns) * columnIndex, 0);
+        (this.gameSize.x / SwipeGameComponent.numberOfColumns) * columnIndex,
+        0);
   }
 }

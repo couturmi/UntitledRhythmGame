@@ -1,17 +1,17 @@
-import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
+import 'package:untitled_rhythm_game/components/games/landscape_minigame_component.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_column.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 
-class TapTapBoardComponent extends MiniGameComponent {
+class TapTapLandscapeBoardComponent extends LandscapeMiniGameComponent {
   /// Total number of columns that make up this TapTap board.
   final int numberOfColumns;
 
   late List<TapTapColumn> _columns;
 
-  TapTapBoardComponent(
+  TapTapLandscapeBoardComponent(
       {required super.model,
       required super.beatInterval,
-      this.numberOfColumns = 3});
+      this.numberOfColumns = 5});
 
   @override
   Future<void> onLoad() async {
