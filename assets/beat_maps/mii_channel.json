@@ -312,14 +312,121 @@
       ]
     },
     {
-      "game": "tapTap",
+      "game": "tapTap5",
       "beats": [
+        [
+          {"timing": 0.0,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "duration": 1.5,
+            "column": 4}
+        ],
+        [
+          {"timing": 0.5,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "duration": 1.0,
+            "column": 4}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.0,
+            "column": 3},
+          {"timing": 0.5,
+            "column": 1},
+          {"timing": 0.5,
+            "column": 3}
+        ],
+        [],
         [
           {"timing": 0.0,
             "column": 0},
           {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 3},
+          {"timing": 0.5,
+            "duration": 1.0,
+            "column": 4}
+        ],
+        [
+          {"timing": 0.5,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "duration": 1.0,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 2}
+        ],
+
+
+        [
+          {"timing": 0.0,
+            "column": 2},
+          {"timing": 0.5,
+            "column": 4}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 3},
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 2},
+          {"timing": 0.5,
+            "column": 1}
+        ],
+
+        [
+          {"timing": 0.0,
+            "duration": 1.0,
             "column": 0}
-        ]
+        ],
+        [
+          {"timing": 0.0,
+            "duration": 1.0,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "duration": 1.5,
+            "column": 2},
+          {"timing": 0.0,
+            "duration": 1.5,
+            "column": 3}
+        ],
+        [
+          {"timing": 0.5,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "duration": 2.0,
+            "column": 3}
+        ],
+        [],
+        []
       ]
     }
   ]

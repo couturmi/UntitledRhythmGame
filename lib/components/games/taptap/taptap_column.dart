@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -14,8 +15,8 @@ import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class TapTapColumn extends PositionComponent
     with TapCallbacks, GameSizeAware, HasGameRef<MyGame> {
-  /// Represents the Y placement of the hit circle out of the game size's full Y axis.
-  static const double hitCircleYPlacementModifier = 0.85;
+  /// Represents the default value [hitCircleYPlacementModifier].
+  static const double hitCircleYPlacementModifierDefault = 0.85;
 
   /// Represents how much of the game size's full Y axis should be allowed above
   /// or below a hit circle to consider a note hit successful.
@@ -26,6 +27,9 @@ class TapTapColumn extends PositionComponent
 
   /// Total number of columns that make up this TapTap board.
   final int numberOfColumns;
+
+  /// Represents the Y placement of the hit circle out of the game size's full Y axis.
+  late final double hitCircleYPlacementModifier;
 
   /// Column placement in board (from the left).
   final int columnIndex;
@@ -54,6 +58,12 @@ class TapTapColumn extends PositionComponent
   Future<void> onLoad() async {
     anchor = Anchor.topLeft;
     size = Vector2(gameSize.x / numberOfColumns, gameSize.y);
+    hitCircleYPlacementModifier = min(
+      // default
+      hitCircleYPlacementModifierDefault,
+      // percentage if the note is placed directly at the bottom of the screen.
+      ((gameSize.y - (gameSize.x / (numberOfColumns * 2))) / gameSize.y) - 0.02,
+    );
 
     final columnBoundaries = RectangleComponent(
       size: Vector2(size.x, size.y + 100),
@@ -139,6 +149,7 @@ class TapTapColumn extends PositionComponent
       interval: microsecondsToSeconds(interval),
       expectedTimeOfStart: microsecondsToSeconds(exactTiming),
       priority: nextNotePriority,
+      hitCircleYPlacementModifier: hitCircleYPlacementModifier,
     );
     nextNotePriority--;
     upcomingNoteQueue.addFirst(noteComponent);
