@@ -30,6 +30,10 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   /// This will essentially mean the "total" hold duration is: ([holdDuration] * [reversals]).
   final int reversals;
 
+  /// True if the movement needs to be started for the note bar. This should only be set to true
+  /// once the note is hit.
+  bool _movementNeedsInitialization;
+
   /// Used to track the number of reversals that have occurred.
   int _currentReverseCount;
 
@@ -72,6 +76,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
     required this.beatInterval,
     required this.label,
   })  : _currentReverseCount = 0,
+        _movementNeedsInitialization = false,
         super(
           size: Vector2.all(diameter),
         ) {
@@ -239,40 +244,53 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
       // Expand timing ring so timing can be seen under your finger.
       _timingRing
           .add(ScaleEffect.to(Vector2.all(2.0), LinearEffectController(0.1)));
-      // Move note along the NoteBar path. Any reversals occur automatically.
-      _timingRing.add(MoveEffect.to(
-          endRelativePosition + (size / 2),
-          _OsuReversalEffectController(
-            effectDuration: beatInterval * holdDuration,
-            reversals: reversals,
-          )));
-      _sprite.add(MoveEffect.to(
-          endRelativePosition + (size / 2),
-          _OsuReversalEffectController(
-            effectDuration: beatInterval * holdDuration,
-            reversals: reversals,
-          )));
-      _noteBorder.add(MoveEffect.to(
-          endRelativePosition + (size / 2),
-          _OsuReversalEffectController(
-            effectDuration: beatInterval * holdDuration,
-            reversals: reversals,
-          )));
-      // Manually create the alternating effect in order to track when each end is reached.
-      _noteFill.add(MoveEffect.to(
-          endRelativePosition + (size / 2),
-          _OsuReversalEffectController(
-            effectDuration: beatInterval * holdDuration,
-            reversals: reversals,
-            onEffectCompleted: _onReversal,
-          )));
-      // set last point update time to the start of the note hit.
-      lastPointUpdateTime = gameRef.currentLevel.songTime;
+      // Notify that movement can start when timing is right.
+      _movementNeedsInitialization = true;
     } else {
       _timingRing.scale = Vector2.all(0);
       // remove the note after a short time of displaying.
       add(RemoveEffect(delay: 0.1));
     }
+  }
+
+  /// Called when the timing has occurred to move the note down the note bar path.
+  void startNoteMovement() {
+    double initialEffectDuration = beatInterval * holdDuration -
+        (currentTimingOfNote - timingCircleCompletionTime);
+    double effectDuration = beatInterval * holdDuration;
+    _timingRing.add(MoveEffect.to(
+        endRelativePosition + (size / 2),
+        _OsuReversalEffectController(
+          initialEffectDuration: initialEffectDuration,
+          effectDuration: effectDuration,
+          reversals: reversals,
+        )));
+    _sprite.add(MoveEffect.to(
+        endRelativePosition + (size / 2),
+        _OsuReversalEffectController(
+          initialEffectDuration: initialEffectDuration,
+          effectDuration: effectDuration,
+          reversals: reversals,
+        )));
+    _noteBorder.add(MoveEffect.to(
+        endRelativePosition + (size / 2),
+        _OsuReversalEffectController(
+          initialEffectDuration: initialEffectDuration,
+          effectDuration: effectDuration,
+          reversals: reversals,
+        )));
+    // Manually create the alternating effect in order to track when each end is reached.
+    _noteFill.add(MoveEffect.to(
+        endRelativePosition + (size / 2),
+        _OsuReversalEffectController(
+          initialEffectDuration: initialEffectDuration,
+          effectDuration: effectDuration,
+          reversals: reversals,
+          onEffectCompleted: _onReversal,
+        )));
+
+    // set last point update time to the start of the note movement.
+    lastPointUpdateTime = gameRef.currentLevel.songTime;
   }
 
   /// When a drag note reversal occurs, check if an arrow should be removed
@@ -288,12 +306,15 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
           ? _noteBar?.hideEndReverseArrow()
           : _noteBar?.hideStartReverseArrow();
     }
+    if (reversals - _currentReverseCount >= 0) {
+      HapticFeedback.mediumImpact();
+    }
   }
 
   /// Called when the player is dragging within range of the note.
   void inDraggingRange() {
-    // Only take action if player is re-entering dragging range.
-    if (lastPointUpdateTime == null) {
+    // Only take action if player is re-entering dragging range, and movement has started.
+    if (lastPointUpdateTime == null && !_movementNeedsInitialization) {
       // lastPointUpdateTime should be reset to notify parent that this note should now be awarding points
       lastPointUpdateTime = gameRef.currentLevel.songTime;
       // Expand timing ring so timing can be seen under your finger.
@@ -385,27 +406,51 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
     // remove the note after a short time of displaying.
     add(RemoveEffect(delay: duration + delay));
   }
+
+  @override
+  void update(double dt) {
+    // Check if the note can start to be moved.
+    if (_movementNeedsInitialization &&
+        currentTimingOfNote >= timingCircleCompletionTime) {
+      _movementNeedsInitialization = false;
+      // Move note along the NoteBar path. Any reversals occur automatically.
+      startNoteMovement();
+    }
+    super.update(dt);
+  }
 }
 
 class _OsuReversalEffectController extends _OsuSequenceEffectController {
+  /// Duration (in seconds) for the first effect in the initial direction.
+  /// This is used if the effect is added late due to the player hitting the note late.
+  final double? initialEffectDuration;
+
+  /// Duration (in seconds) for an effect in one direction.
   final double effectDuration;
   final int reversals;
   final Function? onEffectCompleted;
 
   _OsuReversalEffectController({
+    this.initialEffectDuration,
     required this.effectDuration,
     required this.reversals,
     this.onEffectCompleted,
   }) : super(
-          buildEffectList(reversals, effectDuration),
+          buildEffectList(reversals, initialEffectDuration, effectDuration),
           onEffectCompleted: onEffectCompleted,
         );
 
   static List<EffectController> buildEffectList(
-      int reversals, double effectDuration) {
+    int reversals,
+    double? initialEffectDuration,
+    double effectDuration,
+  ) {
     List<EffectController> effectList = [];
     for (int i = 0; i <= reversals; i++) {
-      if (i.isEven) {
+      if (i == 0) {
+        effectList.add(
+            LinearEffectController(initialEffectDuration ?? effectDuration));
+      } else if (i.isEven) {
         effectList.add(LinearEffectController(effectDuration));
       } else {
         effectList.add(ReverseLinearEffectController(effectDuration));
