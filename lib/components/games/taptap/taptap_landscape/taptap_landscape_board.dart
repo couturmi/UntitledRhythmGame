@@ -11,7 +11,7 @@ class TapTapLandscapeBoardComponent extends LandscapeMiniGameComponent {
   TapTapLandscapeBoardComponent(
       {required super.model,
       required super.beatInterval,
-      this.numberOfColumns = 5});
+      this.numberOfColumns = 7});
 
   @override
   Future<void> onLoad() async {

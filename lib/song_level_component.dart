@@ -133,7 +133,7 @@ class SongLevelComponent extends PositionComponent
             beatInterval: beatMap.beatInterval,
           );
           break;
-        case MiniGameType.tapTap5:
+        case MiniGameType.tapTap7:
           currentGameComponent = TapTapLandscapeBoardComponent(
             model: nextMiniGameModel,
             beatInterval: beatMap.beatInterval,

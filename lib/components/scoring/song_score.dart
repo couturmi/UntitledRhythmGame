@@ -86,7 +86,7 @@ class SongScore {
       case MiniGameType.tapTap:
         basePoints = _tapTapNoteBasePoints;
         break;
-      case MiniGameType.tapTap5:
+      case MiniGameType.tapTap7:
         basePoints = _tapTapNoteBasePoints;
         break;
       case MiniGameType.osu:
