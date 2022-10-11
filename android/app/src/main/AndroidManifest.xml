@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.untitled_rhythm_game">
    <application
-        android:label="untitled_rhythm_game"
+        android:label="OffBeat"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
