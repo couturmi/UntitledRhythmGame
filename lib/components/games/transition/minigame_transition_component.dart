@@ -27,6 +27,7 @@ class GameTransitionComponent extends MiniGameComponent
 
   late final Component title;
   late final Component subTitle;
+  Component? subTitle2;
 
   GameTransitionComponent(
       {required this.nextMiniGameType,
@@ -38,12 +39,16 @@ class GameTransitionComponent extends MiniGameComponent
   @override
   Future<void> onLoad() async {
     anchor = Anchor.center;
+    String subtitleLine2 = getMiniGameNameLine2(nextMiniGameType);
+    bool hasTwoLines = subtitleLine2.isNotEmpty;
+    double yCenter = hasTwoLines ? -50 : -20;
+
     title = TextComponent(
       text: isStartingTransition ? firstGameTitle : nextUpTitle,
       textRenderer: TextPaint(
           style: TextStyle(
               color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold)),
-      position: Vector2(0, -50),
+      position: Vector2(0, yCenter - 30),
       anchor: Anchor.center,
     );
     subTitle = TextComponent(
@@ -51,9 +56,21 @@ class GameTransitionComponent extends MiniGameComponent
       textRenderer: TextPaint(
           style: TextStyle(
               color: Colors.white, fontSize: 72, fontWeight: FontWeight.bold)),
-      position: Vector2(0, 10),
+      position: Vector2(0, yCenter + 30),
       anchor: Anchor.center,
     );
+    if (hasTwoLines) {
+      subTitle2 = TextComponent(
+        text: subtitleLine2.toUpperCase(),
+        textRenderer: TextPaint(
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 72,
+                fontWeight: FontWeight.bold)),
+        position: Vector2(0, yCenter + 95),
+        anchor: Anchor.center,
+      );
+    }
     super.onLoad();
   }
 
@@ -70,6 +87,9 @@ class GameTransitionComponent extends MiniGameComponent
     // Add Subtitle.
     if (miniGameBeatCount == SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) {
       add(subTitle);
+      if (subTitle2 != null) {
+        add(subTitle2!);
+      }
     }
     // Rotate component.
     if (miniGameBeatCount ==

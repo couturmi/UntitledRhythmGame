@@ -29,12 +29,21 @@ String getMiniGameName(MiniGameType game) {
     case MiniGameType.slide:
       return "←Drag→";
     case MiniGameType.swipe:
-      return "←Dodge→";
+      return "Swipe to";
     case MiniGameType.gameTransition:
       throw ArgumentError(
           "This is a transition, and not a true mini-game, and "
           "therefore has no reason to have an associated name",
           game.toString());
+  }
+}
+
+String getMiniGameNameLine2(MiniGameType game) {
+  switch (game) {
+    case MiniGameType.swipe:
+      return "←Dodge→";
+    default:
+      return "";
   }
 }
 
