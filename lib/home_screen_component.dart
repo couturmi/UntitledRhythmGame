@@ -1,11 +1,18 @@
+import 'dart:math';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/menu/play_button.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
 class HomeScreenComponent extends Component
     with HasGameRef<MyGame>, GameSizeAware {
+  static const double backgroundCircleLifespan = 6.0;
+  static const double backgroundCircleFadeTime = 1.0;
+  late Timer backgroundCircleTimer;
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -24,8 +31,35 @@ class HomeScreenComponent extends Component
         position: gameSize / 2 + Vector2(0, 50),
       ),
     ]);
+    // Load background particle system.
+    Random rnd = Random();
+    backgroundCircleTimer = Timer(0.5, repeat: true, onTick: () {
+      final circleComponent = CircleComponent(
+        priority: -1,
+        paint: Paint()..color = Colors.deepPurple,
+        radius: max((gameSize.x / 2) * rnd.nextDouble(), gameSize.x * 0.2),
+        anchor: Anchor.center,
+        position: Vector2(
+            gameSize.x * rnd.nextDouble(), gameSize.y * rnd.nextDouble()),
+      );
+      add(circleComponent);
+      circleComponent.setOpacity(0);
+      circleComponent.add(MoveEffect.by(
+          (Vector2.random() - Vector2.random()) * 80,
+          LinearEffectController(backgroundCircleLifespan)));
+      circleComponent.add(OpacityEffect.to(max(rnd.nextDouble(), 0.4),
+          LinearEffectController(backgroundCircleFadeTime)));
+      circleComponent.add(OpacityEffect.fadeOut(
+        DelayedEffectController(
+            LinearEffectController(backgroundCircleFadeTime),
+            delay: backgroundCircleLifespan - backgroundCircleFadeTime),
+        onComplete: () {
+          remove(circleComponent);
+        },
+      ));
+    });
     // Play menu music.
-    FlameAudio.bgm.play('music/menu.mp3');
+    FlameAudio.bgm.play('music/menu.mp3', volume: 0.8);
     FlameAudio.audioCache.load('effects/button_click.mp3');
   }
 
@@ -36,7 +70,13 @@ class HomeScreenComponent extends Component
   }
 
   void goToMenu() {
-    FlameAudio.play('effects/button_click.mp3');
+    FlameAudio.play('effects/button_click.mp3', volume: 0.8);
     gameRef.router.pushNamed(GameRoutes.menuSongList.name);
+  }
+
+  @override
+  void update(double dt) {
+    backgroundCircleTimer.update(dt);
+    super.update(dt);
   }
 }
