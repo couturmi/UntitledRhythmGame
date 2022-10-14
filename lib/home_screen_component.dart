@@ -32,35 +32,40 @@ class HomeScreenComponent extends Component
       ),
     ]);
     // Load background particle system.
-    Random rnd = Random();
+    _addRandomBackgroundCircle();
+    _addRandomBackgroundCircle();
     backgroundCircleTimer = Timer(0.5, repeat: true, onTick: () {
-      final circleComponent = CircleComponent(
-        priority: -1,
-        paint: Paint()..color = Colors.deepPurple,
-        radius: max((gameSize.x / 2) * rnd.nextDouble(), gameSize.x * 0.2),
-        anchor: Anchor.center,
-        position: Vector2(
-            gameSize.x * rnd.nextDouble(), gameSize.y * rnd.nextDouble()),
-      );
-      add(circleComponent);
-      circleComponent.setOpacity(0);
-      circleComponent.add(MoveEffect.by(
-          (Vector2.random() - Vector2.random()) * 80,
-          LinearEffectController(backgroundCircleLifespan)));
-      circleComponent.add(OpacityEffect.to(max(rnd.nextDouble(), 0.4),
-          LinearEffectController(backgroundCircleFadeTime)));
-      circleComponent.add(OpacityEffect.fadeOut(
-        DelayedEffectController(
-            LinearEffectController(backgroundCircleFadeTime),
-            delay: backgroundCircleLifespan - backgroundCircleFadeTime),
-        onComplete: () {
-          remove(circleComponent);
-        },
-      ));
+      _addRandomBackgroundCircle();
     });
     // Play menu music.
     FlameAudio.bgm.play('music/menu.mp3', volume: 0.8);
     FlameAudio.audioCache.load('effects/button_click.mp3');
+  }
+
+  void _addRandomBackgroundCircle() {
+    Random rnd = Random();
+    final circleComponent = CircleComponent(
+      priority: -1,
+      paint: Paint()..color = Colors.deepPurple,
+      radius: max((gameSize.x / 2) * rnd.nextDouble(), gameSize.x * 0.2),
+      anchor: Anchor.center,
+      position:
+          Vector2(gameSize.x * rnd.nextDouble(), gameSize.y * rnd.nextDouble()),
+    );
+    add(circleComponent);
+    circleComponent.setOpacity(0);
+    circleComponent.add(MoveEffect.by(
+        (Vector2.random() - Vector2.random()) * 80,
+        LinearEffectController(backgroundCircleLifespan)));
+    circleComponent.add(OpacityEffect.to(max(rnd.nextDouble(), 0.4),
+        LinearEffectController(backgroundCircleFadeTime)));
+    circleComponent.add(OpacityEffect.fadeOut(
+      DelayedEffectController(LinearEffectController(backgroundCircleFadeTime),
+          delay: backgroundCircleLifespan - backgroundCircleFadeTime),
+      onComplete: () {
+        remove(circleComponent);
+      },
+    ));
   }
 
   @override
