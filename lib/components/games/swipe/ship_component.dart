@@ -98,8 +98,8 @@ class ShipComponent extends SpriteComponent
           removeOnFinish: true,
         ));
         HapticFeedback.heavyImpact();
-        // Reset score streak;
-        gameRef.currentLevel.scoreComponent.missed(MiniGameType.swipe);
+        // Notify score of collision.
+        gameRef.currentLevel.scoreComponent.collision(MiniGameType.swipe);
       }
     }
     super.onCollision(points, other);

@@ -28,8 +28,6 @@ class SwipeObstacle extends PositionComponent
   /// True when the player/ship has collided with this obstacle.
   bool hasCollidedWithShip = false;
 
-  bool isRemovingFromParent = false;
-
   SwipeObstacle({
     super.position,
     super.priority,
@@ -61,17 +59,6 @@ class SwipeObstacle extends PositionComponent
     add(MoveEffect.to(Vector2(0, fullObstacleTravelDistance),
         LinearEffectController(timeObstacleIsVisible - currentTiming)));
     await super.onLoad();
-  }
-
-  @override
-  void update(double dt) {
-    // Check if the obstacle should be removed from the scene.
-    if (currentTimingOfObstacle >= timeObstacleIsVisible &&
-        !isRemovingFromParent) {
-      isRemovingFromParent = true;
-      removeFromParent();
-    }
-    super.update(dt);
   }
 
   @override

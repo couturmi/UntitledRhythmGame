@@ -37,6 +37,8 @@ class SongLevelCompleteComponent extends Component
     } else {
       rankingColor = Colors.teal;
     }
+    bool anyNotes = songScore.totalNotes > 0;
+    bool anyObstacles = songScore.totalObstacles > 0;
     addAll([
       TextComponent(
         text: songBeatMap.songName,
@@ -90,21 +92,37 @@ class SongLevelCompleteComponent extends Component
         anchor: Anchor.center,
         position: Vector2(gameSize.x / 2, gameSize.y / 2 - 25),
       ),
-      TextComponent(
-        text: "${calculateNotesHitPercentage()}% Notes Hit",
-        textRenderer: TextPaint(
-            style: TextStyle(
-                fontFamily: 'Courier', color: Colors.amber, fontSize: 28)),
-        anchor: Anchor.center,
-        position: Vector2(gameSize.x / 2, gameSize.y / 2 + 25),
-      ),
+      if (anyNotes)
+        TextComponent(
+          text: "${calculateNotesHitPercentage()}% Notes Hit",
+          textRenderer: TextPaint(
+              style: TextStyle(
+                  fontFamily: 'Courier', color: Colors.amber, fontSize: 28)),
+          anchor: Anchor.center,
+          position: Vector2(gameSize.x / 2, gameSize.y / 2 + 25),
+        ),
+      if (anyObstacles)
+        TextComponent(
+          text: "${calculateObstaclesAvoidedPercentage()}% Obstacles Avoided",
+          textRenderer: TextPaint(
+              style: TextStyle(
+                  fontFamily: 'Courier', color: Colors.amber, fontSize: 24)),
+          anchor: Anchor.center,
+          position: Vector2(
+              gameSize.x / 2, gameSize.y / 2 + 25 + (anyNotes ? 50 : 0)),
+        ),
       TextComponent(
         text: "Longest Streak",
         textRenderer: TextPaint(
             style: TextStyle(
                 fontFamily: 'Courier', color: Colors.red, fontSize: 24)),
         anchor: Anchor.center,
-        position: Vector2(gameSize.x / 2, (gameSize.y / 2) + 75),
+        position: Vector2(
+            gameSize.x / 2,
+            (gameSize.y / 2) +
+                25 +
+                (anyNotes ? 50 : 0) +
+                (anyObstacles ? 50 : 0)),
       ),
       TextComponent(
         text: "${songScore.highestStreak} Notes!",
@@ -112,7 +130,12 @@ class SongLevelCompleteComponent extends Component
             style: TextStyle(
                 fontFamily: 'Courier', color: Colors.red, fontSize: 28)),
         anchor: Anchor.center,
-        position: Vector2(gameSize.x / 2, (gameSize.y / 2) + 110),
+        position: Vector2(
+            gameSize.x / 2,
+            (gameSize.y / 2) +
+                60 +
+                (anyNotes ? 50 : 0) +
+                (anyObstacles ? 50 : 0)),
       ),
       PlayButton(
         onButtonTap: goToMenu,
@@ -127,42 +150,44 @@ class SongLevelCompleteComponent extends Component
     print(
         "Total Notes Possible: ${songScore.notesHit + songScore.notesMissed}");
     print("Total Notes Hit: ${songScore.notesHit}");
+    print(
+        "Total Obstacles: ${songScore.obstaclesAvoided + songScore.obstaclesCollided}");
+    print("Total Obstacles Avoided: ${songScore.obstaclesAvoided}");
   }
 
   String _calculateRanking() {
-    // if (songScore.score >= songScore.bestPotentialScore) {
-    //   return "SS";
-    // } else if (songScore.score >= songScore.bestPotentialScore * 0.90) {
-    //   return "S";
-    // } else if (songScore.score >= songScore.bestPotentialScore * 0.75) {
-    //   return "A";
-    // } else if (songScore.score >= songScore.bestPotentialScore * 0.60) {
-    //   return "B";
-    // } else if (songScore.score >= songScore.bestPotentialScore * 0.45) {
-    //   return "C";
-    // } else if (songScore.score >= songScore.bestPotentialScore * 0.30) {
-    //   return "D";
-    // }
-    double percentage = calculateNotesHitPercentage();
-    if (percentage >= 100.0) {
+    final double totalPercentage =
+        (((songScore.notesHit + songScore.obstaclesAvoided) /
+                        (songScore.totalNotes + songScore.totalObstacles)) *
+                    1000)
+                .floor() /
+            10;
+    print("Total Weighted Ranking Percentage: $totalPercentage%");
+    if (totalPercentage >= 100.0) {
       return "SS";
-    } else if (percentage >= 98.0) {
+    } else if (totalPercentage >= 98.0) {
       return "S";
-    } else if (percentage >= 95.0) {
+    } else if (totalPercentage >= 95.0) {
       return "A";
-    } else if (percentage >= 90.0) {
+    } else if (totalPercentage >= 90.0) {
       return "B";
-    } else if (percentage >= 85.0) {
+    } else if (totalPercentage >= 85.0) {
       return "C";
-    } else if (percentage >= 80.0) {
+    } else if (totalPercentage >= 80.0) {
       return "D";
     }
     return "oof";
   }
 
   double calculateNotesHitPercentage() {
-    return ((songScore.notesHit /
-                (max(songScore.notesHit + songScore.notesMissed, 1)) *
+    return ((songScore.notesHit / (max(songScore.totalNotes, 1)) * 1000)
+            .floor()) /
+        10;
+  }
+
+  double calculateObstaclesAvoidedPercentage() {
+    return ((songScore.obstaclesAvoided /
+                (max(songScore.totalObstacles, 1)) *
                 1000)
             .floor()) /
         10;

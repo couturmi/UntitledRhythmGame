@@ -15,6 +15,7 @@ import 'package:untitled_rhythm_game/components/games/taptap/taptap_board.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_landscape/taptap_landscape_board.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/transition/minigame_transition_component.dart';
+import 'package:untitled_rhythm_game/components/games/undertale/undertale_game_component.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_component.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
@@ -159,6 +160,12 @@ class SongLevelComponent extends PositionComponent
           break;
         case MiniGameType.swipe:
           currentGameComponent = SwipeGameComponent(
+            model: nextMiniGameModel,
+            beatInterval: beatMap.beatInterval,
+          );
+          break;
+        case MiniGameType.undertale:
+          currentGameComponent = UndertaleGameComponent(
             model: nextMiniGameModel,
             beatInterval: beatMap.beatInterval,
           );
