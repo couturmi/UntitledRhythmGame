@@ -87,7 +87,7 @@ class UndertaleGunner extends PositionComponent with HasGameRef<MyGame> {
     // Prepare bullet sprite.
     _bulletComponent = UndertaleBullet(
       priority: 0,
-      size: Vector2.all(radius * 2),
+      size: Vector2.all(radius * 2.5),
       anchor: Anchor.center,
     );
     super.onLoad();

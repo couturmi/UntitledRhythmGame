@@ -489,7 +489,260 @@
       ]
     },
     {
-      "game": "osu",
+      "game": "undertale",
+      "beats": [
+        [],
+        [
+          {"timing": 0.0,
+            "posYEnd": 1,
+            "posX": 0.4
+          },
+          {"timing": 0.5,
+            "posYEnd": 1,
+            "posX": 0.2
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posXEnd": -1,
+            "posY": 0.3
+          },
+          {"timing": 0.5,
+            "posXEnd": -1,
+            "posY": 0.6
+          }
+        ],
+        [
+          {"timing": 0.5,
+            "posYEnd": -1,
+            "posX": 0.9
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posYEnd": -1,
+            "posX": 0.7
+          }
+        ],
+        [],
+        [
+          {"timing": 0.0,
+            "posXEnd": 1,
+            "posY": 0.0
+          },
+          {"timing": 0.5,
+            "posXEnd": 1,
+            "posY": 0.5
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posXEnd": 1,
+            "posY": 0.2
+          },
+          {"timing": 0.5,
+            "posYEnd": 1,
+            "posX": 0.3
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posYEnd": 1,
+            "posX": 0.2
+          },
+          {"timing": 0.5,
+            "posYEnd": 1,
+            "posX": 0.1
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posYEnd": 1,
+            "posX": 0.8
+          },
+          {"timing": 0.5,
+            "posXEnd": -1,
+            "posY": 0.8
+          }
+        ],
+
+
+        [
+          {"timing": 0.0,
+            "posYEnd": -1,
+            "posX": 1.0
+          },
+          {"timing": 0.0,
+            "posYEnd": -1,
+            "posX": 0.9
+          },
+          {"timing": 0.0,
+            "posYEnd": -1,
+            "posX": 0.8
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posYEnd": -1,
+            "posX": 0.7
+          },
+          {"timing": 0.0,
+            "posYEnd": -1,
+            "posX": 0.6
+          },
+          {"timing": 0.0,
+            "posYEnd": -1,
+            "posX": 0.5
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posYEnd": -1,
+            "posX": 0.4
+          },
+          {"timing": 0.0,
+            "posYEnd": -1,
+            "posX": 0.3
+          },
+          {"timing": 0.0,
+            "posYEnd": -1,
+            "posX": 0.2
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posXEnd": -1,
+            "posY": 0.9
+          },
+          {"timing": 0.5,
+            "posXEnd": 1,
+            "posY": 0.7
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posXEnd": 1,
+            "posY": 0.6
+          },
+          {"timing": 0.5,
+            "posXEnd": -1,
+            "posY": 0.8
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posYEnd": 1,
+            "posX": 0.1
+          },
+          {"timing": 0.0,
+            "posYEnd": 1,
+            "posX": 0.4
+          },
+          {"timing": 0.5,
+            "posYEnd": 1,
+            "posX": 0.1
+          },
+          {"timing": 0.5,
+            "posYEnd": 1,
+            "posX": 0.4
+          }
+        ],
+        [],
+        [
+          {"timing": 0.0,
+            "posXEnd": -1,
+            "posY": 0.1
+          },
+          {"timing": 0.0,
+            "posXEnd": 1,
+            "posY": 0.1
+          },
+          {"timing": 0.5,
+            "posXEnd": -1,
+            "posY": 0.3
+          },
+          {"timing": 0.5,
+            "posXEnd": 1,
+            "posY": 0.3
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posXEnd": -1,
+            "posY": 0.1
+          },
+          {"timing": 0.0,
+            "posXEnd": 1,
+            "posY": 0.1
+          },
+          {"timing": 0.5,
+            "posXEnd": -1,
+            "posY": 0.5
+          },
+          {"timing": 0.5,
+            "posXEnd": 1,
+            "posY": 0.5
+          }
+        ],
+        [
+          {"timing": 0.5,
+            "posYEnd": -1,
+            "posX": 0.5
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posYEnd": -1,
+            "posX": 0.0
+          }
+        ],
+        [
+          {"timing": 0.5,
+            "posYEnd": -1,
+            "posX": 1.0
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posYEnd": -1,
+            "posX": 0.5
+          },
+          {"timing": 0.5,
+            "posYEnd": 1,
+            "posX": 0.6
+          }
+        ],
+        [
+          {"timing": 0.0,
+            "posYEnd": 1,
+            "posX": 0.9
+          },
+          {"timing": 0.5,
+            "posYEnd": 1,
+            "posX": 0.7
+          }
+        ],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "game": "gameTransition",
+      "beats": [
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}]
+      ]
+    },
+    {
+      "game": "slide",
       "beats": [
         []
       ]

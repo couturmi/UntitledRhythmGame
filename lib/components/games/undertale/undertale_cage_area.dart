@@ -32,6 +32,9 @@ class UndertaleCageArea extends PositionComponent
     required this.joystick,
   });
 
+  /// Actual size of the area the player can move around in.
+  Vector2 get playAreaSize => size - (_playerAreaMargin * 2);
+
   Future<void> onLoad() async {
     size = Vector2.all(gameSize.x) - (_gameAreaMargin * 2);
     final cageBoundaries = RectangleComponent(
@@ -94,16 +97,20 @@ class UndertaleCageArea extends PositionComponent
     late Vector2 gunnerStartingPosition;
     switch (entrySide) {
       case AxisDirection.left:
-        gunnerStartingPosition = Vector2(0, size.y * yPercentage);
+        gunnerStartingPosition =
+            Vector2(0, _playerAreaMargin.y + (playAreaSize.y * yPercentage));
         break;
       case AxisDirection.right:
-        gunnerStartingPosition = Vector2(size.x, size.y * yPercentage);
+        gunnerStartingPosition = Vector2(
+            size.x, _playerAreaMargin.y + (playAreaSize.y * yPercentage));
         break;
       case AxisDirection.up:
-        gunnerStartingPosition = Vector2(size.x * xPercentage, 0);
+        gunnerStartingPosition =
+            Vector2(_playerAreaMargin.x + (playAreaSize.x * xPercentage), 0);
         break;
       case AxisDirection.down:
-        gunnerStartingPosition = Vector2(size.x * xPercentage, size.y);
+        gunnerStartingPosition = Vector2(
+            _playerAreaMargin.x + (playAreaSize.x * xPercentage), size.y);
         break;
     }
     final newGunner = UndertaleGunner(
