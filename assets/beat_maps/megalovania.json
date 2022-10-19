@@ -835,58 +835,89 @@
           {"timing": 0.0,
             "column": 0},
           {"timing": 0.0,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.0,
+            "column": 1}],
+        [],
+        [],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.0,
             "column": 2}
         ],
-        [],
-        [],
-        [],
         [
           {"timing": 0.0,
-            "column": 1}
-        ],
-        [],
-        [
-          {"timing": 0.0,
-            "column": 0}
-        ],
-        [
-          {"timing": 0.0,
-            "column": 1}
-        ],
-        [],
-        [
+            "column": 0},
           {"timing": 0.0,
             "column": 2}],
         [],
-        [
-          {"timing": 0.0,
-            "column": 2}
-        ],
-        [
-          {"timing": 0.0,
-            "column": 1}
-        ],
         [],
         [
           {"timing": 0.0,
-            "column": 0}
-        ],
-        [
+            "column": 1},
           {"timing": 0.0,
             "column": 2}],
         [
           {"timing": 0.0,
             "column": 1},
           {"timing": 0.0,
+            "column": 2}],
+        [
+          {"timing": 0.0,
             "column": 2}
         ],
-        [],
-        [],
         [],
         [
           {"timing": 0.0,
             "column": 0},
-          {"timing": 0.5,
+          {"timing": 0.0,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1},
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.0,
             "column": 2}
         ],
         [
@@ -894,7 +925,9 @@
             "column": 0}
         ],
         [
-          {"timing": 0.5,
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.0,
             "column": 1}
         ],
         []
