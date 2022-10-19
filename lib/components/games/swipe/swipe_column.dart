@@ -90,8 +90,7 @@ class SwipeColumn extends PositionComponent
     return ((yPercentageTarget) *
             beatInterval *
             SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) /
-        // obstacle should arrive just before the actual location of the ship.
-        (ShipComponent.hitCircleYPlacementModifier - 0.1);
+        ShipComponent.hitCircleYPlacementModifier;
   }
 
   @override
