@@ -37,14 +37,19 @@ class UndertaleCageArea extends PositionComponent
 
   Future<void> onLoad() async {
     size = Vector2.all(gameSize.x) - (_gameAreaMargin * 2);
-    final cageBoundaries = RectangleComponent(
+    // Add cage boundaries.
+    add(RectangleComponent(
       priority: 1,
       size: size,
       paint: BasicPalette.white.paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3,
-    );
-    add(cageBoundaries);
+    ));
+    add(RectangleComponent(
+      priority: -1,
+      size: size,
+      paint: Paint()..color = Colors.black.withOpacity(0.2),
+    ));
 
     // Add player sprite
     add(_playerComponent = UndertalePlayer(
@@ -57,6 +62,14 @@ class UndertaleCageArea extends PositionComponent
 
   @override
   void update(double dt) {
+    // Check if any new gunners need to be added.
+    upcomingGunnerQueue.removeWhere((newNote) {
+      if (newNote.expectedTimeOfStart <= gameRef.currentLevel.songTime) {
+        add(newNote);
+        return true;
+      }
+      return false;
+    });
     // Updates the player location based on where the joystick is pointing.
     double? direction = joystick.getCurrentDirection();
     if (direction != null) {
@@ -75,15 +88,6 @@ class UndertaleCageArea extends PositionComponent
       }
       _playerComponent.position = newPosition;
     }
-
-    // Check if any new gunners need to be added.
-    upcomingGunnerQueue.removeWhere((newNote) {
-      if (newNote.expectedTimeOfStart <= gameRef.currentLevel.songTime) {
-        add(newNote);
-        return true;
-      }
-      return false;
-    });
     super.update(dt);
   }
 

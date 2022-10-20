@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
+import 'package:flame/flame.dart';
 import 'package:flutter/widgets.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_cage_area.dart';
@@ -15,6 +16,8 @@ class UndertaleGameComponent extends MiniGameComponent
 
   @override
   Future<void> onLoad() async {
+    Flame.images.load("bullet_1.png");
+    Flame.images.load("dragon.png");
     add(_joystick = UndertaleJoystick(
       anchor: Anchor.center,
       size: Vector2.all(100),

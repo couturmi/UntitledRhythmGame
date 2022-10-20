@@ -22,10 +22,10 @@ class SongScore {
   static const _slideNoteBasePoints = 75;
 
   /// Base points lost for hitting a Swipe/Dodge obstacle.
-  static const _swipeObstacleBasePoints = -500;
+  static const _swipeObstacleBasePoints = -300;
 
   /// Base points lost for hitting an Undertale obstacle.
-  static const _undertaleObstacleBasePoints = -300;
+  static const _undertaleObstacleBasePoints = -200;
 
   double _score = 0;
   double bestPotentialScore = 0;
