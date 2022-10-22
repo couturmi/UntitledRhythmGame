@@ -74,7 +74,7 @@ class UndertaleCageArea extends PositionComponent
     double? direction = joystick.getCurrentDirection();
     if (direction != null) {
       final Vector2 delta = Vector2(cos(direction), sin(direction));
-      final double deltaMultiplier = 4.5 * joystick.intensity;
+      final double deltaMultiplier = joystick.intensity * dt * 180;
       Vector2 newPosition =
           _playerComponent.position + (delta * deltaMultiplier);
 
