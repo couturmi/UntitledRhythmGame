@@ -2,6 +2,12 @@
   "name": "Mii Channel",
   "artist": "VGR",
   "bpm": 128,
+  "spriteReplacements": [
+    {
+      "identifier": "slide_bucket",
+      "path": "skydiver_mii.png"
+    }
+  ],
   "gameOrder": [
     {
       "game": "osu",
@@ -723,8 +729,6 @@
           }
         ],
         [],
-        [],
-        [],
         []
       ]
     },
@@ -744,7 +748,157 @@
     {
       "game": "slide",
       "beats": [
-        []
+        [
+          {"timing": 0.0,
+            "posX": 0.8},
+          {"timing": 0.5,
+            "posX": 0.7}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.8},
+          {"timing": 0.5,
+            "posX": 0.3}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.4},
+          {"timing": 0.5,
+            "posX": 0.5}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.7},
+          {"timing": 0.5,
+            "posX": 0.8}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.5},
+          {"timing": 0.5,
+            "posX": 0.7}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.8},
+          {"timing": 0.5,
+            "posX": 1.0}
+        ],
+        [
+          {"timing": 0.5,
+            "posX": 1.0}
+        ],
+        [
+          {"timing": 0.5,
+            "posX": 1.0}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.6},
+          {"timing": 0.5,
+            "posX": 0.7}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.6},
+          {"timing": 0.5,
+            "posX": 0.7}
+        ],
+
+        [
+          {"timing": 0.0,
+            "posX": 0.3}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.5},
+          {"timing": 0.5,
+            "posX": 0.2}
+        ],
+        [
+          {"timing": 0.5,
+            "posX": 0.5}
+        ],
+        [
+          {"timing": 0.5,
+            "posX": 0.3}
+        ],
+        [
+          {"timing": 0.5,
+            "posX": 0.5}
+        ],
+        [
+          {"timing": 0.5,
+            "posX": 0.3}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.2}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.5}
+        ],
+
+        [
+          {"timing": 0.0,
+            "posX": 0.0},
+          {"timing": 0.5,
+            "posX": 0.0}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.0}
+        ],
+        [],
+
+        [
+          {"timing": 0.0,
+            "posX": 1.0},
+          {"timing": 0.5,
+            "posX": 1.0}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.9},
+          {"timing": 0.5,
+            "posX": 1.0}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.8},
+          {"timing": 0.5,
+            "posX": 1.0}
+        ]
+      ]
+    },
+    {
+      "game": "gameTransition",
+      "beats": [
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}]
+      ]
+    },
+    {
+      "game": "osu",
+      "beats": [
+        [
+          {"timing": 0.0,
+            "posX": 0.7,
+            "posY": 0.2,
+            "duration": 0.5,
+            "reversals": 1,
+            "posXEnd": 0.9,
+            "posYEnd": 0.4,
+            "label":  "1"}
+        ],
+        [],
       ]
     }
   ]
