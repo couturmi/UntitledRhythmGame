@@ -45,15 +45,14 @@ class SwipeColumn extends PositionComponent
       }
       return false;
     });
-    // Check if any obstacles were avoided successfully, and if the player should be rewarded with points.
+    // Check if any obstacles should be removed.
     obstacleQueue.removeWhere((obstacle) {
       if (obstacle.currentTimingOfObstacle >= obstacle.timeObstacleIsVisible) {
-        // If ship did not collide with this obstacle, update score with points.
+        // If ship did not collide with this obstacle, notify score.
         if (!obstacle.hasCollidedWithShip) {
-          // Note: "Hit" in this case does not refer to hitting an obstacle,
-          // but to a successful action that should be awarded points.
-          gameRef.currentLevel.scoreComponent.noteHit(MiniGameType.swipe);
+          gameRef.currentLevel.scoreComponent.avoidedObstacle();
         }
+        obstacle.removeFromParent();
         return true;
       }
       return false;
@@ -91,15 +90,15 @@ class SwipeColumn extends PositionComponent
     return ((yPercentageTarget) *
             beatInterval *
             SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) /
-        // obstacle should arrive just before the actual location of the ship.
-        (ShipComponent.hitCircleYPlacementModifier - 0.1);
+        ShipComponent.hitCircleYPlacementModifier;
   }
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    super.onGameResize(gameSize);
-    this.onResize(gameSize);
+  void onGameResize(Vector2 canvasSize) {
+    super.onGameResize(canvasSize);
+    this.onResize(canvasSize);
     position = Vector2(
-        (gameSize.x / SwipeGameComponent.numberOfColumns) * columnIndex, 0);
+        (this.gameSize.x / SwipeGameComponent.numberOfColumns) * columnIndex,
+        0);
   }
 }

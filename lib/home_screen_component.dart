@@ -1,71 +1,87 @@
+import 'dart:math';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/menu/play_button.dart';
+import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
-class HomeScreenComponent extends Component with HasGameRef<MyGame> {
-  late final TextComponent _title;
-  late final TextComponent _title2;
-  late final TextComponent _title3;
-  late final PlayButton _playButton;
-
-  HomeScreenComponent() {
-    addAll([
-      _title = TextComponent(
-        priority: 0,
-        text: "Untitled",
-        textRenderer: TextPaint(
-            style: TextStyle(
-                fontFamily: 'Courier', color: Colors.white, fontSize: 36)),
-        anchor: Anchor.center,
-      ),
-      _title2 = TextComponent(
-        priority: 0,
-        text: "R H Y T H M",
-        textRenderer: TextPaint(
-            style: TextStyle(
-                fontFamily: 'Courier',
-                color: Colors.teal,
-                fontSize: 42,
-                fontWeight: FontWeight.bold)),
-        anchor: Anchor.center,
-      ),
-      _title3 = TextComponent(
-        priority: 0,
-        text: "Game",
-        textRenderer: TextPaint(
-            style: TextStyle(
-                fontFamily: 'Courier', color: Colors.white, fontSize: 36)),
-        anchor: Anchor.center,
-      ),
-      _playButton = PlayButton(
-        onButtonTap: goToMenu,
-        anchor: Anchor.center,
-        buttonText: "S T A R T",
-      ),
-    ]);
-  }
+class HomeScreenComponent extends Component
+    with HasGameRef<MyGame>, GameSizeAware {
+  static const double backgroundCircleLifespan = 6.0;
+  static const double backgroundCircleFadeTime = 1.0;
+  late Timer backgroundCircleTimer;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    addAll([
+      SpriteComponent(
+        sprite:
+            await Sprite.load('off_beat_title.png', srcSize: Vector2.all(990)),
+        anchor: Anchor.center,
+        size: Vector2.all(gameSize.x - 75),
+        position: gameSize / 2 - Vector2(0, 150),
+      ),
+      PlayButton(
+        onButtonTap: goToMenu,
+        anchor: Anchor.center,
+        buttonText: "S T A R T",
+        position: gameSize / 2 + Vector2(0, 50),
+      ),
+    ]);
+    // Load background particle system.
+    _addRandomBackgroundCircle();
+    _addRandomBackgroundCircle();
+    backgroundCircleTimer = Timer(0.5, repeat: true, onTick: () {
+      _addRandomBackgroundCircle();
+    });
     // Play menu music.
-    FlameAudio.bgm.play('music/menu.mp3');
+    FlameAudio.bgm.play('music/menu.mp3', volume: 0.8);
     FlameAudio.audioCache.load('effects/button_click.mp3');
+  }
+
+  void _addRandomBackgroundCircle() {
+    Random rnd = Random();
+    final circleComponent = CircleComponent(
+      priority: -1,
+      paint: Paint()..color = Colors.deepPurple,
+      radius: max((gameSize.x / 2) * rnd.nextDouble(), gameSize.x * 0.2),
+      anchor: Anchor.center,
+      position:
+          Vector2(gameSize.x * rnd.nextDouble(), gameSize.y * rnd.nextDouble()),
+    );
+    add(circleComponent);
+    circleComponent.setOpacity(0);
+    circleComponent.add(MoveEffect.by(
+        (Vector2.random() - Vector2.random()) * 80,
+        LinearEffectController(backgroundCircleLifespan)));
+    circleComponent.add(OpacityEffect.to(max(rnd.nextDouble(), 0.4),
+        LinearEffectController(backgroundCircleFadeTime)));
+    circleComponent.add(OpacityEffect.fadeOut(
+      DelayedEffectController(LinearEffectController(backgroundCircleFadeTime),
+          delay: backgroundCircleLifespan - backgroundCircleFadeTime),
+      onComplete: () {
+        remove(circleComponent);
+      },
+    ));
   }
 
   @override
   void onGameResize(Vector2 canvasSize) {
     super.onGameResize(canvasSize);
-    _title.position = canvasSize / 2 - Vector2(0, 175);
-    _title2.position = canvasSize / 2 - Vector2(0, 124);
-    _title3.position = canvasSize / 2 - Vector2(0, 75);
-    _playButton.position = canvasSize / 2 + Vector2(0, 25);
+    this.onResize(canvasSize);
   }
 
   void goToMenu() {
-    FlameAudio.play('effects/button_click.mp3');
+    FlameAudio.play('effects/button_click.mp3', volume: 0.8);
     gameRef.router.pushNamed(GameRoutes.menuSongList.name);
+  }
+
+  @override
+  void update(double dt) {
+    backgroundCircleTimer.update(dt);
+    super.update(dt);
   }
 }

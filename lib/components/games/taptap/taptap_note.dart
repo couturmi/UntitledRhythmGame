@@ -22,6 +22,9 @@ class TapTapNote extends PositionComponent
   /// Time (in seconds) that this note was expected to be loaded.
   final double expectedTimeOfStart;
 
+  /// Represents the Y placement of the hit circle out of the game size's full Y axis.
+  late final double hitCircleYPlacementModifier;
+
   /// Represents the exact song time (in seconds) that the score was updated for holding the note.
   double? lastPointUpdateTime;
 
@@ -38,6 +41,7 @@ class TapTapNote extends PositionComponent
     required this.holdDuration,
     required this.interval,
     required this.expectedTimeOfStart,
+    required this.hitCircleYPlacementModifier,
   }) : super(
           size: Vector2.all(diameter),
         );
@@ -71,26 +75,23 @@ class TapTapNote extends PositionComponent
 
   /// Time (in seconds) that the note is displayed before it leaves the hittable notes queue.
   double get timeNoteIsInQueue => _timeForNoteToTravel(
-      TapTapColumn.hitCircleYPlacementModifier +
-          TapTapColumn.hitCircleAllowanceModifier,
+      hitCircleYPlacementModifier + TapTapColumn.hitCircleAllowanceModifier,
       interval);
 
   /// Time (in seconds) that the note is displayed before it becomes tappable.
   double get timeUntilNoteCanBeHit => _timeForNoteToTravel(
-      TapTapColumn.hitCircleYPlacementModifier -
-          TapTapColumn.hitCircleAllowanceModifier,
+      hitCircleYPlacementModifier - TapTapColumn.hitCircleAllowanceModifier,
       interval);
 
   /// Calculates the time (in seconds) it should take for a note to travel [yPercentageTarget] percent of the Y-Axis.
   ///
   /// [yPercentageTarget] : percentage of the Y-axis size that the note will have travelled.
   /// [beatInterval] : time it takes for a single beat to complete, in seconds.
-  static double _timeForNoteToTravel(
-      double yPercentageTarget, double beatInterval) {
+  double _timeForNoteToTravel(double yPercentageTarget, double beatInterval) {
     return ((yPercentageTarget) *
             beatInterval *
             SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) /
-        TapTapColumn.hitCircleYPlacementModifier;
+        hitCircleYPlacementModifier;
   }
 
   Future<void> onLoad() async {
@@ -109,7 +110,7 @@ class TapTapNote extends PositionComponent
         size: Vector2(
             size.x / 4,
             holdDuration *
-                    ((gameSize.y * TapTapColumn.hitCircleYPlacementModifier) /
+                    ((gameSize.y * hitCircleYPlacementModifier) /
                         SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) -
                 (size.y / 2)),
       ));
@@ -235,8 +236,8 @@ class TapTapNote extends PositionComponent
   }
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    super.onGameResize(gameSize);
-    this.onResize(gameSize);
+  void onGameResize(Vector2 canvasSize) {
+    super.onGameResize(canvasSize);
+    this.onResize(canvasSize);
   }
 }

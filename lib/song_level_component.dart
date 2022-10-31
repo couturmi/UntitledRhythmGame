@@ -12,8 +12,10 @@ import 'package:untitled_rhythm_game/components/games/osu/osu_game_component.dar
 import 'package:untitled_rhythm_game/components/games/slide/slide_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_board.dart';
+import 'package:untitled_rhythm_game/components/games/taptap/taptap_landscape/taptap_landscape_board.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/transition/minigame_transition_component.dart';
+import 'package:untitled_rhythm_game/components/games/undertale/undertale_game_component.dart';
 import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_component.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
@@ -26,10 +28,10 @@ import 'package:untitled_rhythm_game/util/time_utils.dart';
 class SongLevelComponent extends PositionComponent
     with GameSizeAware, HasGameRef<MyGame> {
   /// Delay that the music should start at compared to when the notes are added. (TODO this is a temporary solution. This may be fixed with a more recent version of the audio player)
-  static const int AUDIO_DELAY_MICROSECONDS =
+  static const int AUDIO_DELAY_MICROSECONDS = //
       // 258000; // For the simulator.
       // 20000; // For my iPhone.
-      150000; // For my Android phone.
+      200000; // For my Android phone.
 
   /// The number of beat intervals it should take a note from creation to reach the hit mark.
   /// TODO 2 = hard, 3 = medium, 4 = easy
@@ -132,6 +134,12 @@ class SongLevelComponent extends PositionComponent
             beatInterval: beatMap.beatInterval,
           );
           break;
+        case MiniGameType.tapTap7:
+          currentGameComponent = TapTapLandscapeBoardComponent(
+            model: nextMiniGameModel,
+            beatInterval: beatMap.beatInterval,
+          );
+          break;
         case MiniGameType.osu:
           currentGameComponent = OsuGameComponent(
             model: nextMiniGameModel,
@@ -152,6 +160,12 @@ class SongLevelComponent extends PositionComponent
           break;
         case MiniGameType.swipe:
           currentGameComponent = SwipeGameComponent(
+            model: nextMiniGameModel,
+            beatInterval: beatMap.beatInterval,
+          );
+          break;
+        case MiniGameType.undertale:
+          currentGameComponent = UndertaleGameComponent(
             model: nextMiniGameModel,
             beatInterval: beatMap.beatInterval,
           );
@@ -317,11 +331,11 @@ class SongLevelComponent extends PositionComponent
   }
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    this.onResize(gameSize);
+  void onGameResize(Vector2 canvasSize) {
+    this.onResize(canvasSize);
     anchor = Anchor.center;
     size = gameSize;
     position = gameSize / 2;
-    super.onGameResize(gameSize);
+    super.onGameResize(canvasSize);
   }
 }

@@ -98,18 +98,18 @@ class ShipComponent extends SpriteComponent
           removeOnFinish: true,
         ));
         HapticFeedback.heavyImpact();
-        // Reset score streak;
-        gameRef.currentLevel.scoreComponent.missed(MiniGameType.swipe);
+        // Notify score of collision.
+        gameRef.currentLevel.scoreComponent.collision(MiniGameType.swipe);
       }
     }
     super.onCollision(points, other);
   }
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    this.onResize(gameSize);
-    position = Vector2(gameSize.x / 2,
-        gameSize.y * hitCircleYPlacementModifier - (hoverOffset / 2));
-    super.onGameResize(gameSize);
+  void onGameResize(Vector2 canvasSize) {
+    this.onResize(canvasSize);
+    position = Vector2(this.gameSize.x / 2,
+        this.gameSize.y * hitCircleYPlacementModifier - (hoverOffset / 2));
+    super.onGameResize(canvasSize);
   }
 }

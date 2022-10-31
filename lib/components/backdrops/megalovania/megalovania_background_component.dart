@@ -132,9 +132,9 @@ class MegalovaniaBackgroundComponent extends LevelBackgroundComponent
   }
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    super.onGameResize(gameSize);
-    this.onResize(gameSize);
-    position = gameSize / 2;
+  void onGameResize(Vector2 canvasSize) {
+    super.onGameResize(canvasSize);
+    this.onResize(canvasSize);
+    position = this.gameSize / 2;
   }
 }

@@ -55,7 +55,7 @@ class SongListTile extends PositionComponent with TapCallbacks, GameSizeAware {
 
   activate() {
     activated = true;
-    _tileBackground.paint.color = Colors.teal.withOpacity(0.3);
+    _tileBackground.paint.color = Colors.deepPurple.withOpacity(0.3);
     _songTitle.textRenderer = TextPaint(style: _getTextStyle(Colors.yellow));
   }
 
@@ -82,8 +82,8 @@ class SongListTile extends PositionComponent with TapCallbacks, GameSizeAware {
   }
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    super.onGameResize(gameSize);
-    this.onResize(gameSize);
+  void onGameResize(Vector2 canvasSize) {
+    super.onGameResize(canvasSize);
+    this.onResize(canvasSize);
   }
 }

@@ -137,15 +137,15 @@ class SlideNoteArea extends PositionComponent
       size: gameSize * 7,
       position: Vector2(0, 0),
       anchor: Anchor.topLeft,
-      paint: Paint()..color = highlightColor.withOpacity(0.3),
+      paint: Paint()..color = highlightColor.withOpacity(0.2),
     );
     parent?.add(highlight);
     highlight.add(RemoveEffect(delay: 0.1));
   }
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    super.onGameResize(gameSize);
-    this.onResize(Vector2(gameSize.y, gameSize.x));
+  void onGameResize(Vector2 canvasSize) {
+    super.onGameResize(canvasSize);
+    this.onResize(canvasSize);
   }
 }

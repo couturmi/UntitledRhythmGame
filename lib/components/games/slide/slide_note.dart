@@ -89,6 +89,6 @@ class SlideNote extends SpriteComponent with HasGameRef<MyGame>, GameSizeAware {
   @override
   void onGameResize(Vector2 canvasSize) {
     super.onGameResize(canvasSize);
-    this.onResize(Vector2(canvasSize.y, canvasSize.x));
+    this.onResize(canvasSize);
   }
 }

@@ -93,8 +93,8 @@ class BucketComponent extends PositionComponent
   }
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    super.onGameResize(gameSize);
-    this.onResize(Vector2(gameSize.y, gameSize.x));
+  void onGameResize(Vector2 canvasSize) {
+    super.onGameResize(canvasSize);
+    this.onResize(canvasSize);
   }
 }

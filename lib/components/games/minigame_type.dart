@@ -5,10 +5,12 @@ import 'package:flutter/services.dart';
 enum MiniGameType {
   gameTransition,
   tapTap,
+  tapTap7,
   osu,
   tilt,
   slide,
   swipe,
+  undertale,
 }
 
 MiniGameType miniGameTypeFromString(String name) {
@@ -19,6 +21,8 @@ String getMiniGameName(MiniGameType game) {
   switch (game) {
     case MiniGameType.tapTap:
       return "Tap Hero";
+    case MiniGameType.tapTap7:
+      return "Tap Hero";
     case MiniGameType.osu:
       return "OSU!"; // Whack-A-Note?
     case MiniGameType.tilt:
@@ -26,7 +30,9 @@ String getMiniGameName(MiniGameType game) {
     case MiniGameType.slide:
       return "←Drag→";
     case MiniGameType.swipe:
-      return "←Dodge→";
+      return "Swipe to";
+    case MiniGameType.undertale:
+      return "Avoid";
     case MiniGameType.gameTransition:
       throw ArgumentError(
           "This is a transition, and not a true mini-game, and "
@@ -35,12 +41,23 @@ String getMiniGameName(MiniGameType game) {
   }
 }
 
+String getMiniGameNameLine2(MiniGameType game) {
+  switch (game) {
+    case MiniGameType.swipe:
+      return "←Dodge→";
+    default:
+      return "";
+  }
+}
+
 DeviceOrientation getOrientationForMiniGame(MiniGameType game) {
   switch (game) {
     case MiniGameType.tapTap:
     case MiniGameType.tilt:
     case MiniGameType.swipe:
+    case MiniGameType.undertale:
       return DeviceOrientation.portraitUp;
+    case MiniGameType.tapTap7:
     case MiniGameType.osu:
     case MiniGameType.slide:
       Random rand = Random();

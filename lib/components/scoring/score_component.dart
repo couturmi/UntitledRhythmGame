@@ -37,6 +37,17 @@ class ScoreComponent extends PositionComponent {
     songScore.heldNotePoint(gameType, percentageOfBeatInterval);
   }
 
+  /// Occurs after an obstacle was successfully avoided for games that have obstacles, rather than notes.
+  void avoidedObstacle() {
+    songScore.avoidedObstacle();
+  }
+
+  /// Occurs after a collision for games that have obstacles, rather than notes.
+  void collision(MiniGameType gameType) {
+    songScore.collision(gameType);
+    _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
+  }
+
   @override
   void update(double dt) {
     _scoreComponent.text = '${commaNumberFormat.format(songScore.score)}';

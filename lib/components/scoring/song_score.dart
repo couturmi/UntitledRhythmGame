@@ -21,8 +21,11 @@ class SongScore {
   /// Base points earned for successfully hitting a Slide/Drag note.
   static const _slideNoteBasePoints = 75;
 
-  /// Base points earned for successfully avoiding a Swipe/Dodge obstacle.
-  static const _swipeObstacleBasePoints = 150;
+  /// Base points lost for hitting a Swipe/Dodge obstacle.
+  static const _swipeObstacleBasePoints = -300;
+
+  /// Base points lost for hitting an Undertale obstacle.
+  static const _undertaleObstacleBasePoints = -200;
 
   double _score = 0;
   double bestPotentialScore = 0;
@@ -30,6 +33,8 @@ class SongScore {
   int highestStreak = 0;
   int notesHit = 0;
   int notesMissed = 0;
+  int obstaclesAvoided = 0;
+  int obstaclesCollided = 0;
 
   int get score => _score.floor();
 
@@ -41,6 +46,10 @@ class SongScore {
   int get _bestPotentialCurrentNoteMultiplier => min(
       ((notesHit + notesMissed) / _streakMultiplierThreshold).floor() + 1,
       _maxMultiplier);
+
+  int get totalNotes => notesHit + notesMissed;
+
+  int get totalObstacles => obstaclesAvoided + obstaclesCollided;
 
   /// [durationOfBeatInterval]: the percentage of a full beat interval that this note is held. 0 by default, since most notes are not held.
   void hit(MiniGameType gameType, {double durationOfBeatInterval = 0}) {
@@ -80,10 +89,26 @@ class SongScore {
     notesMissed++;
   }
 
+  void avoidedObstacle() {
+    obstaclesAvoided++;
+  }
+
+  void collision(MiniGameType gameType) {
+    // Reset streak.
+    streak = 0;
+    // Update score.
+    _score += _getPointsByGameType(gameType);
+    // Update the number of collisions.
+    obstaclesCollided++;
+  }
+
   int _getPointsByGameType(MiniGameType gameType, [int? customNoteMultiplier]) {
     late int basePoints;
     switch (gameType) {
       case MiniGameType.tapTap:
+        basePoints = _tapTapNoteBasePoints;
+        break;
+      case MiniGameType.tapTap7:
         basePoints = _tapTapNoteBasePoints;
         break;
       case MiniGameType.osu:
@@ -97,6 +122,9 @@ class SongScore {
         break;
       case MiniGameType.swipe:
         basePoints = _swipeObstacleBasePoints;
+        break;
+      case MiniGameType.undertale:
+        basePoints = _undertaleObstacleBasePoints;
         break;
       case MiniGameType.gameTransition:
         basePoints = 0;
