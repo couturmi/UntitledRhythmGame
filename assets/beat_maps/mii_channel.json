@@ -1235,6 +1235,209 @@
     {
       "game": "osu",
       "beats": [
+        [],
+        [
+          {"timing": 0.0,
+            "posX": 0.0,
+            "posY": 0.9,
+            "label":  "1"},
+          {"timing": 0.5,
+            "posX": 0.2,
+            "posY": 0.7,
+            "label":  "2"}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.5,
+            "posY": 0.7,
+            "duration": 0.5,
+            "posXEnd": 0.6,
+            "posYEnd": 0.3,
+            "label":  "3"}
+        ],
+        [
+          {"timing": 0.5,
+            "posX": 0.7,
+            "posY": 0.0,
+            "label":  "4"}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.9,
+            "posY": 0.3,
+            "label":  "5"}
+        ],
+        [],
+        [
+          {"timing": 0.0,
+            "posX": 0.0,
+            "posY": 0.0,
+            "label":  "1"},
+          {"timing": 0.5,
+            "posX": 0.2,
+            "posY": 0.3,
+            "label":  "2"}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.7,
+            "posY": 0.2,
+            "label":  "3"},
+          {"timing": 0.5,
+            "posX": 0.5,
+            "posY": 0.4,
+            "duration": 0.5,
+            "posXEnd": 0.3,
+            "posYEnd": 0.7,
+            "label":  "4"}
+        ],
+        [
+          {"timing": 0.5,
+            "posX": 0.1,
+            "posY": 0.9,
+            "label":  "5"}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 1.0,
+            "posY": 0.6,
+            "label":  "6"},
+          {"timing": 0.5,
+            "posX": 0.5,
+            "posY": 0.5,
+            "label":  "7"}
+        ],
+
+
+        [
+          {"timing": 0.0,
+            "posX": 0.0,
+            "posY": 1.0,
+            "label":  "1"},
+          {"timing": 0.0,
+            "posX": 0.3,
+            "posY": 1.0,
+            "label":  " 1 "}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 1.0,
+            "posY": 0.5,
+            "label":  "2"},
+          {"timing": 0.0,
+            "posX": 0.7,
+            "posY": 0.5,
+            "label":  "2"}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.0,
+            "posY": 0.0,
+            "label":  "3"},
+          {"timing": 0.0,
+            "posX": 0.3,
+            "posY": 0.0,
+            "label":  "3"}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.8,
+            "posY": 0.3,
+            "duration": 0.5,
+            "reversals": 2,
+            "posXEnd": 0.6,
+            "posYEnd": 0.5,
+            "label":  "1"}
+        ],
+        [],
+        [
+          {"timing": 0.0,
+            "posX": 0.1,
+            "posY": 0.7,
+            "label":  "2"},
+          {"timing": 0.5,
+            "posX": 0.1,
+            "posY": 0.7,
+            "label":  "3"}
+        ],
+        [],
+        [
+          {"timing": 0.0,
+            "posX": 0.6,
+            "posY": 0.8,
+            "duration": 0.5,
+            "reversals": 2,
+            "posXEnd": 0.8,
+            "posYEnd": 0.5,
+            "label":  "1"}
+        ],
+        [],
+        [
+          {"timing": 0.5,
+            "posX": 0.7,
+            "posY": 0.0,
+            "duration": 0.5,
+            "posXEnd": 0.5,
+            "posYEnd": 0.3,
+            "label":  "2"}
+        ],
+        [],
+        [
+          {"timing": 0.5,
+          "posX": 0.4,
+          "posY": 0.6,
+          "duration": 0.5,
+          "posXEnd": 0.2,
+          "posYEnd": 0.9,
+          "label":  "3"}
+        ],
+        [
+          {"timing": 0.5,
+            "posX": 0.0,
+            "posY": 0.3,
+            "label":  "4"}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 1.0,
+            "posY": 0.1,
+            "label":  "5"},
+          {"timing": 0.5,
+            "posX": 0.8,
+            "posY": 0.5,
+            "label":  "6"}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.5,
+            "posY": 0.5,
+            "duration": 0.5,
+            "posXEnd": 0.2,
+            "posYEnd": 0.6,
+            "label":  "1"}
+        ],
+        [
+          {"timing": 0.5,
+            "posX": 0.0,
+            "posY": 0.7,
+            "label":  "2"}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.1,
+            "posY": 1.0,
+            "label":  "3"},
+          {"timing": 0.5,
+            "posX": 0.5,
+            "posY": 1.0,
+            "label":  "4"}
+        ],
+        [
+          {"timing": 0.0,
+            "posX": 0.9,
+            "posY": 1.0,
+            "label":  "5"}
+        ],
         []
       ]
     }
