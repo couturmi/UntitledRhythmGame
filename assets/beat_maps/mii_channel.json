@@ -6,6 +6,10 @@
     {
       "identifier": "slide_bucket",
       "path": "skydiver_mii.png"
+    },
+    {
+      "identifier": "undertale_player",
+      "path": "mii_head_outlined.png"
     }
   ],
   "gameOrder": [
@@ -58,23 +62,23 @@
         [
           {"timing": 0.5,
             "posX": 0.2,
-            "posY": 0.4,
+            "posY": 0.3,
             "label":  "2"}
         ],
         [
           {"timing": 0.0,
             "posX": 0.5,
-            "posY": 0.2,
+            "posY": 0.1,
             "label":  "3"},
           {"timing": 0.5,
             "posX": 0.8,
-            "posY": 0.4,
+            "posY": 0.3,
             "label":  "4"}
         ],
         [
           {"timing": 0.5,
             "posX": 0.8,
-            "posY": 0.4,
+            "posY": 0.3,
             "label":  "5"}
         ],
         [
@@ -1438,6 +1442,9 @@
             "posY": 1.0,
             "label":  "5"}
         ],
+        [],
+        [],
+        [],
         []
       ]
     }

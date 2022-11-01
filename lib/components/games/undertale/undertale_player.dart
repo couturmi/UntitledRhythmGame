@@ -4,6 +4,7 @@ import 'package:flame/effects.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_bullet.dart';
+import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
 class UndertalePlayer extends PositionComponent
@@ -14,8 +15,12 @@ class UndertalePlayer extends PositionComponent
 
   @override
   Future<void> onLoad() async {
+    // Check if sprite replacement exists.
+    final SpriteReplacementModel? spriteModel =
+        gameRef.currentLevel.beatMap.spriteReplacements["undertale_player"];
     add(_playerSprite = SpriteComponent(
-      sprite: await Sprite.load('undertale_heart_sprite.png'),
+      sprite:
+          await Sprite.load(spriteModel?.path ?? 'undertale_heart_sprite.png'),
       size: size,
     ));
     // Add a circular HitBox around the player.
