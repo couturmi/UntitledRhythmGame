@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:flame/components.dart';
-import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/ship_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_obstacle.dart';

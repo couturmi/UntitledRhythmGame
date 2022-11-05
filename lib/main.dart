@@ -1,6 +1,6 @@
 import 'package:flame/game.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
 main() {
@@ -10,11 +10,17 @@ main() {
       .then((_) {
     // Run game.
     runApp(
-      Padding(
-        padding: const EdgeInsets.only(top: 16),
+      WidgetsApp(
+        home: SafeArea(
         child: GameWidget(
           game: MyGame(),
         ),
+      ),
+        debugShowCheckedModeBanner: false,
+        color: Colors.transparent,
+        pageRouteBuilder: <T>(RouteSettings settings, WidgetBuilder builder) {
+          return MaterialPageRoute<T>(settings: settings, builder: builder);
+        },
       ),
     );
   });
