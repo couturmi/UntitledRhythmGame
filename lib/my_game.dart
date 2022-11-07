@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flame/rendering.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter/services.dart';
+import 'package:untitled_rhythm_game/components/menu/pause_menu_button.dart';
 import 'package:untitled_rhythm_game/home_screen_component.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
@@ -42,6 +46,12 @@ class MyGame extends FlameGame
     currentLevel = SongLevelComponent(beatMap: beatMap);
     router.pushRoute(Route(() => currentLevel));
   }
+
+  /// Leave the [SongLevelComponent] and return to the song menu.
+  void returnToSongMenu() {
+    router.pushNamed(GameRoutes.menuSongList.name);
+    SongListMenuComponent.playSongPreview();
+  }
 }
 
 class PauseRoute extends Route with HasGameRef<MyGame> {
@@ -68,14 +78,20 @@ class PauseRoute extends Route with HasGameRef<MyGame> {
   }
 }
 
-class PausePage extends Component with TapCallbacks, HasGameRef<MyGame> {
+class PausePage extends PositionComponent
+    with TapCallbacks, HasGameRef<MyGame> {
+  DeviceOrientation? orientation;
+
+  PausePage() : super(anchor: Anchor.center);
+
   @override
   Future<void> onLoad() async {
     final game = findGame()!;
+    position = game.canvasSize / 2;
     addAll([
       TextComponent(
         text: 'PAUSED',
-        position: game.canvasSize / 2,
+        position: Vector2(0, -50),
         anchor: Anchor.center,
         children: [
           ScaleEffect.to(
@@ -88,7 +104,42 @@ class PausePage extends Component with TapCallbacks, HasGameRef<MyGame> {
           )
         ],
       ),
+      PauseMenuButton(
+        buttonText: "Return to Menu",
+        position: Vector2(0, 25),
+        anchor: Anchor.center,
+        onButtonTap: () => gameRef.returnToSongMenu(),
+      ),
+      PauseMenuButton(
+        buttonText: "Keep Playing",
+        position: Vector2(0, 75),
+        anchor: Anchor.center,
+        onButtonTap: () => gameRef.router.pop(),
+      ),
     ]);
+    super.onLoad();
+  }
+
+  void setRotation() {
+    orientation = gameRef.currentLevel.currentLevelOrientation;
+    late double rotationAngle;
+    if (orientation == DeviceOrientation.landscapeLeft) {
+      rotationAngle = pi / 2;
+    } else if (orientation == DeviceOrientation.landscapeRight) {
+      rotationAngle = -pi / 2;
+    } else {
+      rotationAngle = 0.0;
+    }
+    // Rotate entire level component.
+    angle = rotationAngle;
+  }
+
+  @override
+  void update(double dt) {
+    if (orientation != gameRef.currentLevel.currentLevelOrientation) {
+      setRotation();
+    }
+    super.update(dt);
   }
 
   @override

@@ -45,6 +45,12 @@ class SongListMenuComponent extends Component
     );
   }
 
+  static void playSongPreview() {
+    if (_selectedSongTile != null) {
+      FlameAudio.bgm.play(getLevelMP3PreviewPathMap(_selectedSongTile!.level));
+    }
+  }
+
   /// Called when a tile is tapped from the song list.
   void _onSongTileTap(SongListTile tile, BeatMap beatMap) async {
     // Deactivate previous tile.
@@ -56,7 +62,7 @@ class SongListMenuComponent extends Component
       add(_playButton);
     }
     // Play song preview.
-    FlameAudio.bgm.play(getLevelMP3PreviewPathMap(tile.level));
+    playSongPreview();
   }
 
   /// Play the selected [_selectedBeatMap] song level.
