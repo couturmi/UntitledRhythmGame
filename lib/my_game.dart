@@ -47,6 +47,14 @@ class MyGame extends FlameGame
     router.pushRoute(Route(() => currentLevel));
   }
 
+  /// Restarts the [currentLevel] from the beginning.
+  void restartSongLevel() {
+    currentLevel.removeFromParent();
+    router.pop();
+    currentLevel = SongLevelComponent(beatMap: currentLevel.beatMap);
+    router.pushRoute(Route(() => currentLevel));
+  }
+
   /// Leave the [SongLevelComponent] and return to the song menu.
   void returnToSongMenu() {
     router.pushNamed(GameRoutes.menuSongList.name);
@@ -111,8 +119,14 @@ class PausePage extends PositionComponent
         onButtonTap: () => gameRef.returnToSongMenu(),
       ),
       PauseMenuButton(
-        buttonText: "Keep Playing",
+        buttonText: "Restart Song",
         position: Vector2(0, 75),
+        anchor: Anchor.center,
+        onButtonTap: () => gameRef.restartSongLevel(),
+      ),
+      PauseMenuButton(
+        buttonText: "Keep Playing",
+        position: Vector2(0, 125),
         anchor: Anchor.center,
         onButtonTap: () => gameRef.router.pop(),
       ),
