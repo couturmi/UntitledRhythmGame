@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/menu/play_button.dart';
 import 'package:untitled_rhythm_game/components/menu/song_list_component.dart';
 import 'package:untitled_rhythm_game/components/menu/song_list_tile.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
-class SongListMenuComponent extends Component
-    with HasGameRef<MyGame>, GameSizeAware {
+class SongListMenuComponent extends Component with HasGameRef<MyGame> {
   static SongListTile? _selectedSongTile;
   static BeatMap? _selectedBeatMap;
   late final PlayButton _playButton;
@@ -19,6 +17,7 @@ class SongListMenuComponent extends Component
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    final gameSize = game.size;
     // Preload all song previews.
     Level.values.forEach((level) {
       FlameAudio.audioCache.load(getLevelMP3PreviewPathMap(level));
@@ -35,8 +34,9 @@ class SongListMenuComponent extends Component
         position: Vector2(gameSize.x / 2, 50),
       ),
       SongListComponent(
-          yOffset: _titleComponent.position.y + _titleComponent.size.y,
-          onTileTap: _onSongTileTap),
+        yOffset: _titleComponent.position.y + _titleComponent.size.y,
+        onTileTap: _onSongTileTap,
+      ),
     ]);
     _playButton = PlayButton(
       anchor: Anchor.center,
@@ -71,11 +71,5 @@ class SongListMenuComponent extends Component
     FlameAudio.bgm.pause();
     gameRef.startSongLevel(_selectedBeatMap!);
     // TODO, eventually set the above route to a ValueRoute, so that you can resume the music when returning to the menu.
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
   }
 }

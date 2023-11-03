@@ -1,31 +1,33 @@
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/widgets.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_cage_area.dart';
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_joystick.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 
 class UndertaleGameComponent extends MiniGameComponent
-    with GameSizeAware, DragCallbacks {
+    with HasGameRef, LevelSizeAware, DragCallbacks {
   late UndertaleCageArea _cageArea;
   late UndertaleJoystick _joystick;
   UndertaleGameComponent({required super.model, required super.beatInterval});
 
   @override
   Future<void> onLoad() async {
+    setLevelSize();
+    size = levelSize;
     Flame.images.load("bullet_1.png");
     Flame.images.load("dragon.png");
     add(_joystick = UndertaleJoystick(
       anchor: Anchor.center,
       size: Vector2.all(100),
-      position: Vector2(gameSize.x / 2, gameSize.y - 80),
+      position: Vector2(levelSize.x / 2, levelSize.y - 80),
     ));
     _cageArea = UndertaleCageArea(
       anchor: Anchor.center,
-      position: gameSize / 2,
+      position: levelSize / 2,
       joystick: _joystick,
     );
     add(_cageArea);
@@ -40,11 +42,13 @@ class UndertaleGameComponent extends MiniGameComponent
   @override
   void onDragEnd(DragEndEvent event) {
     _joystick.onDragEnd();
+    super.onDragEnd(event);
   }
 
   @override
   void onDragCancel(DragCancelEvent event) {
     _joystick.onDragEnd();
+    super.onDragCancel(event);
   }
 
   @override
@@ -71,12 +75,5 @@ class UndertaleGameComponent extends MiniGameComponent
       xPercentage: noteModel.posX,
       yPercentage: noteModel.posY,
     );
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
-    size = gameSize;
   }
 }

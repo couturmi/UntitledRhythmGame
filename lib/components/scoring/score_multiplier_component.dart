@@ -21,7 +21,7 @@ class ScoreMultiplierComponent extends PositionComponent {
   int _multiplier;
 
   ScoreMultiplierComponent(
-      {required Vector2 position, required Anchor anchor, int multiplier = 1})
+      {Vector2? position, required Anchor anchor, int multiplier = 1})
       : _multiplier = multiplier,
         super(position: position, anchor: anchor);
 

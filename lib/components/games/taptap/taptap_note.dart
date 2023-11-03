@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_column.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_note_bar.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 
 class TapTapNote extends PositionComponent
-    with HasGameRef<MyGame>, GameSizeAware {
+    with HasGameRef<MyGame>, LevelSizeAware {
   /// Duration (in percentage of an interval) that this note should be held after being tapped.
   /// A note with no holding will have a [holdDuration] of 0;
   final double holdDuration;
@@ -57,10 +57,10 @@ class TapTapNote extends PositionComponent
 
   /// Max distance that the note travels before automatic removal.
   double get fullNoteTravelDistance =>
-      gameSize.y * (TapTapColumn.noteMaxBoundaryModifier) +
+      levelSize.y * (TapTapColumn.noteMaxBoundaryModifier) +
       // For non-holdable notes, below will return +0.
       (holdDuration *
-          (gameSize.y *
+          (levelSize.y *
               TapTapColumn.noteMaxBoundaryModifier /
               SongLevelComponent.INTERVAL_TIMING_MULTIPLIER));
 
@@ -95,6 +95,7 @@ class TapTapNote extends PositionComponent
   }
 
   Future<void> onLoad() async {
+    setLevelSize();
     add(_sprite = SpriteComponent(
       sprite: await Sprite.load('taptap_note.png'),
       size: size,
@@ -110,7 +111,7 @@ class TapTapNote extends PositionComponent
         size: Vector2(
             size.x / 4,
             holdDuration *
-                    ((gameSize.y * hitCircleYPlacementModifier) /
+                    ((levelSize.y * hitCircleYPlacementModifier) /
                         SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) -
                 (size.y / 2)),
       ));
@@ -147,7 +148,8 @@ class TapTapNote extends PositionComponent
   /// Called if a note is tapped and cleared successfully.
   void hit() {
     // Remove all active effects from sprite only.
-    _sprite.children.removeWhere((c) => c is Effect);
+    // _sprite.children.removeWhere((c) => c is Effect);
+    _sprite.removeWhere((c) => c is Effect);
     if (_noteBar != null) {
       _noteBar!.holding(
         spriteCenterPosition: Vector2(_sprite.x, _sprite.y + (size.y / 2)),
@@ -233,11 +235,5 @@ class TapTapNote extends PositionComponent
         ..colorFilter = ColorFilter.mode(Colors.red, BlendMode.overlay);
       add(RemoveEffect(delay: 0.05));
     }
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
   }
 }

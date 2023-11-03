@@ -6,17 +6,43 @@ import 'package:untitled_rhythm_game/components/menu/pause_button.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_multiplier_component.dart';
 import 'package:untitled_rhythm_game/components/scoring/song_score.dart';
 
-class ScoreComponent extends PositionComponent {
+class ScoreComponent extends PositionComponent with HasGameRef {
   NumberFormat commaNumberFormat = NumberFormat('#,##0', "en_US");
 
   SongScore songScore;
 
   late TextComponent _scoreComponent;
   late ScoreMultiplierComponent _scoreMultiplierComponent;
+  late PauseButton _pauseButton;
 
   ScoreComponent()
       : songScore = SongScore(),
         super(priority: 10);
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    anchor = Anchor.center;
+    position = game.size / 2;
+    _scoreComponent = TextComponent(
+      text: songScore.score.toString(),
+      textRenderer: TextPaint(
+          style: TextStyle(color: Colors.yellowAccent[100], fontSize: 20)),
+      scale: Vector2.all(2),
+      anchor: Anchor.topLeft,
+    );
+    _scoreMultiplierComponent = ScoreMultiplierComponent(
+      anchor: Anchor.topLeft,
+      multiplier: songScore.noteMultiplier,
+    );
+    _pauseButton = PauseButton(
+      anchor: Anchor.topLeft,
+    );
+    add(_scoreComponent);
+    add(_scoreMultiplierComponent);
+    add(_pauseButton);
+    resetWithGivenDimensions(game.size);
+  }
 
   void resetStreak() {
     songScore.streak = 0;
@@ -53,34 +79,11 @@ class ScoreComponent extends PositionComponent {
     _scoreComponent.text = '${commaNumberFormat.format(songScore.score)}';
   }
 
-  @override
-  void onGameResize(Vector2 gameSize) {
-    super.onGameResize(gameSize);
-    // set initial properties if needed
-    if (position == Vector2.zero()) {
-      anchor = Anchor.center;
-      position = gameSize / 2;
-    }
-    // rebuild child widgets
-    children.removeWhere((c) => true);
-    _scoreComponent = TextComponent(
-      text: songScore.score.toString(),
-      textRenderer: TextPaint(
-          style: TextStyle(color: Colors.yellowAccent[100], fontSize: 20)),
-      position: Vector2(-(gameSize.x / 2) + 10, -(gameSize.y / 2) + 10),
-      scale: Vector2.all(2),
-      anchor: Anchor.topLeft,
-    );
-    _scoreMultiplierComponent = ScoreMultiplierComponent(
-      position: Vector2((gameSize.x / 2) - 10, -(gameSize.y / 2) + 10),
-      anchor: Anchor.topLeft,
-      multiplier: songScore.noteMultiplier,
-    );
-    add(_scoreComponent);
-    add(_scoreMultiplierComponent);
-    add(PauseButton(
-      position: Vector2(-20, -(gameSize.y / 2) + 10),
-      anchor: Anchor.topLeft,
-    ));
+  void resetWithGivenDimensions(Vector2 levelSize) {
+    _scoreComponent.position =
+        Vector2(-(levelSize.x / 2) + 10, -(levelSize.y / 2) + 10);
+    _scoreMultiplierComponent.position =
+        Vector2((levelSize.x / 2) - 10, -(levelSize.y / 2) + 10);
+    _pauseButton.position = Vector2(-20, -(levelSize.y / 2) + 10);
   }
 }

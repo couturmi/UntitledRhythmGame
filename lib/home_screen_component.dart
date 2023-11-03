@@ -4,11 +4,9 @@ import 'package:flame/effects.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/menu/play_button.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
-class HomeScreenComponent extends Component
-    with HasGameRef<MyGame>, GameSizeAware {
+class HomeScreenComponent extends Component with HasGameRef<MyGame> {
   static const double backgroundCircleLifespan = 6.0;
   static const double backgroundCircleFadeTime = 1.0;
   late Timer backgroundCircleTimer;
@@ -21,14 +19,14 @@ class HomeScreenComponent extends Component
         sprite:
             await Sprite.load('off_beat_title.png', srcSize: Vector2.all(990)),
         anchor: Anchor.center,
-        size: Vector2.all(gameSize.x - 75),
-        position: gameSize / 2 - Vector2(0, 150),
+        size: Vector2.all(game.size.x - 75),
+        position: game.size / 2 - Vector2(0, 150),
       ),
       PlayButton(
         onButtonTap: goToMenu,
         anchor: Anchor.center,
         buttonText: "S T A R T",
-        position: gameSize / 2 + Vector2(0, 50),
+        position: game.size / 2 + Vector2(0, 50),
       ),
     ]);
     // Load background particle system.
@@ -47,10 +45,10 @@ class HomeScreenComponent extends Component
     final circleComponent = CircleComponent(
       priority: -1,
       paint: Paint()..color = Colors.deepPurple,
-      radius: max((gameSize.x / 2) * rnd.nextDouble(), gameSize.x * 0.2),
+      radius: max((game.size.x / 2) * rnd.nextDouble(), game.size.x * 0.2),
       anchor: Anchor.center,
-      position:
-          Vector2(gameSize.x * rnd.nextDouble(), gameSize.y * rnd.nextDouble()),
+      position: Vector2(
+          game.size.x * rnd.nextDouble(), game.size.y * rnd.nextDouble()),
     );
     add(circleComponent);
     circleComponent.setOpacity(0);
@@ -66,12 +64,6 @@ class HomeScreenComponent extends Component
         remove(circleComponent);
       },
     ));
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
   }
 
   void goToMenu() {

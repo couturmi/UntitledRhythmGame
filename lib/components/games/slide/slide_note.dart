@@ -3,10 +3,11 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
-class SlideNote extends SpriteComponent with HasGameRef<MyGame>, GameSizeAware {
+class SlideNote extends SpriteComponent
+    with HasGameRef<MyGame>, LevelSizeAware {
   /// Time (in seconds) that this note was expected to be loaded.
   final double expectedTimeOfStart;
 
@@ -34,14 +35,15 @@ class SlideNote extends SpriteComponent with HasGameRef<MyGame>, GameSizeAware {
       gameRef.currentLevel.songTime - expectedTimeOfStart;
 
   Future<void> onLoad() async {
+    setLevelSize();
     sprite = await Sprite.load('hoop_note.png');
     scale = Vector2.all(1.3);
     double currentTiming = currentTimingOfNote;
     final double currentProgress = currentTiming / timeNoteIsVisible;
     // Remember: Note is travelling up for this game. So we need to start at [gameSize.y].
     position.y =
-        gameSize.y - (min(currentProgress, 1) * fullNoteTravelDistance);
-    add(MoveEffect.to(Vector2(position.x, gameSize.y - fullNoteTravelDistance),
+        levelSize.y - (min(currentProgress, 1) * fullNoteTravelDistance);
+    add(MoveEffect.to(Vector2(position.x, levelSize.y - fullNoteTravelDistance),
         LinearEffectController(timeNoteIsVisible - currentTiming)));
     await super.onLoad();
   }
@@ -59,7 +61,7 @@ class SlideNote extends SpriteComponent with HasGameRef<MyGame>, GameSizeAware {
   void hit() {
     isRemovingFromParent = true;
     // Remove all active effects.
-    children.removeWhere((c) => c is Effect);
+    removeWhere((c) => c is Effect);
     // update with golden glow.
     paint
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
@@ -74,7 +76,7 @@ class SlideNote extends SpriteComponent with HasGameRef<MyGame>, GameSizeAware {
   void _missed() {
     isRemovingFromParent = true;
     // Remove all active effects.
-    children.removeWhere((c) => c is Effect);
+    removeWhere((c) => c is Effect);
     // update with red glow.
     paint
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
@@ -84,11 +86,5 @@ class SlideNote extends SpriteComponent with HasGameRef<MyGame>, GameSizeAware {
     add(OpacityEffect.fadeOut(LinearEffectController(0.2)));
     // remove the note after a short time of displaying.
     add(RemoveEffect(delay: 0.2));
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
   }
 }

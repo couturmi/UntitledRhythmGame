@@ -4,12 +4,12 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/ship_component.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 
 class SwipeObstacle extends PositionComponent
-    with HasGameRef<MyGame>, GameSizeAware {
+    with HasGameRef<MyGame>, LevelSizeAware {
   static const int numberOfAsteroidAssets = 3;
 
   /// Percentage of the Y gameSize that calculates the height of this component.
@@ -45,7 +45,8 @@ class SwipeObstacle extends PositionComponent
       gameRef.currentLevel.songTime - expectedTimeOfStart;
 
   Future<void> onLoad() async {
-    size = Vector2(imageWidth, gameSize.y * obstacleYLengthPercentage);
+    setLevelSize();
+    size = Vector2(imageWidth, levelSize.y * obstacleYLengthPercentage);
     int randomAsteroidAssetIndex = Random().nextInt(numberOfAsteroidAssets) + 1;
     add(SpriteComponent(
       sprite: await Sprite.load('asteroid$randomAsteroidAssetIndex.png'),
@@ -63,11 +64,5 @@ class SwipeObstacle extends PositionComponent
     add(MoveEffect.to(Vector2(0, fullObstacleTravelDistance),
         LinearEffectController(timeObstacleIsVisible - currentTiming)));
     await super.onLoad();
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
   }
 }

@@ -4,13 +4,13 @@ import 'package:flame/components.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/ship_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_obstacle.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class SwipeColumn extends PositionComponent
-    with GameSizeAware, HasGameRef<MyGame> {
+    with HasGameRef<MyGame>, LevelSizeAware {
   /// Column placement in board (from the left).
   final int columnIndex;
 
@@ -28,8 +28,13 @@ class SwipeColumn extends PositionComponent
 
   @override
   Future<void> onLoad() async {
+    setLevelSize();
     anchor = Anchor.topLeft;
-    size = Vector2(gameSize.x / SwipeGameComponent.numberOfColumns, gameSize.y);
+    position = Vector2(
+        (this.levelSize.x / SwipeGameComponent.numberOfColumns) * columnIndex,
+        0);
+    size =
+        Vector2(levelSize.x / SwipeGameComponent.numberOfColumns, levelSize.y);
     super.onLoad();
   }
 
@@ -64,13 +69,13 @@ class SwipeColumn extends PositionComponent
     required int interval,
   }) {
     double fullObstacleTravelDistance =
-        gameSize.y + (gameSize.y * SwipeObstacle.obstacleYLengthPercentage);
+        levelSize.y + (levelSize.y * SwipeObstacle.obstacleYLengthPercentage);
     double timeObstacleIsVisible = timeForObstacleToTravel(
-        fullObstacleTravelDistance / gameSize.y, interval);
+        fullObstacleTravelDistance / levelSize.y, interval);
 
     // Create obstacle component.
     final SwipeObstacle obstacle = SwipeObstacle(
-      imageWidth: gameSize.x / SwipeGameComponent.numberOfColumns,
+      imageWidth: levelSize.x / SwipeGameComponent.numberOfColumns,
       position: Vector2(0, 0),
       expectedTimeOfStart: microsecondsToSeconds(exactTiming),
       fullObstacleTravelDistance: fullObstacleTravelDistance,
@@ -90,14 +95,5 @@ class SwipeColumn extends PositionComponent
             beatInterval *
             SongLevelComponent.INTERVAL_TIMING_MULTIPLIER) /
         ShipComponent.hitCircleYPlacementModifier;
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
-    position = Vector2(
-        (this.gameSize.x / SwipeGameComponent.numberOfColumns) * columnIndex,
-        0);
   }
 }

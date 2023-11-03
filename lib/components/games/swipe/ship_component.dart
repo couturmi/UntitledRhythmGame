@@ -7,11 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_obstacle.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
 class ShipComponent extends SpriteComponent
-    with GameSizeAware, HasGameRef<MyGame>, CollisionCallbacks {
+    with HasGameRef<MyGame>, LevelSizeAware, CollisionCallbacks {
   /// Represents the Y placement of the ship out of the game size's full Y axis (from the top of the canvas).
   static const double hitCircleYPlacementModifier = 0.75;
 
@@ -28,8 +28,11 @@ class ShipComponent extends SpriteComponent
   }) : super(anchor: Anchor.topCenter);
 
   Future<void> onLoad() async {
+    setLevelSize();
+    position = Vector2(this.levelSize.x / 2,
+        this.levelSize.y * hitCircleYPlacementModifier - (hoverOffset / 2));
     size = Vector2.all(
-        gameSize.x / SwipeGameComponent.numberOfColumns.toDouble() - 10);
+        levelSize.x / SwipeGameComponent.numberOfColumns.toDouble() - 10);
     sprite = await Sprite.load('xwing_sprite.png');
     _explosionSpriteSheet = await Sprite.load('explosion_sprite_sheet.png');
     // Add a circular HitBox around the ship.
@@ -60,7 +63,7 @@ class ShipComponent extends SpriteComponent
       _evadeEffect = MoveEffect.to(
         Vector2(
             ((columnIndex * 2) + 1) *
-                (gameSize.x / (SwipeGameComponent.numberOfColumns * 2)),
+                (levelSize.x / (SwipeGameComponent.numberOfColumns * 2)),
             position.y),
         LinearEffectController(0.1),
       ),
@@ -103,13 +106,5 @@ class ShipComponent extends SpriteComponent
       }
     }
     super.onCollision(points, other);
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    this.onResize(canvasSize);
-    position = Vector2(this.gameSize.x / 2,
-        this.gameSize.y * hitCircleYPlacementModifier - (hoverOffset / 2));
-    super.onGameResize(canvasSize);
   }
 }

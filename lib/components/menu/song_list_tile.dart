@@ -1,12 +1,11 @@
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 
-class SongListTile extends PositionComponent with TapCallbacks, GameSizeAware {
+class SongListTile extends PositionComponent with TapCallbacks, HasGameRef {
   static const double xPadding = 20.0;
   static const double yPadding = 10.0;
 
@@ -25,6 +24,7 @@ class SongListTile extends PositionComponent with TapCallbacks, GameSizeAware {
   @override
   Future<void> onLoad() async {
     super.onLoad();
+    final gameSize = game.size;
     anchor = Anchor.topLeft;
     size = Vector2(gameSize.x - (xPadding * 2), 80 - (yPadding * 2));
     _beatMap = await BeatMap.loadFromLevel(level);
@@ -79,11 +79,5 @@ class SongListTile extends PositionComponent with TapCallbacks, GameSizeAware {
       // Execute parent functionality.
       this.onTap(this, _beatMap);
     }
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
   }
 }

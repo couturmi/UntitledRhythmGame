@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_gunner.dart';
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_joystick.dart';
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_player.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class UndertaleCageArea extends PositionComponent
-    with GameSizeAware, HasGameRef<MyGame> {
+    with HasGameRef<MyGame>, LevelSizeAware {
   /// Margin for where the game play area should be held. All obstacles will be
   /// shot within this area.
   final Vector2 _gameAreaMargin = Vector2.all(20);
@@ -36,7 +36,8 @@ class UndertaleCageArea extends PositionComponent
   Vector2 get playAreaSize => size - (_playerAreaMargin * 2);
 
   Future<void> onLoad() async {
-    size = Vector2.all(gameSize.x) - (_gameAreaMargin * 2);
+    setLevelSize();
+    size = Vector2.all(levelSize.x) - (_gameAreaMargin * 2);
     // Add cage boundaries.
     add(RectangleComponent(
       priority: 1,
@@ -143,11 +144,5 @@ class UndertaleCageArea extends PositionComponent
     canvas.save();
     canvas.restore();
     super.render(canvas);
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
   }
 }

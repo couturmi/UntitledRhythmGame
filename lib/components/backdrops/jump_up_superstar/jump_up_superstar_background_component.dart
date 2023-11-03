@@ -2,12 +2,11 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/backdrops/level_background_component.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class JumpUpSuperStarBackgroundComponent extends LevelBackgroundComponent
-    with GameSizeAware, HasGameRef<MyGame> {
+    with HasGameRef<MyGame> {
   static const double defaultSpriteRadius = 200.0;
 
   int beatCount = 0;
@@ -17,6 +16,7 @@ class JumpUpSuperStarBackgroundComponent extends LevelBackgroundComponent
 
   @override
   Future<void> onLoad() async {
+    position = this.game.size / 2;
     Sprite marioSpriteSheet =
         await Sprite.load('mario_running_sprite_sheet.png');
     await add(_marioSpriteGif = SpriteAnimationComponent(
@@ -32,7 +32,7 @@ class JumpUpSuperStarBackgroundComponent extends LevelBackgroundComponent
       ),
       anchor: Anchor.center,
       size: Vector2.all(defaultSpriteRadius),
-      position: Vector2(-(gameSize.x / 2 + defaultSpriteRadius), 0),
+      position: Vector2(-(game.size.x / 2 + defaultSpriteRadius), 0),
       removeOnFinish: false,
     ));
 
@@ -52,13 +52,13 @@ class JumpUpSuperStarBackgroundComponent extends LevelBackgroundComponent
     // Move Mario across the screen.
     if (beatCount == 0) {
       final runAcrossMoveEffect = MoveEffect.to(
-          Vector2(gameSize.x / 2 + defaultSpriteRadius, 0),
+          Vector2(game.size.x / 2 + defaultSpriteRadius, 0),
           LinearEffectController(_beatInterval() * 16));
       runAcrossMoveEffect.onComplete = () {
         // set up next position.
         _marioSpriteGif.position = Vector2(
-            -(gameSize.x / 2 + defaultSpriteRadius),
-            gameSize.y / 2 + defaultSpriteRadius);
+            -(game.size.x / 2 + defaultSpriteRadius),
+            game.size.y / 2 + defaultSpriteRadius);
       };
       _marioSpriteGif.add(runAcrossMoveEffect);
     }
@@ -76,12 +76,12 @@ class JumpUpSuperStarBackgroundComponent extends LevelBackgroundComponent
     // Move Mario off the screen (he is going to be skydiving soon!).
     else if (beatCount == 36) {
       final runAwayMoveEffect = MoveEffect.to(
-          Vector2(gameSize.x / 2 + defaultSpriteRadius, 0),
+          Vector2(game.size.x / 2 + defaultSpriteRadius, 0),
           LinearEffectController(_beatInterval() * 4));
       runAwayMoveEffect.onComplete = () {
         // set up next position.
         _marioSpriteGif.position =
-            Vector2(-(gameSize.y / 2 + defaultSpriteRadius), 0);
+            Vector2(-(game.size.y / 2 + defaultSpriteRadius), 0);
       };
       _marioSpriteGif.add(runAwayMoveEffect);
     }
@@ -97,7 +97,7 @@ class JumpUpSuperStarBackgroundComponent extends LevelBackgroundComponent
     // 187 is very ending
     else if (beatCount == 146) {
       final runAwayMoveEffect = MoveEffect.to(
-          Vector2(gameSize.x / 2 + defaultSpriteRadius, 0),
+          Vector2(game.size.x / 2 + defaultSpriteRadius, 0),
           LinearEffectController(_beatInterval() * 4));
       _marioSpriteGif.add(runAwayMoveEffect);
     }
@@ -114,12 +114,5 @@ class JumpUpSuperStarBackgroundComponent extends LevelBackgroundComponent
   void render(Canvas canvas) {
     canvas.drawColor(Colors.red.shade700, BlendMode.src);
     super.render(canvas);
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
-    position = this.gameSize / 2;
   }
 }

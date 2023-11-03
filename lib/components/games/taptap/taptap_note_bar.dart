@@ -1,8 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 
-class TapTapNoteBar extends PositionComponent with GameSizeAware {
+class TapTapNoteBar extends PositionComponent {
   /// Duration (in percentage of an interval) that this note should be held after being tapped.
   /// A note with no holding will have a [holdDuration] of 0;
   final double holdDuration;
@@ -73,11 +72,5 @@ class TapTapNoteBar extends PositionComponent with GameSizeAware {
       canvas.restore();
     }
     super.render(canvas);
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
   }
 }

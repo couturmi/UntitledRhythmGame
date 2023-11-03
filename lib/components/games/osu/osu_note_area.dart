@@ -2,16 +2,16 @@ import 'dart:collection';
 
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/osu/osu_note.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class OsuNoteArea extends PositionComponent
-    with GameSizeAware, HasGameRef<MyGame> {
+    with HasGameRef<MyGame>, LevelSizeAware {
   /// Diameter of a note.
   static const double noteDiameter = 120;
 
@@ -45,7 +45,8 @@ class OsuNoteArea extends PositionComponent
       noteDiameter / 2 + dragRangeAllowanceModifier;
 
   Future<void> onLoad() async {
-    size = this.gameSize - (gameAreaMargin * 2);
+    setLevelSize();
+    size = this.levelSize - (gameAreaMargin * 2);
     position = gameAreaMargin;
     super.onLoad();
   }
@@ -208,18 +209,12 @@ class OsuNoteArea extends PositionComponent
   /// Add a temporary highlight to the column that will quickly disappear.
   void performHighlight(Color highlightColor) {
     final highlight = RectangleComponent(
-      size: gameSize * 7,
+      size: levelSize * 7,
       position: Vector2(0, 0),
       anchor: Anchor.topLeft,
       paint: Paint()..color = highlightColor.withOpacity(0.3),
     );
     highlight.add(RemoveEffect(delay: 0.1));
     parent?.add(highlight);
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
   }
 }

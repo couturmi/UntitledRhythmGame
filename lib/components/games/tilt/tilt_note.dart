@@ -80,7 +80,7 @@ class TiltNote extends SpriteComponent with HasGameRef<MyGame> {
     // Replace sprite and set direction.
     sprite = _secondarySprite;
     // Remove all active effects.
-    children.removeWhere((c) => c is Effect);
+    removeWhere((c) => c is Effect);
     add(MoveEffect.by(
         Vector2(shootDirection * 200, -200), LinearEffectController(1.0)));
     // remove the note after a short time of displaying.
@@ -92,7 +92,7 @@ class TiltNote extends SpriteComponent with HasGameRef<MyGame> {
   void _missed() {
     isRemovingFromParent = true;
     // Remove all active effects.
-    children.removeWhere((c) => c is Effect);
+    removeWhere((c) => c is Effect);
     // update with red glow.
     paint
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)

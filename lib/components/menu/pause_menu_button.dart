@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 
 class PauseMenuButton extends PositionComponent with TapCallbacks {
@@ -31,8 +31,7 @@ class PauseMenuButton extends PositionComponent with TapCallbacks {
     add(_buttonBackground = RectangleComponent(
       priority: 1,
       size: size,
-      paint: Paint()
-        ..color = Colors.yellow,
+      paint: Paint()..color = Colors.yellow,
     ));
     add(TextComponent(
       priority: 2,

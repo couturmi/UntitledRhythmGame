@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_note.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class TiltColumn extends PositionComponent
-    with GameSizeAware, HasGameRef<MyGame> {
+    with HasGameRef<MyGame>, LevelSizeAware {
   /// Represents the Y placement of the hit circle out of the game size's full Y axis.
   static const double hitCircleYPlacementModifier = 2 / 3;
 
@@ -47,8 +47,13 @@ class TiltColumn extends PositionComponent
 
   @override
   Future<void> onLoad() async {
+    setLevelSize();
     anchor = Anchor.topLeft;
-    size = Vector2(gameSize.x / TiltGameComponent.numberOfColumns, gameSize.y);
+    position = Vector2(
+        (this.levelSize.x / TiltGameComponent.numberOfColumns) * columnIndex,
+        0);
+    size =
+        Vector2(levelSize.x / TiltGameComponent.numberOfColumns, levelSize.y);
 
     final columnBoundaries = RectangleComponent(
       size: Vector2(size.x, size.y + 100),
@@ -67,7 +72,7 @@ class TiltColumn extends PositionComponent
     required int interval,
   }) {
     // Sets the timing in such a way that the note will cross the hit circle exactly on beat.
-    double fullNoteTravelDistance = gameSize.y * (noteMaxBoundaryModifier);
+    double fullNoteTravelDistance = levelSize.y * (noteMaxBoundaryModifier);
     double timeNoteIsVisible =
         timeForNoteToTravel(noteMaxBoundaryModifier, interval);
     // Create note component.
@@ -114,7 +119,7 @@ class TiltColumn extends PositionComponent
 
       // Check if the note has passed the hit range of the pendulum yet.
       bool noteIsPassedPendulumArea = frontNoteComponent.y >
-          gameSize.y *
+          levelSize.y *
               (hitCircleYPlacementModifier + hitCircleAllowanceModifier);
       if (noteIsPassedPendulumArea) {
         noteQueue.remove(frontNoteComponent);
@@ -125,7 +130,7 @@ class TiltColumn extends PositionComponent
       // Check if the pendulum is at this column.
       if (isPendulumAtThisColumn()) {
         bool noteHasReachedPendulumRange = frontNoteComponent.y >=
-            gameSize.y *
+            levelSize.y *
                 (hitCircleYPlacementModifier - hitCircleAllowanceModifier);
         // If note was hit.
         if (noteHasReachedPendulumRange) {
@@ -151,13 +156,5 @@ class TiltColumn extends PositionComponent
     );
     add(highlight);
     highlight.add(RemoveEffect(delay: 0.1));
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
-    position = Vector2(
-        (this.gameSize.x / TiltGameComponent.numberOfColumns) * columnIndex, 0);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/ship_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_column.dart';
@@ -41,6 +41,7 @@ class SwipeGameComponent extends MiniGameComponent with DragCallbacks {
       _ship.evadeTo(nextColumn);
       currentShipColumn = nextColumn;
     }
+    super.onDragEnd(event);
   }
 
   @override

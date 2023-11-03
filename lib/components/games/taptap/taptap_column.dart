@@ -3,18 +3,18 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_note.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class TapTapColumn extends PositionComponent
-    with TapCallbacks, GameSizeAware, HasGameRef<MyGame> {
+    with TapCallbacks, HasGameRef<MyGame>, LevelSizeAware {
   /// Represents the default value [hitCircleYPlacementModifier].
   static const double hitCircleYPlacementModifierDefault = 0.85;
 
@@ -56,26 +56,29 @@ class TapTapColumn extends PositionComponent
 
   @override
   Future<void> onLoad() async {
+    setLevelSize();
     anchor = Anchor.topLeft;
-    size = Vector2(gameSize.x / numberOfColumns, gameSize.y);
+    size = Vector2(levelSize.x / numberOfColumns, levelSize.y);
+    position = Vector2((this.levelSize.x / numberOfColumns) * columnIndex, 0);
     hitCircleYPlacementModifier = min(
       // default
       hitCircleYPlacementModifierDefault,
       // percentage if the note is placed directly at the bottom of the screen.
-      ((gameSize.y - (gameSize.x / (numberOfColumns * 2))) / gameSize.y) - 0.02,
+      ((levelSize.y - (levelSize.x / (numberOfColumns * 2))) / levelSize.y) -
+          0.02,
     );
 
     final columnBoundaries = RectangleComponent(
       size: Vector2(size.x, size.y + 100),
-      position: Vector2(0, gameSize.y),
+      position: Vector2(0, levelSize.y),
       anchor: Anchor.bottomLeft,
       paint: BasicPalette.white.paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.5,
     );
     hitCircle = CircleComponent(
-      radius: gameSize.x / (numberOfColumns * 2),
-      position: Vector2(0, gameSize.y * hitCircleYPlacementModifier),
+      radius: levelSize.x / (numberOfColumns * 2),
+      position: Vector2(0, levelSize.y * hitCircleYPlacementModifier),
       anchor: Anchor.centerLeft,
       paint: Paint()..color = Colors.white.withOpacity(0.6),
     );
@@ -142,7 +145,7 @@ class TapTapColumn extends PositionComponent
   }) {
     // Create note component.
     final TapTapNote noteComponent = TapTapNote(
-      diameter: gameSize.x / numberOfColumns,
+      diameter: levelSize.x / numberOfColumns,
       position: Vector2(0, 0),
       anchor: Anchor.centerLeft,
       holdDuration: duration,
@@ -158,13 +161,13 @@ class TapTapColumn extends PositionComponent
   @override
   void onTapDown(TapDownEvent _) {
     // Grab the last note in the queue that hasn't passed the hit circle threshold.
-    final TapTapNote frontNoteComponent = noteQueue.last;
+    final TapTapNote? frontNoteComponent = noteQueue.lastOrNull;
     // Check if a note collision occurred.
-    bool successfulHit = frontNoteComponent.isSuccessfulHit();
+    bool successfulHit = frontNoteComponent?.isSuccessfulHit() ?? false;
     // If note was hit.
     if (successfulHit) {
       // If this is a held note, save a copy now.
-      if (frontNoteComponent.holdDuration > 0) {
+      if (frontNoteComponent!.holdDuration > 0) {
         _currentHeldNote = frontNoteComponent;
       }
       noteQueue.remove(frontNoteComponent);
@@ -209,12 +212,5 @@ class TapTapColumn extends PositionComponent
     );
     highlight.add(RemoveEffect(delay: 0.1));
     add(highlight);
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
-    position = Vector2((this.gameSize.x / numberOfColumns) * columnIndex, 0);
   }
 }

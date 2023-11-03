@@ -1,8 +1,11 @@
 import 'package:flame/components.dart';
+import 'package:flame/game.dart';
 import 'package:untitled_rhythm_game/components/games/landscape_minigame_component.dart';
 
-mixin GameSizeAware on Component {
-  late Vector2 gameSize;
+/// Alternative to using [HasGameRef] to get the canvas size, specifically for
+/// components that are part of a song level (that changes orientation)
+mixin LevelSizeAware<T extends FlameGame> on HasGameRef<T> {
+  late Vector2 levelSize;
   bool? _isLandscapeModeGame;
 
   /// Checks if a parent exists that is a [LandscapeMiniGameComponent].
@@ -10,7 +13,7 @@ mixin GameSizeAware on Component {
     if (_isLandscapeModeGame == null) {
       Component? c = this;
       while (c != null) {
-        if (c != this && c is GameSizeAware) {
+        if (c != this && c is LevelSizeAware) {
           _isLandscapeModeGame = c.isLandscapeModeGame;
           return _isLandscapeModeGame!;
         } else if (c is LandscapeMiniGameComponent) {
@@ -25,13 +28,14 @@ mixin GameSizeAware on Component {
     return _isLandscapeModeGame!;
   }
 
-  /// Method that should be called in the [onGameResize] function of a component.
-  void onResize(Vector2 newGameSize) {
+  /// Sets the stored [levelSize] based on the orientation of the component.
+  void setLevelSize() {
+    final newGameSize = super.game.size;
     // If this component is within a landscape game element, flip the x and y.
     if (isLandscapeModeGame) {
-      gameSize = Vector2(newGameSize.y, newGameSize.x);
+      levelSize = Vector2(newGameSize.y, newGameSize.x);
     } else {
-      gameSize = newGameSize;
+      levelSize = newGameSize;
     }
   }
 }

@@ -5,9 +5,9 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/pendulum_sprite_component.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 
-class TiltPendulum extends PositionComponent with GameSizeAware {
+class TiltPendulum extends PositionComponent with HasGameRef, LevelSizeAware {
   late double pendulumSize;
   late double _maxPendulumAngle;
 
@@ -27,8 +27,10 @@ class TiltPendulum extends PositionComponent with GameSizeAware {
 
   @override
   Future<void> onLoad() async {
-    pendulumSize = gameSize.y / 3;
-    double pendulumEndDiameter = gameSize.x / 3;
+    setLevelSize();
+    position = Vector2(this.levelSize.x / 2, this.levelSize.y);
+    pendulumSize = levelSize.y / 3;
+    double pendulumEndDiameter = levelSize.x / 3;
     // calculate the maximum pendulum angle based on the device size. TRIGONOMETRY BITCH.
     _maxPendulumAngle = atan((pendulumEndDiameter - 10) /
         (pendulumSize + (pendulumEndDiameter / 2)));
@@ -85,12 +87,5 @@ class TiltPendulum extends PositionComponent with GameSizeAware {
   void onRemove() {
     _gyroListenerSubscription.cancel();
     super.onRemove();
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    this.onResize(canvasSize);
-    position = Vector2(this.gameSize.x / 2, this.gameSize.y);
-    super.onGameResize(canvasSize);
   }
 }

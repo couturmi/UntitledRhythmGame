@@ -4,11 +4,10 @@ import 'package:flame/image_composition.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/backdrops/level_background_component.dart';
 import 'package:untitled_rhythm_game/components/backdrops/megalovania/undertale_sprite_component.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 
 class MegalovaniaBackgroundComponent extends LevelBackgroundComponent
-    with GameSizeAware {
+    with HasGameRef {
   List<UndertaleSpriteComponent> sprites = [];
   int beatCount = 0;
 
@@ -17,6 +16,7 @@ class MegalovaniaBackgroundComponent extends LevelBackgroundComponent
   @override
   Future<void> onLoad() async {
     anchor = Anchor.center;
+    position = this.game.size / 2;
     await loadSprites();
     await super.onLoad();
   }
@@ -87,7 +87,7 @@ class MegalovaniaBackgroundComponent extends LevelBackgroundComponent
 
     // Paint dimming overlay.
     final dimOverlay = RectangleComponent.square(
-      size: max(gameSize.x * 1.5, gameSize.y * 1.5),
+      size: max(game.size.x * 1.5, game.size.y * 1.5),
       position: Vector2(0, 0),
       anchor: Anchor.center,
       paint: Paint()..color = Colors.black.withOpacity(0.6),
@@ -129,12 +129,5 @@ class MegalovaniaBackgroundComponent extends LevelBackgroundComponent
       canvas.drawColor(Colors.black, BlendMode.src);
     }
     super.render(canvas);
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
-    position = this.gameSize / 2;
   }
 }

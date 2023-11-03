@@ -16,17 +16,14 @@ import 'package:untitled_rhythm_game/components/games/taptap/taptap_landscape/ta
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/transition/minigame_transition_component.dart';
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_game_component.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_component.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 import 'package:untitled_rhythm_game/song_level_complete_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
-class SongLevelComponent extends PositionComponent
-    with GameSizeAware, HasGameRef<MyGame> {
+class SongLevelComponent extends PositionComponent with HasGameRef<MyGame> {
   /// Delay that the music should start at compared to when the notes are added. (TODO this is a temporary solution. This may be fixed with a more recent version of the audio player)
   static const int AUDIO_DELAY_MICROSECONDS = //
       // 258000; // For the simulator.
@@ -83,6 +80,9 @@ class SongLevelComponent extends PositionComponent
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    anchor = Anchor.center;
+    size = game.size;
+    position = game.size / 2;
     // Clear existing audio cache and preload song.
     FlameAudio.audioCache.clearAll();
     _setupMusicAudio();
@@ -178,8 +178,8 @@ class SongLevelComponent extends PositionComponent
   void _setupMusicAudio() async {
     Uri audioFile = await FlameAudio.audioCache
         .fetchToMemory(getLevelMP3PathMap(beatMap.level));
-    _audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-    await _audioPlayer.setUrl(
+    _audioPlayer = AudioPlayer();
+    await _audioPlayer.setSourceDeviceFile(
       audioFile.toString(),
     );
   }
@@ -265,18 +265,18 @@ class SongLevelComponent extends PositionComponent
     late double rotationAngle;
     if (orientation == DeviceOrientation.landscapeLeft) {
       rotationAngle = pi / 2;
-      newGameSize = Vector2(gameSize.y, gameSize.x);
+      newGameSize = Vector2(game.size.y, game.size.x);
     } else if (orientation == DeviceOrientation.landscapeRight) {
       rotationAngle = -pi / 2;
-      newGameSize = Vector2(gameSize.y, gameSize.x);
+      newGameSize = Vector2(game.size.y, game.size.x);
     } else {
       rotationAngle = 0.0;
-      newGameSize = gameSize;
+      newGameSize = game.size;
     }
     // Rotate entire level component.
     angle = rotationAngle;
     // Resize/Rebuild any components that depend on the gameSize
-    scoreComponent.onGameResize(newGameSize);
+    scoreComponent.resetWithGivenDimensions(newGameSize);
   }
 
   @override
@@ -328,14 +328,5 @@ class SongLevelComponent extends PositionComponent
   void onRemove() {
     super.onRemove();
     _audioPlayer.dispose();
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    this.onResize(canvasSize);
-    anchor = Anchor.center;
-    size = gameSize;
-    position = gameSize / 2;
-    super.onGameResize(canvasSize);
   }
 }

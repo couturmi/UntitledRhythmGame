@@ -1,13 +1,13 @@
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flutter/services.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
+import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
 class BucketComponent extends PositionComponent
-    with GameSizeAware, HasGameRef<MyGame>, DragCallbacks {
+    with HasGameRef<MyGame>, LevelSizeAware, DragCallbacks {
   /// Represents the Y placement of the hit circle out of the game size's full Y axis (from the top of the canvas).
   static const double hitCircleYPlacementModifier = 0.2;
 
@@ -22,9 +22,10 @@ class BucketComponent extends PositionComponent
   BucketComponent({super.priority}) : super(anchor: Anchor.topCenter);
 
   Future<void> onLoad() async {
-    position = Vector2(gameSize.x / 2, 0);
+    setLevelSize();
+    position = Vector2(levelSize.x / 2, 0);
     // Note that "size" here refers to the size of the hit/drag box that your finger can tap.
-    size = Vector2(bucketWidth * 1.5, gameSize.y);
+    size = Vector2(bucketWidth * 1.5, levelSize.y);
     await loadSprite();
     // Add a hover/floating animation to the sprite.
     _sprite.add(
@@ -60,7 +61,7 @@ class BucketComponent extends PositionComponent
         anchor: Anchor.center,
         size: Vector2.all(bucketWidth),
         position: Vector2(bucketWidth / 2,
-            gameSize.y * hitCircleYPlacementModifier - (hoverOffset / 2)),
+            levelSize.y * hitCircleYPlacementModifier - (hoverOffset / 2)),
         removeOnFinish: false,
       ));
     }
@@ -71,7 +72,7 @@ class BucketComponent extends PositionComponent
         anchor: Anchor.center,
         size: Vector2.all(bucketWidth),
         position: Vector2(bucketWidth / 2,
-            gameSize.y * hitCircleYPlacementModifier - (hoverOffset / 2)),
+            levelSize.y * hitCircleYPlacementModifier - (hoverOffset / 2)),
       ));
     }
   }
@@ -85,16 +86,10 @@ class BucketComponent extends PositionComponent
     }
     double newXPosition = position.x + dragAmount;
     if (newXPosition < (bucketWidth / 4) ||
-        newXPosition > gameSize.x - (bucketWidth / 4)) {
+        newXPosition > levelSize.x - (bucketWidth / 4)) {
       return true;
     }
     position = Vector2(newXPosition, position.y);
     return true;
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
   }
 }

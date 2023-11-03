@@ -5,14 +5,12 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:untitled_rhythm_game/components/menu/play_button.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/components/scoring/song_score.dart';
 import 'package:untitled_rhythm_game/level_constants.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 
-class SongLevelCompleteComponent extends Component
-    with HasGameRef<MyGame>, GameSizeAware {
+class SongLevelCompleteComponent extends Component with HasGameRef<MyGame> {
   NumberFormat commaNumberFormat = NumberFormat('#,##0', "en_US");
 
   final BeatMap songBeatMap;
@@ -90,7 +88,7 @@ class SongLevelCompleteComponent extends Component
             style: TextStyle(
                 fontFamily: 'Courier', color: Colors.teal, fontSize: 28)),
         anchor: Anchor.center,
-        position: Vector2(gameSize.x / 2, gameSize.y / 2 - 25),
+        position: Vector2(game.size.x / 2, game.size.y / 2 - 25),
       ),
       if (anyNotes)
         TextComponent(
@@ -99,7 +97,7 @@ class SongLevelCompleteComponent extends Component
               style: TextStyle(
                   fontFamily: 'Courier', color: Colors.amber, fontSize: 28)),
           anchor: Anchor.center,
-          position: Vector2(gameSize.x / 2, gameSize.y / 2 + 25),
+          position: Vector2(game.size.x / 2, game.size.y / 2 + 25),
         ),
       if (anyObstacles)
         TextComponent(
@@ -109,7 +107,7 @@ class SongLevelCompleteComponent extends Component
                   fontFamily: 'Courier', color: Colors.amber, fontSize: 24)),
           anchor: Anchor.center,
           position: Vector2(
-              gameSize.x / 2, gameSize.y / 2 + 25 + (anyNotes ? 50 : 0)),
+              game.size.x / 2, game.size.y / 2 + 25 + (anyNotes ? 50 : 0)),
         ),
       TextComponent(
         text: "Longest Streak",
@@ -118,8 +116,8 @@ class SongLevelCompleteComponent extends Component
                 fontFamily: 'Courier', color: Colors.red, fontSize: 24)),
         anchor: Anchor.center,
         position: Vector2(
-            gameSize.x / 2,
-            (gameSize.y / 2) +
+            game.size.x / 2,
+            (game.size.y / 2) +
                 25 +
                 (anyNotes ? 50 : 0) +
                 (anyObstacles ? 50 : 0)),
@@ -131,8 +129,8 @@ class SongLevelCompleteComponent extends Component
                 fontFamily: 'Courier', color: Colors.red, fontSize: 28)),
         anchor: Anchor.center,
         position: Vector2(
-            gameSize.x / 2,
-            (gameSize.y / 2) +
+            game.size.x / 2,
+            (game.size.y / 2) +
                 60 +
                 (anyNotes ? 50 : 0) +
                 (anyObstacles ? 50 : 0)),
@@ -141,7 +139,7 @@ class SongLevelCompleteComponent extends Component
         onButtonTap: goToMenu,
         anchor: Anchor.center,
         buttonText: "To Song Menu",
-        position: Vector2(gameSize.x / 2, gameSize.y - 100),
+        position: Vector2(game.size.x / 2, game.size.y - 100),
       ),
     ]);
     FlameAudio.bgm.play(getLevelMP3PreviewPathMap(songBeatMap.level));
@@ -196,11 +194,5 @@ class SongLevelCompleteComponent extends Component
   void goToMenu() {
     FlameAudio.play('effects/button_click.mp3');
     gameRef.router.popUntilNamed(GameRoutes.menuSongList.name);
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
   }
 }

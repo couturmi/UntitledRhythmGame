@@ -232,7 +232,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   /// Called if a note is tapped and cleared successfully.
   void hit() {
     // Remove all active effects.
-    children.removeWhere((c) => c is Effect);
+    removeWhere((c) => c is Effect);
     // update with glow.
     _sprite.paint = Paint()
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
@@ -255,6 +255,8 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
 
   /// Called when the timing has occurred to move the note down the note bar path.
   void startNoteMovement() {
+    // TODO I was seeing an error where this duration was negative, crashing the song.
+    // TODO maybe you could set a lower limit of "0" for these effects.
     double initialEffectDuration = beatInterval * holdDuration -
         (currentTimingOfNote - timingCircleCompletionTime);
     double effectDuration = beatInterval * holdDuration;
@@ -318,7 +320,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
       // lastPointUpdateTime should be reset to notify parent that this note should now be awarding points
       lastPointUpdateTime = gameRef.currentLevel.songTime;
       // Expand timing ring so timing can be seen under your finger.
-      _timingRing.children.removeWhere((c) => c is ScaleEffect);
+      _timingRing.removeWhere((c) => c is ScaleEffect);
       _timingRing
           .add(ScaleEffect.to(Vector2.all(2.0), LinearEffectController(0.1)));
     }
@@ -331,7 +333,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
       // Clear lastPointUpdateTime to notify parent that this note should no longer be awarding points.
       lastPointUpdateTime = null;
       // Shrink timing ring to let user know they are no longer in range.
-      _timingRing.children.removeWhere((c) => c is ScaleEffect);
+      _timingRing.removeWhere((c) => c is ScaleEffect);
       _timingRing
           .add(ScaleEffect.to(Vector2.all(1.0), LinearEffectController(0.1)));
     }
@@ -373,7 +375,7 @@ class OsuNote extends PositionComponent with HasGameRef<MyGame> {
   /// Called if a note is missed completely and the player has horribly failed.
   void missed() {
     // Remove all active effects.
-    children.removeWhere((c) => c is Effect);
+    removeWhere((c) => c is Effect);
     // update with red glow.
     _sprite.paint = Paint()
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)

@@ -1,5 +1,5 @@
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
@@ -48,12 +48,12 @@ abstract class SimpleButton extends PositionComponent with TapCallbacks {
 class PauseButton extends SimpleButton with HasGameRef<MyGame> {
   PauseButton({super.position, super.anchor})
       : super(
-    Path()
-      ..moveTo(14, 10)
-      ..lineTo(14, 30)
-      ..moveTo(26, 10)
-      ..lineTo(26, 30),
-  );
+          Path()
+            ..moveTo(14, 10)
+            ..lineTo(14, 30)
+            ..moveTo(26, 10)
+            ..lineTo(26, 30),
+        );
   @override
   void action() {
     FlameAudio.play('effects/button_click.mp3');

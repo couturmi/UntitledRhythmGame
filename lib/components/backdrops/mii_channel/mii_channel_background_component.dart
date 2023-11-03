@@ -4,12 +4,11 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/backdrops/level_background_component.dart';
-import 'package:untitled_rhythm_game/components/mixins/game_size_aware.dart';
 import 'package:untitled_rhythm_game/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class MiiChannelBackgroundComponent extends LevelBackgroundComponent
-    with GameSizeAware {
+    with HasGameRef {
   static const int checkerRows = 8;
 
   int beatCount = 0;
@@ -39,7 +38,8 @@ class MiiChannelBackgroundComponent extends LevelBackgroundComponent
 
   @override
   Future<void> onLoad() async {
-    size = Vector2.all(max(gameSize.x * 1.5, gameSize.y * 1.5));
+    position = this.game.size / 2;
+    size = Vector2.all(max(game.size.x * 1.5, game.size.y * 1.5));
     // Create checkered background
     for (int row = 0; row < checkerRows; row++) {
       boardSquares.add([]);
@@ -155,12 +155,5 @@ class MiiChannelBackgroundComponent extends LevelBackgroundComponent
         }
       }
     }
-  }
-
-  @override
-  void onGameResize(Vector2 canvasSize) {
-    super.onGameResize(canvasSize);
-    this.onResize(canvasSize);
-    position = this.gameSize / 2;
   }
 }

@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
-import 'package:flame/experimental.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/rendering.dart';
 import 'package:flame_audio/flame_audio.dart';
@@ -20,8 +20,7 @@ enum GameRoutes {
   level,
 }
 
-class MyGame extends FlameGame
-    with HasTappableComponents, HasDraggableComponents, HasCollisionDetection {
+class MyGame extends FlameGame with HasCollisionDetection {
   late final RouterComponent router;
   late SongLevelComponent currentLevel;
 
