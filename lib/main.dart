@@ -12,10 +12,10 @@ main() {
     runApp(
       WidgetsApp(
         home: SafeArea(
-        child: GameWidget(
-          game: MyGame(),
+          child: GameWidget(
+            game: MyGame(),
+          ),
         ),
-      ),
         debugShowCheckedModeBanner: false,
         color: Colors.transparent,
         pageRouteBuilder: <T>(RouteSettings settings, WidgetBuilder builder) {

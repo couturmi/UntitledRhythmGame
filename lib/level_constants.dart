@@ -28,13 +28,13 @@ String getLevelBeatMapPath(Level level) {
 String getLevelMP3PathMap(Level level) {
   switch (level) {
     case Level.megalovania:
-      return "music/megalovania.mp3";
+      return "audio/music/megalovania.mp3";
     case Level.jumpUpSuperstar:
-      return "music/jump_up_superstar.mp3";
+      return "audio/music/jump_up_superstar.mp3";
     case Level.miiChannel:
-      return "music/mii_channel.mp3";
+      return "audio/music/mii_channel.mp3";
     case Level.giornosTheme:
-      return "music/giornos_theme.mp3";
+      return "audio/music/giornos_theme.mp3";
   }
 }
 

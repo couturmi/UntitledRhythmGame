@@ -13,6 +13,8 @@ import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class GameTransitionComponent extends MiniGameComponent
     with HasGameRef<MyGame> {
+  static const int TRANSITION_BEAT_COUNT = 8;
+
   static const String firstGameTitle = "F I R S T   U P";
   static const String nextUpTitle = "N E X T   U P";
 
