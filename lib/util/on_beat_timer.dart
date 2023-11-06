@@ -79,25 +79,26 @@ class OnBeatAudioPlayer extends AudioPlayer {
   /// to calibrate it. Then it can be played again for much less delay.
   Future<void> _calibrate() async {
     print("Calibrating OnBeatAudioPlayer");
+    final currentVolume = this.volume;
+    final currentSource = this.source!;
+
     final int numberOfCalibrationTrials = 3;
     final List<int> trialElapsedTimeResults = [];
-    final Stopwatch stopwatch = Stopwatch();
 
-    final currentVolume = this.volume;
     await setVolume(0);
     for (int i = 0; i < numberOfCalibrationTrials; i++) {
+      final Stopwatch stopwatch = Stopwatch();
       final Completer discoverDelayCompleter = Completer();
       var tempSubscription;
       tempSubscription = this.onPositionChanged.listen((Duration songPosition) {
         if (songPosition > Duration.zero) {
+          stopwatch.stop();
+          tempSubscription.cancel();
           int delay =
               stopwatch.elapsedMicroseconds - songPosition.inMicroseconds;
           trialElapsedTimeResults.add(delay);
           print("Trial $i delay: $delay");
           discoverDelayCompleter.complete();
-          stopwatch.stop();
-          stopwatch.reset();
-          tempSubscription.cancel();
         }
       });
 
@@ -106,8 +107,8 @@ class OnBeatAudioPlayer extends AudioPlayer {
       await resume();
       await discoverDelayCompleter.future;
       // Reset audio player to start of file.
-      await pause();
-      await seek(Duration.zero);
+      await release();
+      await setSource(currentSource);
     }
     await setVolume(currentVolume);
 
