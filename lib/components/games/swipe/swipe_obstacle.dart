@@ -6,7 +6,7 @@ import 'package:flame/effects.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/ship_component.dart';
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
-import 'package:untitled_rhythm_game/song_level_component.dart';
+import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
 
 class SwipeObstacle extends PositionComponent
     with HasGameRef<MyGame>, LevelSizeAware {

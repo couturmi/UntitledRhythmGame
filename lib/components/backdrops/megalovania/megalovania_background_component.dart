@@ -4,7 +4,7 @@ import 'package:flame/image_composition.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/backdrops/level_background_component.dart';
 import 'package:untitled_rhythm_game/components/backdrops/megalovania/undertale_sprite_component.dart';
-import 'package:untitled_rhythm_game/song_level_component.dart';
+import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
 
 class MegalovaniaBackgroundComponent extends LevelBackgroundComponent
     with HasGameRef {

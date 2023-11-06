@@ -9,7 +9,7 @@ import 'package:untitled_rhythm_game/components/games/tilt/tilt_game_component.d
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
-import 'package:untitled_rhythm_game/song_level_component.dart';
+import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class TiltColumn extends PositionComponent

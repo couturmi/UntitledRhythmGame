@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
-import 'package:untitled_rhythm_game/level_constants.dart';
+import 'package:untitled_rhythm_game/components/level/level_constants.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class BeatMap {

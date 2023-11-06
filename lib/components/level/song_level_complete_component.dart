@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:untitled_rhythm_game/components/menu/play_button.dart';
 import 'package:untitled_rhythm_game/components/scoring/song_score.dart';
-import 'package:untitled_rhythm_game/level_constants.dart';
+import 'package:untitled_rhythm_game/components/level/level_constants.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
 

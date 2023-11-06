@@ -8,7 +8,7 @@ import 'package:untitled_rhythm_game/components/games/taptap/taptap_column.dart'
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_note_bar.dart';
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
-import 'package:untitled_rhythm_game/song_level_component.dart';
+import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
 
 class TapTapNote extends PositionComponent
     with HasGameRef<MyGame>, LevelSizeAware {

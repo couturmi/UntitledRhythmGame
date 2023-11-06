@@ -4,7 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/backdrops/level_background_component.dart';
-import 'package:untitled_rhythm_game/song_level_component.dart';
+import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class MiiChannelBackgroundComponent extends LevelBackgroundComponent

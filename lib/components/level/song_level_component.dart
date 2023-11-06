@@ -17,10 +17,10 @@ import 'package:untitled_rhythm_game/components/games/tilt/tilt_game_component.d
 import 'package:untitled_rhythm_game/components/games/transition/minigame_transition_component.dart';
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_game_component.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_component.dart';
-import 'package:untitled_rhythm_game/level_constants.dart';
+import 'package:untitled_rhythm_game/components/level/level_constants.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
-import 'package:untitled_rhythm_game/song_level_complete_component.dart';
+import 'package:untitled_rhythm_game/components/level/song_level_complete_component.dart';
 import 'package:untitled_rhythm_game/util/on_beat_timer.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 

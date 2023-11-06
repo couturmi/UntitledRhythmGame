@@ -5,7 +5,7 @@ import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_bullet.dart';
 import 'package:untitled_rhythm_game/my_game.dart';
-import 'package:untitled_rhythm_game/song_level_component.dart';
+import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
 
 class UndertaleGunner extends PositionComponent with HasGameRef<MyGame> {
   /// Radius of the gunner sprite

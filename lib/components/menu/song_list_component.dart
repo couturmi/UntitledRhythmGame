@@ -1,6 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:untitled_rhythm_game/components/menu/song_list_tile.dart';
-import 'package:untitled_rhythm_game/level_constants.dart';
+import 'package:untitled_rhythm_game/components/level/level_constants.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 
 class SongListComponent extends PositionComponent {

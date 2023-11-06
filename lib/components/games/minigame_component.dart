@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
-import 'package:untitled_rhythm_game/song_level_component.dart';
+import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 abstract class MiniGameComponent extends PositionComponent {

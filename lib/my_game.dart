@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/menu/pause_menu_button.dart';
 import 'package:untitled_rhythm_game/home_screen_component.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
-import 'package:untitled_rhythm_game/song_level_component.dart';
+import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
 import 'package:untitled_rhythm_game/song_list_menu_component.dart';
 
 enum GameRoutes {
