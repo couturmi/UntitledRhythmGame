@@ -8,11 +8,11 @@ import 'package:untitled_rhythm_game/components/games/undertale/undertale_gunner
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_joystick.dart';
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_player.dart';
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class UndertaleCageArea extends PositionComponent
-    with HasGameRef<MyGame>, LevelSizeAware {
+    with HasGameRef<OffBeatGame>, LevelSizeAware {
   /// Margin for where the game play area should be held. All obstacles will be
   /// shot within this area.
   final Vector2 _gameAreaMargin = Vector2.all(20);

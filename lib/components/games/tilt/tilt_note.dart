@@ -5,9 +5,9 @@ import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 
-class TiltNote extends SpriteComponent with HasGameRef<MyGame> {
+class TiltNote extends SpriteComponent with HasGameRef<OffBeatGame> {
   static const int numberOfBoxerAssets = 2;
 
   final int columnIndex;

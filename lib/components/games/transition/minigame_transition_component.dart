@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_component.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class GameTransitionComponent extends MiniGameComponent
-    with HasGameRef<MyGame> {
+    with HasGameRef<OffBeatGame> {
   static const int TRANSITION_BEAT_COUNT = 8;
 
   static const String firstGameTitle = "F I R S T   U P";

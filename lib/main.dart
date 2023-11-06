@@ -1,7 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 
 main() {
   // Force portrait orientation before starting app.
@@ -13,7 +13,7 @@ main() {
       WidgetsApp(
         home: SafeArea(
           child: GameWidget(
-            game: MyGame(),
+            game: OffBeatGame(),
           ),
         ),
         debugShowCheckedModeBanner: false,

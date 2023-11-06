@@ -10,11 +10,11 @@ import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/taptap/taptap_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class TapTapColumn extends PositionComponent
-    with TapCallbacks, HasGameRef<MyGame>, LevelSizeAware {
+    with TapCallbacks, HasGameRef<OffBeatGame>, LevelSizeAware {
   /// Represents the default value [hitCircleYPlacementModifier].
   static const double hitCircleYPlacementModifierDefault = 0.85;
 

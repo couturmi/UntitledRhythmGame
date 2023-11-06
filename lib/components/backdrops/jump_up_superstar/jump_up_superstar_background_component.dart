@@ -2,11 +2,11 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/backdrops/level_background_component.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class JumpUpSuperStarBackgroundComponent extends LevelBackgroundComponent
-    with HasGameRef<MyGame> {
+    with HasGameRef<OffBeatGame> {
   static const double defaultSpriteRadius = 200.0;
 
   int beatCount = 0;

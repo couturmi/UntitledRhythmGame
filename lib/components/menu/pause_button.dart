@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 
 abstract class SimpleButton extends PositionComponent with TapCallbacks {
   SimpleButton(this._iconPath, {super.position, super.anchor})
@@ -45,7 +45,7 @@ abstract class SimpleButton extends PositionComponent with TapCallbacks {
   }
 }
 
-class PauseButton extends SimpleButton with HasGameRef<MyGame> {
+class PauseButton extends SimpleButton with HasGameRef<OffBeatGame> {
   PauseButton({super.position, super.anchor})
       : super(
           Path()

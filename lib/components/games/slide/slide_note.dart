@@ -4,10 +4,10 @@ import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 
 class SlideNote extends SpriteComponent
-    with HasGameRef<MyGame>, LevelSizeAware {
+    with HasGameRef<OffBeatGame>, LevelSizeAware {
   /// Time (in seconds) that this note was expected to be loaded.
   final double expectedTimeOfStart;
 

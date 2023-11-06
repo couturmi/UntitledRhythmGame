@@ -8,9 +8,9 @@ import 'package:untitled_rhythm_game/components/menu/play_button.dart';
 import 'package:untitled_rhythm_game/components/scoring/song_score.dart';
 import 'package:untitled_rhythm_game/components/level/level_constants.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 
-class SongLevelCompleteComponent extends Component with HasGameRef<MyGame> {
+class SongLevelCompleteComponent extends Component with HasGameRef<OffBeatGame> {
   NumberFormat commaNumberFormat = NumberFormat('#,##0', "en_US");
 
   final BeatMap songBeatMap;

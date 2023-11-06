@@ -19,12 +19,12 @@ import 'package:untitled_rhythm_game/components/games/undertale/undertale_game_c
 import 'package:untitled_rhythm_game/components/scoring/score_component.dart';
 import 'package:untitled_rhythm_game/components/level/level_constants.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 import 'package:untitled_rhythm_game/components/level/song_level_complete_component.dart';
 import 'package:untitled_rhythm_game/util/on_beat_timer.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
-class SongLevelComponent extends PositionComponent with HasGameRef<MyGame> {
+class SongLevelComponent extends PositionComponent with HasGameRef<OffBeatGame> {
   /// The number of beat intervals it should take a note from creation to reach the hit mark.
   /// TODO 2 = hard, 3 = medium, 4 = easy
   static const int INTERVAL_TIMING_MULTIPLIER = 2;

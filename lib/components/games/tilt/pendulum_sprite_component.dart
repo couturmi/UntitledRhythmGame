@@ -1,9 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 
 class PendulumSpriteComponent extends PositionComponent
-    with HasGameRef<MyGame> {
+    with HasGameRef<OffBeatGame> {
   final double hitCircleCenterHeight;
   final double hitCircleDiameter;
 

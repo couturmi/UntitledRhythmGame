@@ -4,9 +4,9 @@ import 'package:flame/effects.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/menu/play_button.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 
-class HomeScreenComponent extends Component with HasGameRef<MyGame> {
+class HomeScreenComponent extends Component with HasGameRef<OffBeatGame> {
   static const double backgroundCircleLifespan = 6.0;
   static const double backgroundCircleFadeTime = 1.0;
   late Timer backgroundCircleTimer;

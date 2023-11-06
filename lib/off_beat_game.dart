@@ -20,7 +20,7 @@ enum GameRoutes {
   level,
 }
 
-class MyGame extends FlameGame with HasCollisionDetection {
+class OffBeatGame extends FlameGame with HasCollisionDetection {
   late final RouterComponent router;
   late SongLevelComponent currentLevel;
 
@@ -61,7 +61,7 @@ class MyGame extends FlameGame with HasCollisionDetection {
   }
 }
 
-class PauseRoute extends Route with HasGameRef<MyGame> {
+class PauseRoute extends Route with HasGameRef<OffBeatGame> {
   PauseRoute() : super(PausePage.new, transparent: true);
 
   @override
@@ -86,7 +86,7 @@ class PauseRoute extends Route with HasGameRef<MyGame> {
 }
 
 class PausePage extends PositionComponent
-    with TapCallbacks, HasGameRef<MyGame> {
+    with TapCallbacks, HasGameRef<OffBeatGame> {
   DeviceOrientation? orientation;
 
   PausePage() : super(anchor: Anchor.center);

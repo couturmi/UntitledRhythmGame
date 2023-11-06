@@ -8,12 +8,12 @@ import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class TiltColumn extends PositionComponent
-    with HasGameRef<MyGame>, LevelSizeAware {
+    with HasGameRef<OffBeatGame>, LevelSizeAware {
   /// Represents the Y placement of the hit circle out of the game size's full Y axis.
   static const double hitCircleYPlacementModifier = 2 / 3;
 

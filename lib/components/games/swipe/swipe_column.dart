@@ -5,12 +5,12 @@ import 'package:untitled_rhythm_game/components/games/swipe/ship_component.dart'
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_obstacle.dart';
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class SwipeColumn extends PositionComponent
-    with HasGameRef<MyGame>, LevelSizeAware {
+    with HasGameRef<OffBeatGame>, LevelSizeAware {
   /// Column placement in board (from the left).
   final int columnIndex;
 

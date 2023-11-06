@@ -5,10 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_bullet.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 
 class UndertalePlayer extends PositionComponent
-    with HasGameRef<MyGame>, CollisionCallbacks {
+    with HasGameRef<OffBeatGame>, CollisionCallbacks {
   late final SpriteComponent _playerSprite;
 
   UndertalePlayer({super.size, super.position, super.anchor});

@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/osu/osu_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class OsuNoteArea extends PositionComponent
-    with HasGameRef<MyGame>, LevelSizeAware {
+    with HasGameRef<OffBeatGame>, LevelSizeAware {
   /// Diameter of a note.
   static const double noteDiameter = 120;
 

@@ -8,10 +8,10 @@ import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/swipe/swipe_obstacle.dart';
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 
 class ShipComponent extends SpriteComponent
-    with HasGameRef<MyGame>, LevelSizeAware, CollisionCallbacks {
+    with HasGameRef<OffBeatGame>, LevelSizeAware, CollisionCallbacks {
   /// Represents the Y placement of the ship out of the game size's full Y axis (from the top of the canvas).
   static const double hitCircleYPlacementModifier = 0.75;
 

@@ -7,12 +7,12 @@ import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/slide/bucket_component.dart';
 import 'package:untitled_rhythm_game/components/games/slide/slide_note.dart';
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
 class SlideNoteArea extends PositionComponent
-    with HasGameRef<MyGame>, LevelSizeAware {
+    with HasGameRef<OffBeatGame>, LevelSizeAware {
   /// Represents how much of the game size's full Y axis should be allowed
   /// below a hit circle to consider a note hit successful.
   static const double hitCircleAllowanceModifier = 0.08; // 0.04

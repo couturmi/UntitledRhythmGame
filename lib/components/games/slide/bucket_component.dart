@@ -4,10 +4,10 @@ import 'package:flame/events.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 
 class BucketComponent extends PositionComponent
-    with HasGameRef<MyGame>, LevelSizeAware, DragCallbacks {
+    with HasGameRef<OffBeatGame>, LevelSizeAware, DragCallbacks {
   /// Represents the Y placement of the hit circle out of the game size's full Y axis (from the top of the canvas).
   static const double hitCircleYPlacementModifier = 0.2;
 

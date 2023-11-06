@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled_rhythm_game/my_game.dart';
+import 'package:untitled_rhythm_game/off_beat_game.dart';
 
-class UndertaleJoystick extends PositionComponent with HasGameRef<MyGame> {
+class UndertaleJoystick extends PositionComponent with HasGameRef<OffBeatGame> {
   final double _knobRadius;
   final Vector2 _baseKnobPosition;
 
