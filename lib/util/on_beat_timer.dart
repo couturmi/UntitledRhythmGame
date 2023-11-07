@@ -8,11 +8,15 @@ import 'package:flame_audio/flame_audio.dart';
 /// generic [AudioPlayer].
 class OnBeatAudioPlayer extends AudioPlayer {
   bool _hasAudioStarted = false;
+  bool _isReadyAndCalibrated = false;
 
   /// True once the audio has first started playing for the level. This does not represent if
   /// the audio is currently playing vs paused, but instead if the level has
   /// reached the point where the audio would've started playing.
   bool get hasAudioStarted => _hasAudioStarted;
+
+  /// True if this audio player has been calibrated and is ready to start playing.
+  bool get isReady => _isReadyAndCalibrated;
 
   /// Subscription for the audio player position.
   late StreamSubscription _audioPlayerPositionSubscription;
@@ -71,6 +75,7 @@ class OnBeatAudioPlayer extends AudioPlayer {
         _prevPositions.removeAt(0);
       }
     });
+    _isReadyAndCalibrated = true;
   }
 
   /// Most hacky thing to get the audio timing to work correctly. Essentially,

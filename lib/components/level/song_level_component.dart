@@ -16,6 +16,7 @@ import 'package:untitled_rhythm_game/components/games/taptap/taptap_landscape/ta
 import 'package:untitled_rhythm_game/components/games/tilt/tilt_game_component.dart';
 import 'package:untitled_rhythm_game/components/games/transition/minigame_transition_component.dart';
 import 'package:untitled_rhythm_game/components/games/undertale/undertale_game_component.dart';
+import 'package:untitled_rhythm_game/components/level/level_loading_component.dart';
 import 'package:untitled_rhythm_game/components/scoring/score_component.dart';
 import 'package:untitled_rhythm_game/components/level/level_constants.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
@@ -24,7 +25,8 @@ import 'package:untitled_rhythm_game/components/level/song_level_complete_compon
 import 'package:untitled_rhythm_game/util/on_beat_timer.dart';
 import 'package:untitled_rhythm_game/util/time_utils.dart';
 
-class SongLevelComponent extends PositionComponent with HasGameRef<OffBeatGame> {
+class SongLevelComponent extends PositionComponent
+    with HasGameRef<OffBeatGame> {
   /// The number of beat intervals it should take a note from creation to reach the hit mark.
   /// TODO 2 = hard, 3 = medium, 4 = easy
   static const int INTERVAL_TIMING_MULTIPLIER = 2;
@@ -45,14 +47,8 @@ class SongLevelComponent extends PositionComponent with HasGameRef<OffBeatGame> 
   int get _currentSongBeatCount =>
       _currentLevelBeatCount - beatsAtStartBeforeMusicPlays;
 
-  /// True once the level is loaded and ready to begin.
-  bool hasLevelStarted = false;
-
-  /// True once the level is finished and all minigames have completed.
-  bool hasLevelFinished = false;
-
-  /// True once the beat map has started to execute.
-  bool hasSongStarted = false;
+  /// Represents the current state of the level setup.
+  LevelState levelState = LevelState.notStarted;
 
   /// Time (in seconds) from the start of the level. (The start of the first transition)
   double levelTime = 0.0;
@@ -67,8 +63,9 @@ class SongLevelComponent extends PositionComponent with HasGameRef<OffBeatGame> 
   /// Current orientation that the level is set to.
   DeviceOrientation currentLevelOrientation = DeviceOrientation.portraitUp;
 
-  late OnBeatAudioPlayer _audioPlayer;
+  late OnBeatAudioPlayer _audioPlayer = OnBeatAudioPlayer();
 
+  late final LevelLoadingComponent loadingComponent;
   late final LevelBackgroundComponent backgroundComponent;
   late final ScoreComponent scoreComponent;
   late MiniGameComponent currentGameComponent;
@@ -86,14 +83,13 @@ class SongLevelComponent extends PositionComponent with HasGameRef<OffBeatGame> 
 
   @override
   Future<void> onLoad() async {
+    await super.onLoad();
     anchor = Anchor.center;
     size = game.size;
     position = game.size / 2;
-    // Clear existing audio cache and preload song.
-    FlameAudio.audioCache.clearAll();
-    await _setupMusicAudio();
+    loadingComponent = LevelLoadingComponent();
+    add(loadingComponent);
     // Set game components.
-    setGameComponents();
     _beatTimer = Timer(
       microsecondsToSeconds(beatMap.beatInterval),
       repeat: true,
@@ -104,27 +100,30 @@ class SongLevelComponent extends PositionComponent with HasGameRef<OffBeatGame> 
     // Print out BeatMap info for debugging.
     print("Beats: ${beatMap.beatTotal}");
     print("BPM (microseconds): ${beatMap.beatInterval}");
-    await super.onLoad();
+    // Clear existing audio cache and preload song.
+    _setupMusicAudio();
   }
 
-  void setGameComponents() {
+  Future<void> setGameComponents() async {
     backgroundComponent = getLevelBackgroundComponent(
         level: beatMap.level, interval: beatMap.beatInterval);
     scoreComponent = ScoreComponent();
-    add(backgroundComponent);
-    add(scoreComponent);
-    setStartingTransition();
+    await add(backgroundComponent);
+    await add(scoreComponent);
+    await setStartingTransition();
+    levelState = LevelState.readyToStart;
   }
 
   /// Set the starting MiniGame transition that introduces the first MiniGame.
-  void setStartingTransition() {
+  Future<void> setStartingTransition() async {
+    remove(loadingComponent);
     currentGameComponent = GameTransitionComponent(
       model: MiniGameModel.gameStartTransition(),
       beatInterval: beatMap.beatInterval,
       nextMiniGameType: beatMap.gameOrder[0].gameType,
       isStartingTransition: true,
     );
-    add(currentGameComponent);
+    await add(currentGameComponent);
   }
 
   /// Queue up the next mini-game.
@@ -190,7 +189,7 @@ class SongLevelComponent extends PositionComponent with HasGameRef<OffBeatGame> 
   }
 
   Future<void> _setupMusicAudio() async {
-    _audioPlayer = OnBeatAudioPlayer();
+    await FlameAudio.audioCache.clearAll();
     await _audioPlayer.setAudioContext(
       AudioContext(
         android: AudioContextAndroid(
@@ -218,7 +217,7 @@ class SongLevelComponent extends PositionComponent with HasGameRef<OffBeatGame> 
   /// Execute a beat update for the game component.
   void handleBeat() {
     if (_currentLevelBeatCount < beatMap.beatTotal) {
-      if (hasSongStarted) {
+      if (levelState == LevelState.playingBeatMap) {
         backgroundComponent.beatUpdate();
       }
       // Handle each note that occurs during this beat.
@@ -230,7 +229,7 @@ class SongLevelComponent extends PositionComponent with HasGameRef<OffBeatGame> 
       _currentLevelBeatCount++;
       // Check if if a new mini-game should be queued up for the next beat.
       if (isLastBeatOfMiniGame) {
-        hasSongStarted = true;
+        levelState = LevelState.playingBeatMap;
         queueUpNextMiniGame();
       }
     }
@@ -241,10 +240,10 @@ class SongLevelComponent extends PositionComponent with HasGameRef<OffBeatGame> 
   }
 
   void _checkIfSongIsComplete() {
-    if (!hasLevelFinished &&
+    if (levelState != LevelState.finished &&
         _currentSongBeatCount >
             beatMap.beatTotal + (INTERVAL_TIMING_MULTIPLIER * 2)) {
-      hasLevelFinished = true;
+      levelState = LevelState.finished;
       _audioPlayer.stop();
       gameRef.router.pushRoute(Route(
         () => SongLevelCompleteComponent(
@@ -277,22 +276,28 @@ class SongLevelComponent extends PositionComponent with HasGameRef<OffBeatGame> 
 
   @override
   void update(double dt) {
-    // kick off the level at beat 0.
-    if (!hasLevelStarted) {
-      hasLevelStarted = true;
-      handleBeat();
-    } else if (hasLevelStarted && !hasLevelFinished) {
-      levelTime += dt;
-      // Add time to timer. This timer is tied to the game clock, and will pause when the game clock does.
-      _beatTimer.update(dt);
-      // Start music if it hasn't started playing
-      // We should make the call to play the audio BEFORE it actually should, due to the slight delay with the audio player.
-      if (!_audioPlayer.hasAudioStarted &&
-          songTime >=
-              -microsecondsToSeconds(_audioPlayer.startDelayMicroseconds)) {
-        print(
-            "Audio starting at songTime=$songTime : Audio Delay=${microsecondsToSeconds(_audioPlayer.startDelayMicroseconds)}");
-        _audioPlayer.start();
+    if (_audioPlayer.isReady) {
+      if (levelState == LevelState.notStarted) {
+        levelState = LevelState.loading;
+        setGameComponents();
+      } else if (levelState == LevelState.readyToStart) {
+        // kick off the level at beat 0.
+        levelState = LevelState.playingLevel;
+        handleBeat();
+      } else if (levelState == LevelState.playingLevel ||
+          levelState == LevelState.playingBeatMap) {
+        levelTime += dt;
+        // Add time to timer. This timer is tied to the game clock, and will pause when the game clock does.
+        _beatTimer.update(dt);
+        // Start music if it hasn't started playing
+        // We should make the call to play the audio BEFORE it actually should, due to the slight delay with the audio player.
+        if (!_audioPlayer.hasAudioStarted &&
+            songTime >=
+                -microsecondsToSeconds(_audioPlayer.startDelayMicroseconds)) {
+          print(
+              "Audio starting at songTime=$songTime : Audio Delay=${microsecondsToSeconds(_audioPlayer.startDelayMicroseconds)}");
+          _audioPlayer.start();
+        }
       }
     }
     // The super.update call NEEDS to be at the end, so that the children are
@@ -323,4 +328,24 @@ class SongLevelComponent extends PositionComponent with HasGameRef<OffBeatGame> 
     super.onRemove();
     _audioPlayer.dispose();
   }
+}
+
+enum LevelState {
+  /// Nothing has happened yet.
+  notStarted,
+
+  /// Loading in level components.
+  loading,
+
+  /// Level is loaded and ready to start.
+  readyToStart,
+
+  /// Level has started playing (the first transition has been displayed)
+  playingLevel,
+
+  /// Level has started playing AND the beat map has started to execute (the first notes have started to appear).
+  playingBeatMap,
+
+  /// Level is finished and all minigames have completed.
+  finished,
 }
