@@ -230,6 +230,7 @@ class SongLevelComponent extends PositionComponent
       // Check if if a new mini-game should be queued up for the next beat.
       if (isLastBeatOfMiniGame) {
         levelState = LevelState.playingBeatMap;
+        scoreComponent.enableScoring();
         queueUpNextMiniGame();
       }
     }
@@ -244,6 +245,7 @@ class SongLevelComponent extends PositionComponent
         _currentSongBeatCount >
             beatMap.beatTotal + (INTERVAL_TIMING_MULTIPLIER * 2)) {
       levelState = LevelState.finished;
+      scoreComponent.disableScoring();
       _audioPlayer.stop();
       gameRef.router.pushRoute(Route(
         () => SongLevelCompleteComponent(

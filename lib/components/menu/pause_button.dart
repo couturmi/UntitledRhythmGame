@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:untitled_rhythm_game/off_beat_game.dart';
 
 abstract class SimpleButton extends PositionComponent with TapCallbacks {
+  static const double defaultSize = 40;
+
   SimpleButton(this._iconPath, {super.position, super.anchor})
-      : super(size: Vector2.all(40));
+      : super(size: Vector2.all(defaultSize));
 
   final Paint _borderPaint = Paint()
     ..style = PaintingStyle.stroke
@@ -46,6 +48,12 @@ abstract class SimpleButton extends PositionComponent with TapCallbacks {
 }
 
 class PauseButton extends SimpleButton with HasGameRef<OffBeatGame> {
+  /// True if the pause button should be entirely hidden from the screen.
+  bool _hidden = false;
+
+  /// Timer that prevents the pause button from being spammed.
+  Timer? _lastTappedTimer;
+
   PauseButton({super.position, super.anchor})
       : super(
           Path()
@@ -56,7 +64,44 @@ class PauseButton extends SimpleButton with HasGameRef<OffBeatGame> {
         );
   @override
   void action() {
-    FlameAudio.play('effects/button_click.mp3');
-    gameRef.router.pushNamed(GameRoutes.pause.name);
+    if (!_hidden && _lastTappedTimer == null) {
+      FlameAudio.play('effects/button_click.mp3');
+      gameRef.router.pushNamed(GameRoutes.pause.name);
+      _lastTappedTimer = Timer(
+        1,
+        repeat: false,
+        onTick: () {
+          _lastTappedTimer = null;
+        },
+      );
+    }
+  }
+
+  void hide() {
+    _hidden = true;
+  }
+
+  void show() {
+    _hidden = false;
+  }
+
+  @override
+  void render(Canvas canvas) {
+    if (!_hidden) {
+      super.render(canvas);
+    }
+  }
+
+  @override
+  void onTapDown(TapDownEvent event) {
+    if (_lastTappedTimer == null) {
+      super.onTapDown(event);
+    }
+  }
+
+  @override
+  void update(double dt) {
+    _lastTappedTimer?.update(dt);
+    super.update(dt);
   }
 }

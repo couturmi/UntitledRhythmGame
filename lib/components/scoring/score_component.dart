@@ -11,6 +11,8 @@ class ScoreComponent extends PositionComponent with HasGameRef {
 
   SongScore songScore;
 
+  bool isScoringEnabled = false;
+
   late TextComponent _scoreComponent;
   late ScoreMultiplierComponent _scoreMultiplierComponent;
   late PauseButton _pauseButton;
@@ -38,6 +40,7 @@ class ScoreComponent extends PositionComponent with HasGameRef {
     _pauseButton = PauseButton(
       anchor: Anchor.topLeft,
     );
+    _pauseButton.hide();
     add(_scoreComponent);
     add(_scoreMultiplierComponent);
     add(_pauseButton);
@@ -45,33 +48,55 @@ class ScoreComponent extends PositionComponent with HasGameRef {
   }
 
   void resetStreak() {
-    songScore.streak = 0;
-    _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
+    if (isScoringEnabled) {
+      songScore.streak = 0;
+      _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
+    }
   }
 
   void missed(MiniGameType gameType, {double durationOfBeatInterval = 0}) {
-    songScore.miss(gameType, durationOfBeatInterval: durationOfBeatInterval);
-    _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
+    if (isScoringEnabled) {
+      songScore.miss(gameType, durationOfBeatInterval: durationOfBeatInterval);
+      _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
+    }
   }
 
   void noteHit(MiniGameType gameType, {double durationOfBeatInterval = 0}) {
-    songScore.hit(gameType, durationOfBeatInterval: durationOfBeatInterval);
-    _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
+    if (isScoringEnabled) {
+      songScore.hit(gameType, durationOfBeatInterval: durationOfBeatInterval);
+      _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
+    }
   }
 
   void noteHeld(MiniGameType gameType, double percentageOfBeatInterval) {
-    songScore.heldNotePoint(gameType, percentageOfBeatInterval);
+    if (isScoringEnabled) {
+      songScore.heldNotePoint(gameType, percentageOfBeatInterval);
+    }
   }
 
   /// Occurs after an obstacle was successfully avoided for games that have obstacles, rather than notes.
   void avoidedObstacle() {
-    songScore.avoidedObstacle();
+    if (isScoringEnabled) {
+      songScore.avoidedObstacle();
+    }
   }
 
   /// Occurs after a collision for games that have obstacles, rather than notes.
   void collision(MiniGameType gameType) {
-    songScore.collision(gameType);
-    _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
+    if (isScoringEnabled) {
+      songScore.collision(gameType);
+      _scoreMultiplierComponent.multiplier = songScore.noteMultiplier;
+    }
+  }
+
+  void enableScoring() {
+    isScoringEnabled = true;
+    _pauseButton.show();
+  }
+
+  void disableScoring() {
+    isScoringEnabled = false;
+    _pauseButton.hide();
   }
 
   @override
