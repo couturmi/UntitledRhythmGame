@@ -76,7 +76,7 @@ class UndertaleSpriteComponent extends SpriteComponent with HasGameRef<OffBeatGa
         if (isMainSprite) {
           // If start of cymbal crashes.
           if (_cymbalCrashes == 0) {
-            visible = true; // TODO needed?
+            visible = true; // needed?
             paint..colorFilter = null;
             transform.angle = 0;
             size = Vector2.all(componentSize) * 0.8;
