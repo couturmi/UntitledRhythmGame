@@ -18,6 +18,11 @@ class OnBeatAudioPlayer extends AudioPlayer {
   /// True if this audio player has been calibrated and is ready to start playing.
   bool get isReady => _isReadyAndCalibrated;
 
+  /// This value is a way to temporarily block use of the "onPositionChanged" listener, due to yet another bug with
+  /// AudioPlayer, outlined here: https://github.com/bluefireteam/audioplayers/issues/1324#issuecomment-1800352638
+  /// Once this bug is fixed, we should remove this field.
+  bool hasBeenPaused = false;
+
   /// Subscription for the audio player position.
   late StreamSubscription _audioPlayerPositionSubscription;
 
@@ -43,7 +48,7 @@ class OnBeatAudioPlayer extends AudioPlayer {
     _audioPlayerPositionSubscription =
         this.onPositionChanged.listen((Duration songPosition) {
       // Only execute this logic if the audio has actually started playing. We don't want this to occur during calibration or anything.
-      if (hasAudioStarted) {
+      if (hasAudioStarted && !hasBeenPaused) {
         // print('onPrevPositionChanged:${_prevPositions[0]}');
         // print('onPrevPositionChanged:${_prevPositions[1]}');
         // print('onPositionChanged:${songPosition.inMicroseconds}');
@@ -130,6 +135,12 @@ class OnBeatAudioPlayer extends AudioPlayer {
   void start() {
     resume();
     _hasAudioStarted = true;
+  }
+
+  @override
+  Future<void> pause() {
+    hasBeenPaused = true;
+    return super.pause();
   }
 
   @override

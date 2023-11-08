@@ -65,9 +65,9 @@ class PauseRoute extends Route with HasGameRef<OffBeatGame> {
   PauseRoute() : super(PausePage.new, transparent: true);
 
   @override
-  void onPush(Route? previousRoute) {
+  void onPush(Route? previousRoute) async {
     // Not sure if this stuff should be here, on in the song component somehow?
-    gameRef.currentLevel.pause();
+    await gameRef.currentLevel.pause();
     previousRoute!
       ..stopTime()
       ..addRenderEffect(
@@ -76,9 +76,9 @@ class PauseRoute extends Route with HasGameRef<OffBeatGame> {
   }
 
   @override
-  void onPop(Route previousRoute) {
+  void onPop(Route previousRoute) async {
     // Not sure if this stuff should be here, on in the song component somehow?
-    gameRef.currentLevel.resume();
+    await gameRef.currentLevel.resume();
     previousRoute
       ..resumeTime()
       ..removeRenderEffect();

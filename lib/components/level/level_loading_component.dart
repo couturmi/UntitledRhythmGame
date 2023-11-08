@@ -9,7 +9,8 @@ class LevelLoadingComponent extends PositionComponent with HasGameRef {
     await super.onLoad();
     anchor = Anchor.center;
     final double spriteSize = game.size.y / 8;
-    position = game.size / 2 + Vector2(0, -spriteSize / 2);
+    final double yOffset = -spriteSize / 2;
+    position = game.size / 2 + Vector2(0, yOffset);
     add(SpriteComponent(
       priority: 0,
       sprite: await Sprite.load("off_beat_logo_B.png"),

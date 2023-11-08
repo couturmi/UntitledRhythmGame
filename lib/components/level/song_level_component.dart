@@ -37,7 +37,7 @@ class SongLevelComponent extends PositionComponent
   late int currentMiniGameIndex = -1;
 
   /// Current beat count for the entire level.
-  /// Note that this does NOT the represent the current beat playing in the level, instead it is
+  /// Note that this does NOT the represent the current beat playing in the audio, instead it is
   /// the current beat in the level that is being loaded.
   int _currentLevelBeatCount = 0;
 
@@ -45,7 +45,7 @@ class SongLevelComponent extends PositionComponent
   /// Note that this does NOT the represent the current beat playing in the audio, instead it is
   /// the current beat in the song duration that is being loaded.
   int get _currentSongBeatCount =>
-      _currentLevelBeatCount - beatsAtStartBeforeMusicPlays;
+      _currentLevelBeatCount - beatsAtStartBeforeAudioPlays;
 
   /// Represents the current state of the level setup.
   LevelState levelState = LevelState.notStarted;
@@ -55,7 +55,7 @@ class SongLevelComponent extends PositionComponent
 
   /// Time (in seconds) from the start of the music playing.
   double get songTime =>
-      levelTime - microsecondsToSeconds(timeAtStartBeforeMusicPlays);
+      levelTime - microsecondsToSeconds(timeAtStartBeforeAudioPlays);
 
   /// Timer that is called on each beat of the song. This Timer is tied to the game clock.
   late Timer _beatTimer;
@@ -73,13 +73,13 @@ class SongLevelComponent extends PositionComponent
 
   SongLevelComponent({required this.beatMap});
 
-  int get beatsAtStartBeforeMusicPlays =>
+  int get beatsAtStartBeforeAudioPlays =>
       INTERVAL_TIMING_MULTIPLIER +
       GameTransitionComponent.TRANSITION_BEAT_COUNT;
 
-  /// Time (in microseconds) from when the level starts to when the music starts.
-  int get timeAtStartBeforeMusicPlays =>
-      beatsAtStartBeforeMusicPlays * beatMap.beatInterval;
+  /// Time (in microseconds) from when the level starts to when the audio starts.
+  int get timeAtStartBeforeAudioPlays =>
+      beatsAtStartBeforeAudioPlays * beatMap.beatInterval;
 
   @override
   Future<void> onLoad() async {
@@ -216,7 +216,8 @@ class SongLevelComponent extends PositionComponent
 
   /// Execute a beat update for the game component.
   void handleBeat() {
-    if (_currentLevelBeatCount < beatMap.beatTotal) {
+    if (_currentLevelBeatCount <
+        beatMap.beatTotal + GameTransitionComponent.TRANSITION_BEAT_COUNT) {
       if (levelState == LevelState.playingBeatMap) {
         backgroundComponent.beatUpdate();
       }
