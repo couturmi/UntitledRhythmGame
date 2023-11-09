@@ -19,6 +19,7 @@ class GiornosThemeBackgroundComponent extends LevelBackgroundComponent
   late int backgroundColorIndex = 0;
 
   late final RectangleComponent _flash;
+  double flashStartOfIntervalPercentage = 0;
   int flashCount = 0;
 
   late final SpriteComponent _headSprite;
@@ -77,16 +78,16 @@ class GiornosThemeBackgroundComponent extends LevelBackgroundComponent
     add(_titleFlashSprite1 = SpriteComponent(
       priority: 11,
       sprite: await Sprite.load("jojo_title_part1.png"),
-      size: Vector2.all(game.size.x * 0.5),
+      size: Vector2.all(game.size.x * 0.75),
       anchor: Anchor.center,
-      position: Vector2(0, -game.size.y * 0.3),
+      position: Vector2(0, -game.size.y * 0.25),
     ));
     add(_titleFlashSprite2 = SpriteComponent(
       priority: 11,
       sprite: await Sprite.load("jojo_title_part2.png"),
-      size: Vector2.all(game.size.x * 0.5),
+      size: Vector2.all(game.size.x * 0.75),
       anchor: Anchor.center,
-      position: Vector2(0, -game.size.y * 0.1),
+      position: Vector2(0, game.size.y * 0.075),
     ));
     _flash.setOpacity(0);
     _titleFlashSprite1.setOpacity(0);
@@ -114,17 +115,21 @@ class GiornosThemeBackgroundComponent extends LevelBackgroundComponent
       anchor: Anchor.center,
       position: Vector2(
         0,
-        (game.size.y * TapTapColumn.hitCircleYPlacementModifierDefault) -
-            (game.size.y / 2),
+        // starting point, before slide down
+        game.size.y / 6,
       ),
     ));
     _headSprite.setOpacity(0);
+    // Fade in head at very start of level.
+    _headSprite.add(OpacityEffect.fadeIn(
+        LinearEffectController(microsecondsToSeconds(this.interval) * 4)));
 
     add(_titleSprite = SpriteComponent(
       priority: 1,
       sprite: await Sprite.load("jojo_title.png"),
       size: Vector2.all(game.size.x * 0.8),
       anchor: Anchor.center,
+      position: Vector2(0, -game.size.x * (2 / 3)),
     ));
     _titleSprite.setOpacity(0);
     await super.onLoad();
@@ -134,10 +139,16 @@ class GiornosThemeBackgroundComponent extends LevelBackgroundComponent
   void beatUpdate() {
     int actualBeatCount =
         beatCount - SongLevelComponent.INTERVAL_TIMING_MULTIPLIER;
-    // Fade in head.
-    if (actualBeatCount == 0) {
-      _headSprite.add(OpacityEffect.fadeIn(
-          LinearEffectController(microsecondsToSeconds(this.interval) * 2)));
+    // Head slide in.
+    if (actualBeatCount == -2) {
+      _headSprite.add(MoveToEffect(
+          Vector2(
+            0,
+            (game.size.y * TapTapColumn.hitCircleYPlacementModifierDefault) -
+                (game.size.y / 2),
+          ),
+          CurvedEffectController(
+              microsecondsToSeconds(this.interval) * 4, Curves.easeInCubic)));
     }
     // Fade in beetle.
     if (actualBeatCount == 16) {
@@ -168,7 +179,7 @@ class GiornosThemeBackgroundComponent extends LevelBackgroundComponent
       _titleSprite.add(titlePulseOutEffect);
     }
     // Fade out head
-    if (actualBeatCount == 64) {
+    if (actualBeatCount == 26) {
       _headSprite.add(OpacityEffect.fadeOut(
           LinearEffectController(microsecondsToSeconds(this.interval) * 2)));
     }
@@ -227,10 +238,20 @@ class GiornosThemeBackgroundComponent extends LevelBackgroundComponent
         if ((flashCount == 0 && isFirstBeatOfFlash) ||
             (flashCount == 1 &&
                 isSecondBeatOfFlash &&
-                intervalPercentage >= 0.5)) {
+                (intervalPercentage - flashStartOfIntervalPercentage) >= 0.5)) {
           _flash.setOpacity(1.0);
-          if (isFirstBeatOfFlash) _titleFlashSprite1.setOpacity(1.0);
-          if (isSecondBeatOfFlash) _titleFlashSprite2.setOpacity(1.0);
+          if (isFirstBeatOfFlash) {
+            _titleFlashSprite1.setOpacity(1.0);
+            if (intervalPercentage >= 0.5) {
+              flashStartOfIntervalPercentage = intervalPercentage - 1.0;
+            } else {
+              flashStartOfIntervalPercentage = intervalPercentage;
+            }
+          }
+          if (isSecondBeatOfFlash) {
+            _titleFlashSprite2.setOpacity(1.0);
+            flashStartOfIntervalPercentage = 0;
+          }
           _flash.add(OpacityEffect.fadeOut(
             DelayedEffectController(
                 EffectController(

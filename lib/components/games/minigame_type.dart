@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 enum MiniGameType {
   gameTransition,
   tapTap,
+  tapTap4,
   tapTap7,
   osu,
   tilt,
@@ -20,6 +21,8 @@ MiniGameType miniGameTypeFromString(String name) {
 String getMiniGameName(MiniGameType game) {
   switch (game) {
     case MiniGameType.tapTap:
+      return "Tap Hero";
+    case MiniGameType.tapTap4:
       return "Tap Hero";
     case MiniGameType.tapTap7:
       return "Tap Hero";
@@ -53,6 +56,7 @@ String getMiniGameNameLine2(MiniGameType game) {
 DeviceOrientation getOrientationForMiniGame(MiniGameType game) {
   switch (game) {
     case MiniGameType.tapTap:
+    case MiniGameType.tapTap4:
     case MiniGameType.tilt:
     case MiniGameType.swipe:
     case MiniGameType.undertale:

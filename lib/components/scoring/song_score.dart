@@ -106,8 +106,7 @@ class SongScore {
     late int basePoints;
     switch (gameType) {
       case MiniGameType.tapTap:
-        basePoints = _tapTapNoteBasePoints;
-        break;
+      case MiniGameType.tapTap4:
       case MiniGameType.tapTap7:
         basePoints = _tapTapNoteBasePoints;
         break;

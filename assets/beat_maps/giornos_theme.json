@@ -2,7 +2,32 @@
   "name": "Giorno's Theme",
   "artist": "VGR",
   "bpm": 128,
-  "spriteReplacements": [],
+  "spriteReplacements": [
+    {
+      "identifier": "tilt_glove",
+      "path": "boxing_glove_arrowhead.png"
+    },
+    {
+      "identifier": "tilt_arm",
+      "path": "arm_arrow.png"
+    },
+    {
+      "identifier": "tilt_note_1",
+      "path": "boxer_joestar.png"
+    },
+    {
+      "identifier": "tilt_note_1_secondary",
+      "path": "boxer_joestar_punched.png"
+    },
+    {
+      "identifier": "tilt_note_2",
+      "path": "boxer_joestar.png"
+    },
+    {
+      "identifier": "tilt_note_2_secondary",
+      "path": "boxer_joestar_punched.png"
+    }
+  ],
   "gameOrder": [
     {
       "game": "tapTap",
@@ -58,14 +83,114 @@
         ],
         [
           {"timing": 0.5,
+            "duration": 1.0,
+            "column": 0},
+          {"timing": 0.5,
+            "duration": 1.0,
+            "column": 2}
+        ],
+        [],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.75,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.75,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.5,
             "duration": 1.5,
             "column": 0},
           {"timing": 0.5,
             "duration": 1.5,
-            "column": 2}
+            "column": 1}
         ],
         [],
-        [],
+        [
+          {"timing": 0.5,
+            "column": 0},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 2},
+          {"timing": 0.75,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.5,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 0},
+          {"timing": 0.75,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.5,
+            "column": 2}
+        ]
+      ]
+    },
+    {
+      "game": "gameTransition",
+      "beats": [
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}],
+        [{}]
+      ]
+    },
+    {
+      "game": "tapTap4",
+      "beats": [
+        [
+          {"timing": 0.0,
+            "column": 0}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 1}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 2}
+        ],
+        [
+          {"timing": 0.0,
+            "column": 3}
+        ],
         [],
         [],
         [],
