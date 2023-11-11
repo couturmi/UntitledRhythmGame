@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/model/beat_map.dart';
 import 'package:untitled_rhythm_game/off_beat_game.dart';
+import 'package:untitled_rhythm_game/util/note_utils.dart';
 
 class TiltNote extends SpriteComponent with HasGameRef<OffBeatGame> {
   static const int numberOfBoxerAssets = 2;
@@ -94,10 +95,7 @@ class TiltNote extends SpriteComponent with HasGameRef<OffBeatGame> {
     // Remove all active effects.
     removeWhere((c) => c is Effect);
     // update with red glow.
-    paint
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
-      ..colorFilter =
-          ColorFilter.mode(Colors.red.withOpacity(0.5), BlendMode.overlay);
+    addNegativeNoteGlow();
     // Add a fade out and fall effect.
     add(MoveEffect.by(Vector2(0, 25), LinearEffectController(0.2)));
     add(OpacityEffect.fadeOut(LinearEffectController(0.2)));

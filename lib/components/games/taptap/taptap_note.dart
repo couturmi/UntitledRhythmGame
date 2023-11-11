@@ -9,6 +9,7 @@ import 'package:untitled_rhythm_game/components/games/taptap/taptap_note_bar.dar
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/off_beat_game.dart';
 import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
+import 'package:untitled_rhythm_game/util/note_utils.dart';
 
 class TapTapNote extends PositionComponent
     with HasGameRef<OffBeatGame>, LevelSizeAware {
@@ -164,9 +165,7 @@ class TapTapNote extends PositionComponent
     } else {
       isRemovingFromParent = true;
       // update with a glow.
-      _sprite.paint
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
-        ..colorFilter = ColorFilter.mode(Colors.greenAccent, BlendMode.overlay);
+      _sprite.addNoteGlow();
       // remove the note after a short time of displaying.
       add(RemoveEffect(delay: 0.1));
     }
@@ -187,9 +186,7 @@ class TapTapNote extends PositionComponent
     if (_noteBar != null) {
       _noteBar!.dead();
       // update sprite with a glow and hid it.
-      _sprite.paint
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
-        ..colorFilter = ColorFilter.mode(Colors.greenAccent, BlendMode.overlay);
+      _sprite.addNoteGlow();
       // Hide sprite. (Applying a SizeEffect controller that does nothing just to add a delay to hide the sprite.
       _sprite.add(SizeEffect.to(_sprite.size, LinearEffectController(0.1))
         ..onComplete = () => _sprite.size = Vector2.all(0));
@@ -230,9 +227,8 @@ class TapTapNote extends PositionComponent
               holdDuration)));
     } else {
       // update with red glow.
-      _sprite.paint
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 50)
-        ..colorFilter = ColorFilter.mode(Colors.red, BlendMode.overlay);
+      _sprite.addNegativeNoteGlow();
+      _sprite.add(OpacityEffect.fadeOut(EffectController(duration: 0.05)));
       add(RemoveEffect(delay: 0.05));
     }
   }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:untitled_rhythm_game/components/mixins/level_size_aware.dart';
 import 'package:untitled_rhythm_game/off_beat_game.dart';
+import 'package:untitled_rhythm_game/util/note_utils.dart';
 
 class SlideNote extends SpriteComponent
     with HasGameRef<OffBeatGame>, LevelSizeAware {
@@ -63,9 +64,7 @@ class SlideNote extends SpriteComponent
     // Remove all active effects.
     removeWhere((c) => c is Effect);
     // update with golden glow.
-    paint
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
-      ..colorFilter = ColorFilter.mode(Colors.greenAccent, BlendMode.overlay);
+    addNoteGlow();
     // Provide haptic feedback.
     HapticFeedback.mediumImpact();
     // remove the note after a short time of displaying.
@@ -78,10 +77,7 @@ class SlideNote extends SpriteComponent
     // Remove all active effects.
     removeWhere((c) => c is Effect);
     // update with red glow.
-    paint
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
-      ..colorFilter =
-          ColorFilter.mode(Colors.red.withOpacity(0.5), BlendMode.overlay);
+    addNegativeNoteGlow();
     // Add a fade out and fall effect.
     add(OpacityEffect.fadeOut(LinearEffectController(0.2)));
     // remove the note after a short time of displaying.

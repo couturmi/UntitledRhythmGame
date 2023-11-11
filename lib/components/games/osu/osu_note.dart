@@ -9,6 +9,7 @@ import 'package:untitled_rhythm_game/components/games/minigame_type.dart';
 import 'package:untitled_rhythm_game/components/games/osu/osu_note_bar.dart';
 import 'package:untitled_rhythm_game/off_beat_game.dart';
 import 'package:untitled_rhythm_game/components/level/song_level_component.dart';
+import 'package:untitled_rhythm_game/util/note_utils.dart';
 
 class OsuNote extends PositionComponent with HasGameRef<OffBeatGame> {
   /// Scale of the timing ring when the note is created.
@@ -234,9 +235,7 @@ class OsuNote extends PositionComponent with HasGameRef<OffBeatGame> {
     // Remove all active effects.
     removeWhere((c) => c is Effect);
     // update with glow.
-    _sprite.paint = Paint()
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
-      ..colorFilter = ColorFilter.mode(Colors.white, BlendMode.overlay);
+    _sprite.addNoteGlow(color: Colors.white);
     // Provide haptic feedback.
     HapticFeedback.mediumImpact();
     if (_noteBar != null) {
@@ -377,10 +376,7 @@ class OsuNote extends PositionComponent with HasGameRef<OffBeatGame> {
     // Remove all active effects.
     removeWhere((c) => c is Effect);
     // update with red glow.
-    _sprite.paint = Paint()
-      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 30)
-      ..colorFilter =
-          ColorFilter.mode(Colors.red.withOpacity(0.5), BlendMode.overlay);
+    _sprite.addNegativeNoteGlow();
     // Add a fade out and fall effect.
     add(MoveEffect.by(Vector2(0, 25), LinearEffectController(0.2)));
     fadeOutAndRemove(duration: 0.2);
