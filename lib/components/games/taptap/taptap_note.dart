@@ -188,8 +188,14 @@ class TapTapNote extends PositionComponent
       // update sprite with a glow and hid it.
       _sprite.addNoteGlow();
       // Hide sprite. (Applying a SizeEffect controller that does nothing just to add a delay to hide the sprite.
+      // For whatever reason, using a DelayedEffectController doesn't work as expected.)
       _sprite.add(SizeEffect.to(_sprite.size, LinearEffectController(0.1))
-        ..onComplete = () => _sprite.size = Vector2.all(0));
+        ..onComplete = () {
+          _sprite.size = Vector2.all(0);
+          _sprite.children.forEach((child) {
+            if (child is PositionComponent) child.size = Vector2.all(0);
+          });
+        });
     }
   }
 
